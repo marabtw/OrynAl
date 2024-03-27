@@ -1,4 +1,25 @@
 export const ROUTERS = {
 	Home: '/',
-	Restaurant: '/restaurant/:id'
+	Restaurant: '/restaurant/:id',
+	OrderHistory: '/order-history',
+	MyOrderPage: '/order-history/:id',
+	MyRestaurants: '/my-restaurants',
+	MyRestaurantsTables: '/my-restaurants/tables',
+	MyRestaurantsMenus: '/my-restaurants/menus',
+	UpdateRestaurant: '/my-restaurants/:id',
+	UpdateTable: '/my-restaurants/tables/:id',
+	UpdateMenu: '/my-restaurants/menus/:id',
+
+	CreateMenu: '/my-restaurants/menus/create',
+	CreateTable: '/my-restaurants/tables/create',
+	CreateRestaurant: "/my-restaurants/create",
+	CreateOwner: "/my-restaurants/owners/create",
+	
+	RestaurantOwners: "/my-restaurants/owners",
+	RestaurantClients: "/my-restaurants/clients",
+	MyProfile: "/my-profile",
+	Login: "/login",
+	Owners: "/owners",
+	OwnerRestaurants: "/owner-restaurants",
+	Clients: "/clients",
 }

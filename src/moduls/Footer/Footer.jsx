@@ -1,24 +1,24 @@
-import React, { useState } from "react"
-import { RestaurantStatistics } from "../../data/RestaurantsData"
+import { useState } from "react"
+import { dataSiteStatistics } from "../../data/mainData"
 import logo from "../../assets/images/logo.png"
-import LinearGradientHeading from "../../ui/headings/LinearGradienHeading"
+import LinearGradientText from "../../ui/LinearGradientText/LinearGradienText"
 
 const Footer = () => {
-  const [statistics, setStatistics] = useState(RestaurantStatistics)
+  const [statistics, setStatistics] = useState(dataSiteStatistics)
 
   return (
     <footer className="px-[30px] py-[100px] flex flex-col gap-[150px]">
       <div className="grid grid-cols-3 gap-[30px]">
         <div className="text-center">
-					<LinearGradientHeading text={statistics.booking} from={"#6AA7FC"} to={"#3D6FFB"} className="text-[100px] font-[600] leading-[90px]"/>
+					<LinearGradientText tag="h2" text={statistics.booking} from={"#6AA7FC"} to={"#3D6FFB"} className="text-[100px] font-[600] leading-[90px]"/>
           <p className="text-[25px] leading-[22.5px] mt-[10px]">Заявок на бронь столиков полученные от нас рестораны, кафе.</p>
         </div>
         <div className="text-center">
-					<LinearGradientHeading text={statistics.people} from={"#6AA7FC"} to={"#3D6FFB"} className="text-[100px] font-[600] leading-[90px]"/>
+					<LinearGradientText tag="h2" text={statistics.people} from={"#6AA7FC"} to={"#3D6FFB"} className="text-[100px] font-[600] leading-[90px]"/>
           <p className="text-[25px] leading-[22.5px] mt-[10px]">Заявок на бронь столиков полученные от нас рестораны, кафе.</p>
         </div>
         <div className="text-center">
-					<LinearGradientHeading text={statistics.establishments} from={"#6AA7FC"} to={"#3D6FFB"} className="text-[100px] font-[600] leading-[90px]"/>
+					<LinearGradientText tag="h2" text={statistics.establishments} from={"#6AA7FC"} to={"#3D6FFB"} className="text-[100px] font-[600] leading-[90px]"/>
           <p className="text-[25px] leading-[22.5px] mt-[10px]">Заявок на бронь столиков полученные от нас рестораны, кафе.</p>
         </div>
       </div>

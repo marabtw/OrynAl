@@ -6,8 +6,8 @@ function App() {
   const currentPath = useLocation().pathname
 
   return (
-    <div className="mx-[50px] relative bg-white">
-      <Header />
+    <div className="relative font-poppins">
+      {currentPath !== "/login" && <Header />}
       <Router />
     </div>
   )

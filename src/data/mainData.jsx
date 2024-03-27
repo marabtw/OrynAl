@@ -4,4 +4,6 @@ export const dataSiteStatistics = {
   establishments: 232,
 }
 
-export const role = "employee"
+export const role = "user"
+// export const role = "employee"
+// export const role = "owner"

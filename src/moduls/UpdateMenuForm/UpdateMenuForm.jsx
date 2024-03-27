@@ -24,11 +24,10 @@ const UpdateMenuForm = () => {
         </div>
         <InfoPanel label={"Описание:"} value={data.description} />
 				<div className="grid grid-cols-2 gap-[20px]">
-					
         <InfoPanel label={"Цена:"} value={`${data.price}`} />
         <InfoPanel label={"Статус:"} value={`${data.status}`} />
 				</div>
-				<Button text="Удалить" className={"mx-auto"}/>
+				<Button text="Удалить" backgroundColor="bg-[#FF5050]" className={"mx-auto px-[90px] py-[20px]"}/>
       </div>
       <Form data={data} />
     </div>

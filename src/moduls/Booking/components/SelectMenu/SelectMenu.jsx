@@ -9,7 +9,7 @@ const SelectMenu = () => {
     <div className="flex gap-[50px] mx-[180px] mt-[200px]">
       <div className="">
         <FoodCategories />
-        <div className="flex flex-wrap gap-y-[100px] gap-x-[50px] justify-between mt-[100px]">
+        <div className="grid grid-cols-3 gap-y-[100px] gap-x-[50px] justify-between mt-[100px]">
           {dataSalads.map((salad) => (
             <FoodCard salad={salad} />
           ))}

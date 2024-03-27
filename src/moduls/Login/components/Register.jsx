@@ -25,7 +25,7 @@ const Register = ({ changeAuth }) => {
             type="password"
           />
         </div>
-        <Button text="Зарегистрироваться" className={"mx-auto"}/>
+        <Button text="Зарегистрироваться" gradient={true} className={"mx-auto px-[80px] py-[20px] text-[20px] font-[700] leading-[30px]"}/>
         <h3 className="text-center text-[20px] font-[700] text-[#989898]">
           Уже зарегистрированы?
           <span className="cursor-pointer text-[#447dfb] hover:underline" onClick={changeAuth}>

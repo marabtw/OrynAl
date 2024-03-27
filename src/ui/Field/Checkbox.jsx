@@ -9,7 +9,7 @@ const Checkbox = ({ data }) => {
   const randomNumber = getRandomNumber()
 
   return (
-    <label htmlFor={`${data}-${randomNumber}`} className="relative flex">
+    <label htmlFor={`${data}-${randomNumber}`} className="relative flex gap-[10px]">
       <input id={`${data}-${randomNumber}`} type="checkbox" name="" className="hidden" onClick={() => setChecked(!checked)}/>
       <span className={`p-[2px] w-[21px] aspect-square border border-[#EBEBEB] cursor-pointer`}>
 				{checked && (

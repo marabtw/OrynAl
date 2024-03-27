@@ -1,55 +1,46 @@
-import React from "react"
-import InputFile from "../../../ui/Field/InputFile"
-import InputText from "../../../ui/Field/InputText"
 import Checkbox from "../../../ui/Field/Checkbox"
 import { dataServices } from "../../../data/myRestaurantData"
+import InputTextWrapper from "../../../components/InputTextWrapper/InputTextWrapper"
+import InputFileWrapper from "../../../components/InputFileWrapper/InputFileWrapper"
+import SelectWrapper from "../../../components/SelectWrapper/SelectWrapper"
+import SelectItems from "../../../ui/Select/SelectItems"
 
 const Form = () => {
   return (
-    <form className="flex flex-col gap-[30px] w-full px-[20px] py-[30px] border-[3px] border-[#ebebeb] rounded-[20px] ">
+    <form className="flex flex-col gap-[30px] w-full px-[20px] py-[40px] border-[3px] border-[#ebebeb] rounded-[20px] ">
       <div className="grid grid-cols-2 gap-[30px]">
-        <div className="flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">Название:</h3>
-          <InputText placeholder={""} />
-        </div>
-        <div className="w-full flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">Логотип:</h3>
-          <InputFile placeholder={"Добавить логотип"} />
-        </div>
+        <InputTextWrapper placeholder="Sandyq" label="Название:" />
+        <InputFileWrapper placeholder="Добавить логотип" label="Логотип:" />
       </div>
       <div className="grid grid-cols-2 gap-[30px]">
-        <div className="flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">Адрес:</h3>
-          <InputText placeholder={""} />
-        </div>
-        <div className="w-full flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">Фотографии:</h3>
-          <InputFile placeholder={"Добавить фото"} />
-        </div>
+        <InputTextWrapper placeholder="Абай, 101" label="Адрес" />
+        <InputFileWrapper placeholder="Добавить фото" label="Фотографии:" />
       </div>
-      <div className="flex flex-col">
-        <h3 className="text-[15px] font-[600] left-[22.5px]">Описание:</h3>
-        <InputText placeholder={"Напишите краткое описание меню...."} />
-      </div>
+      <InputTextWrapper
+        placeholder="Напишите краткое описание меню...."
+        label="Описание"
+      />
       <div className="grid grid-cols-2 gap-[30px]">
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-[15px]">
           <h3 className="text-[15px] font-[600] left-[22.5px]">
-            Режим работы:
+            Режим работы ▼
           </h3>
           <div className="flex items-center gap-[10px]">
-            <InputText placeholder={"10:00"} />
-            <p>-</p>
-            <InputText placeholder={"22:00"} />
+            <div className="w-1/2">
+              <SelectItems placeholder={"10:00"} placeholderIcon={true}/>
+            </div>
+            <p className="text-[#C6C6C6] text-[15px]">-</p>
+            <div className="w-1/2">
+              <SelectItems placeholder={"22:00"} placeholderIcon={true}/>
+            </div>
           </div>
         </div>
-        <div className="w-full flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">Город:</h3>
-          <InputText placeholder={""} />
-        </div>
+        <SelectWrapper label={"Город"} placeholder={"Алматы"} />
+        <SelectWrapper label={"Владелец"} placeholder={"Иван Петров"} placeholderIcon={true}/>
       </div>
       <div className="grid grid-cols-2 gap-[10px]">
         {dataServices.map((service) => (
-          <Checkbox data={service}/>
+          <Checkbox data={service} />
         ))}
       </div>
     </form>

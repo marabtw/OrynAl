@@ -14,7 +14,7 @@ const Login = ({ changeAuth }) => {
           <Input label="Ваш  пароль" placeholder="*********" type="password" />
           <h4 className="float-right cursor-pointer">Забыли пароль?</h4>
         </div>
-        <Button text="Войти" />
+        <Button text="Войти" gradient={true} className={"py-[20px] text-[20px] font-[700] leading-[30px]"}/>
         <h3 className="text-center text-[20px] font-[700] text-[#989898]">
           Нет аккаунта?{" "}
           <span className="cursor-pointer text-[#447dfb] hover:underline" onClick={changeAuth}>

@@ -18,7 +18,8 @@ const TableCard = ({ table }) => {
       </div>
       <Button
         text="Выбрать"
-        className={"text-[20px] font-[600] leading-[30px]"}
+				gradient={true}
+        className={"text-[20px] font-[600] leading-[30px] px-[10px] py-[10px] rounded-[10px]"}
       />
     </div>
   )

@@ -68,6 +68,7 @@ const Cart = () => {
             </div>
             <Button
               text="Подтвердить"
+							gradient={true}
               className={
                 "w-full rounded-[20px] text-[18px] font-[800] leading-[24px] py-[20px] mt-[40px]"
               }

@@ -1,4 +1,4 @@
-import Item from "./components/Item"
+import ListItem from "./components/ListItem"
 import { TriangleDownIcon } from "../../ui/icons/icons"
 
 const ClientsList = ({data}) => {
@@ -15,7 +15,7 @@ const ClientsList = ({data}) => {
         <h4 className="text-center">Действие</h4>
       </li>
       {data.map((item) => (
-        <Item key={item.id} item={item} />
+        <ListItem key={item.id} item={item} />
       ))}
     </ul>
 	)

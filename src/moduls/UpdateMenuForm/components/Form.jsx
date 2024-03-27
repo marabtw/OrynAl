@@ -1,43 +1,31 @@
-import React from "react"
 import InputFile from "../../../ui/Field/InputFile"
 import InputText from "../../../ui/Field/InputText"
-import Checkbox from "../../../ui/Field/Checkbox"
 import Button from "../../../ui/Button/Button"
+import InputTextWrapper from "../../../components/InputTextWrapper/InputTextWrapper"
+import InputFileWrapper from "../../../components/InputFileWrapper/InputFileWrapper"
+import SelectWrapper from "../../../components/SelectWrapper/SelectWrapper"
 
 const Form = ({ data }) => {
   return (
-    <form className="flex flex-col w-full px-[20px] py-[30px] border-[3px] border-[#ebebeb] rounded-[20px] ">
+    <form className="flex flex-col gap-[30px] w-full px-[20px] py-[30px] border-[3px] border-[#ebebeb] rounded-[20px] ">
       <div className="grid grid-cols-2 gap-[30px]">
-        <div className="flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">
-            Название меню:
-          </h3>
-          <InputText placeholder={"Чизбургер"} />
-        </div>
-        <div className="w-full flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">Фотографии:</h3>
-          <InputFile placeholder={"Добавить фото"} />
-        </div>
+        <InputTextWrapper label="Название меню:" placeholder="Чизбургер" />
+        <InputFileWrapper label="Фотографии" placeholder="Добавить фото" />
       </div>
-      <div className="flex flex-col">
-        <h3 className="text-[15px] font-[600] left-[22.5px]">Фаст-фуд:</h3>
-        <InputText placeholder={"Фаст-фуд"} />
-      </div>
-      <div className="flex flex-col">
-        <h3 className="text-[15px] font-[600] left-[22.5px]">Описание:</h3>
-        <InputText placeholder={`Напишите краткое описание меню....`} />
-      </div>
+      <SelectWrapper label={"Тип меню"} placeholder={"Фаст-фуд"} />
+      <InputTextWrapper
+        label="Описание"
+        placeholder="Напишите краткое описание меню...."
+      />
       <div className="grid grid-cols-2 gap-[20px]">
-        <div className="flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">Цена:</h3>
-          <InputText placeholder={`${data.price} тенге`} />
-        </div>
-        <div className="flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">Статус</h3>
-          <InputText placeholder={data.status} />
-        </div>
+        <SelectWrapper label={"Цена"} placeholder={`${data.price} тенге`} />
+        <InputTextWrapper label="Статус" placeholder={data.status} />
       </div>
-      <Button text="Изменить" className={"mx-auto"} />
+      <Button
+        text="Изменить"
+        gradient={true}
+        className={"mx-auto px-[110px] py-[20px]"}
+      />
     </form>
   )
 }

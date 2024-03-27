@@ -1,21 +1,27 @@
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { DotsHorizontalIcon } from "../../../../ui/icons/icons"
-import { useState } from "react"
+import ActionsContainer from "../../../../components/ActionsContainer/ActionsContainer"
 
 const RestaurantCard = ({ data }) => {
   const [showActions, setShowActions] = useState(false)
+  const [actions, setActions] = useState([
+    {
+      action: "Удалить",
+      onClick: () => console.log("object"),
+    },
+    { action: "Изменить", to: `/my-restaurants/${data.id}` },
+  ])
 
   return (
     <div className="relative flex flex-col w-[400px] h-[300px] p-[20px] font-poppins shadow-[0px_4px_4px_rgba(0,0,0,.25)] rounded-[20px] bg-white">
       <div className="absolute top-[30px] right-[20px] text-center">
-        <DotsHorizontalIcon className="text-[26px] text-[#C4C4C4] cursor-pointer" onClick={() => setShowActions(!showActions)}/>
+        <DotsHorizontalIcon
+          className="text-[26px] text-[#C4C4C4] cursor-pointer"
+          onClick={() => setShowActions(!showActions)}
+        />
         {showActions && (
-          <div className="absolute top-full left-1/2 text-center p-[10px] px-[15px] text-[13px] font-[700] leading-[19.5px] border-2 border-[#EBEBEB] rounded-[5px] bg-white ">
-            <h4 className="cursor-pointer hover:text-[#FF0000]">Удалить</h4>
-            <Link to={`/my-restaurants/${data.id}`} className="mt-[5px] cursor-pointer hover:text-[#FF0000]">
-              Изменить
-            </Link>
-          </div>
+          <ActionsContainer actions={actions} position={"top-full left-1/2"} />
         )}
       </div>
       <div className="flex gap-[20px]">

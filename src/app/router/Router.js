@@ -2,29 +2,29 @@ import { Route, Routes } from "react-router-dom"
 
 import { ROUTERS } from "./Router.config"
 
-import Home from "../../pages/Home/Home"
-import Restaurant from "../../pages/Restaurant/Restaurant"
-import OrderHistory from "../../pages/OrderHistory/OrderHistory"
-import MyOrderPage from "../../pages/MyOrderPage/MyOrderPage"
-import MyRestaurants from "../../pages/MyRestaurants/MyRestaurants"
-import MyRestaurantTables from "../../pages/MyRestaurantTables/MyRestaurantTables"
-import MyRestaurantMenus from "../../pages/MyRestaurantMenus/MyRestaurantMenus"
+import Home from "../../pages/HomePage"
+import Restaurant from "../../pages/RestaurantPage"
+import OrderHistory from "../../pages/OrdersHistoryPage"
+import MyOrderPage from "../../pages/MyOrderPage"
+import MyRestaurants from "../../pages/MyRestaurantsPage"
+import MyRestaurantTables from "../../pages/MyRestaurantTablesPage"
+import MyRestaurantMenus from "../../pages/MyRestaurantMenusPage"
 
-import MyProfile from "../../pages/MyProfile/MyProfile"
-import Login from "../../pages/Login/Login"
+import MyProfile from "../../pages/MyProfilePage"
+import Login from "../../pages/LoginPage"
 
-import UpdateRestaurant from "../../pages/UpdateRestaurant/UpdateRestaurant"
-import UpdateTable from "../../pages/UpdateTable/UpdateTable"
-import UpdateMenu from "../../pages/UpdateMenu/UpdateMenu"
+import UpdateRestaurant from "../../pages/UpdateRestaurantPage"
+import UpdateTable from "../../pages/UpdateTablePage"
+import UpdateMenu from "../../pages/UpdateMenuPage"
 
-import CreateRestaurant from "../../pages/CreateRestaurant/CreateRestaurant"
-import CreateOwner from "../../pages/CreateOwner/CreateOwner"
-import CreateTable from "../../pages/CreateTable/CreateTable"
-import CreateMenu from "../../pages/CreateMenu/CreateMenu"
+import CreateRestaurant from "../../pages/CreateRestaurantPage"
+import CreateOwner from "../../pages/CreateOwnerPage"
+import CreateTable from "../../pages/CreateTablePage"
+import CreateMenu from "../../pages/CreateMenuPage"
 
-import OwnerRestaurants from "../../pages/OwnerRestaurants/OwnerRestaurants"
-import Owners from "../../pages/Owners/Owners"
-import Clients from "../../pages/Clients/Clients"
+import OwnerRestaurants from "../../pages/OwnerRestaurantsPage"
+import Owners from "../../pages/OwnersPage"
+import Clients from "../../pages/ClientsPage"
 
 const Router = () => {
   return (

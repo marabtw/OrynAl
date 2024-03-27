@@ -1,9 +1,15 @@
 import { useState } from "react"
 import { DotsVerticalIcon } from "../../../ui/icons/icons"
 import { Link } from "react-router-dom"
+import ActionsContainer from "../../../components/ActionsContainer/ActionsContainer"
 
 const HistoryItem = ({ data }) => {
   const [showActions, setShowActions] = useState(false)
+  const [actions, setActions] = useState([
+    { action: "Посмотреть", to: `/order-history/${data.id}` },
+    { action: "Отменить", onClick: () => console.log("Отменить") },
+    { action: "Завершить", onClick: () => console.log("Завершить") },
+  ])
 
   const getStatusInfo = (status) => {
     switch (status) {
@@ -58,13 +64,7 @@ const HistoryItem = ({ data }) => {
             className="cursor-pointer"
             onClick={() => setShowActions(!showActions)}
           />
-          {showActions && (
-            <div className="absolute top-[100%] left-0 translate-x-[-100%] flex flex-col gap-[5px] p-[10px] text-[13px] border-2 border-[#ebebeb] bg-white shadow-[0px_4px_5px_rgba(0,0,0,.45)]">
-              <Link to={`/order-history/${data.id}`} className="hover:text-[#FF0000] cursor-pointer">Посмотреть</Link>
-              <Link className="hover:text-[#FF0000] cursor-pointer">Отменить</Link>
-              <Link className="hover:text-[#FF0000] cursor-pointer">Завершить</Link>
-            </div>
-          )}
+          {showActions && <ActionsContainer actions={actions} />}
         </div>
       </div>
     </li>

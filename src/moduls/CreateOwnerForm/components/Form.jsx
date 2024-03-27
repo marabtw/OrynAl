@@ -1,37 +1,17 @@
-import React from "react"
-import InputFile from "../../../ui/Field/InputFile"
-import InputText from "../../../ui/Field/InputText"
-import Checkbox from "../../../ui/Field/Checkbox"
 import Button from "../../../ui/Button/Button"
+import InputTextWrapper from "../../../components/InputTextWrapper/InputTextWrapper"
 
 const Form = () => {
   return (
-    <form className="flex flex-col gap-[30px] w-full px-[20px] py-[30px] border-[3px] border-[#ebebeb] rounded-[20px] ">
-      <div className="flex flex-col">
-        <h3 className="text-[15px] font-[600] left-[22.5px]">Имя:</h3>
-        <InputText placeholder={"Батырбек"} />
-      </div>
-      <div className="w-full flex flex-col">
-        <h3 className="text-[15px] font-[600] left-[22.5px]">Почта:</h3>
-        <InputText placeholder={"batyrbek@gmail.com"} />
-      </div>
-      <div className="w-full flex flex-col">
-        <h3 className="text-[15px] font-[600] left-[22.5px]">Телефон номер:</h3>
-        <InputText placeholder={"+7 778 891 32 09"} />
-      </div>
+    <form className="flex flex-col gap-[30px] w-full px-[20px] py-[40px] border-[3px] border-[#ebebeb] rounded-[20px] ">
+      <InputTextWrapper placeholder="Батырбек" label="Имя:" />
+      <InputTextWrapper placeholder="batyrbek@gmail.com" label="Почта:" type="email"/>
+      <InputTextWrapper placeholder="+7 778 891 32 09" label="Телефон номер:" type="tel" pattern={"[7]"}/>
       <div className="flex gap-[30px]">
-        <div className="w-full flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">Пароль</h3>
-          <InputText placeholder={"*********"} />
-        </div>
-        <div className="w-full flex flex-col">
-          <h3 className="text-[15px] font-[600] left-[22.5px]">
-            Повторите пароль
-          </h3>
-          <InputText placeholder={"*********"} />
-        </div>
+        <InputTextWrapper placeholder="*********" label="Пароль" type="password"/>
+        <InputTextWrapper placeholder="*********" label="Повторите пароль" type="password"/>
       </div>
-      <Button text="Создать" className={"max-w-max mx-auto p-[30px]"}/>
+      <Button text="Создать" gradient={true} className={"mx-auto px-[150px] py-[20px]"} />
     </form>
   )
 }

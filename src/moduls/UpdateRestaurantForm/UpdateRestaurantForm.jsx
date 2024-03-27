@@ -7,10 +7,10 @@ import InfoPanel from "../../components/InfoPanel/InfoPanel"
 const UpdateRestaurantForm = () => {
   const [data, setData] = useState(dataRestaurantUpdate)
   return (
-    <div className="grid grid-cols-2 gap-10 bg-white px-[40px] py-[80px] font-poppins rounded-[10px]">
+    <div className="grid grid-cols-2 gap-x-7 gap-y-4 bg-white px-[40px] py-[80px] font-poppins rounded-[10px]">
       <div className="flex flex-col gap-[30px] w-full">
         <h3 className="text-[20px] font-[600] leading-[30px]">Изменить ресторан</h3>
-        <div className="flex gap-[30px]">
+        <div className="flex justify-between">
           <div className="flex flex-col justify-between max-w-[50%] w-full ">
             <InfoPanel label={"ID:"} value={data.id} />
             <InfoPanel label={"Название:"} value={data.name} />
@@ -35,6 +35,8 @@ const UpdateRestaurantForm = () => {
         <InfoPanel label={"Сервис:"} value={data.services.join("; ")} />
       </div>
       <Form services={dataServices} data={data} />
+			<div></div>
+			<Button gradient={true} text="Изменить" className={"mx-auto px-[110px] py-[20px]"}/>
     </div>
   )
 }

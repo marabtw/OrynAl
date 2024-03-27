@@ -15,7 +15,7 @@ const CartFixed = () => {
         </h4>
         <img src={logo} alt="" className="w-[85px] aspect-square" />
       </div>
-      <div className="w-full h-[1104px] p-[5px] rounded-bl-[50px] rounded-br-[50px] bg-gradient-to-r from-[#62ADFC] to-[#447BFB]">
+      <div className="w-full h-[904px] p-[5px] rounded-bl-[50px] rounded-br-[50px] bg-gradient-to-r from-[#62ADFC] to-[#447BFB]">
         <div className="flex flex-col justify-between w-full h-full px-[30px] py-[40px] bg-white rounded-bl-[50px] rounded-br-[50px]">
           <ul className="flex-1 overflow-auto px-[10px]">
             {cart.map((el, index) => (

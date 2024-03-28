@@ -1,6 +1,6 @@
 export const ROUTERS = {
 	Home: '/',
-	Restaurant: '/restaurant/:id',
+	UserCreateOrder: '/create-order/:id',
 	OrderHistory: '/order-history',
 	MyOrderPage: '/order-history/:id',
 	MyRestaurants: '/my-restaurants',
@@ -15,7 +15,7 @@ export const ROUTERS = {
 	CreateRestaurant: "/my-restaurants/create",
 	CreateOwner: "/my-restaurants/owners/create",
 	
-	RestaurantOwners: "/my-restaurants/owners",
+	RestaurantOwners: "/my-restaurants/owners".fds,
 	RestaurantClients: "/my-restaurants/clients",
 	MyProfile: "/my-profile",
 	Login: "/login",

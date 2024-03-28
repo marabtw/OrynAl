@@ -1,23 +1,28 @@
 import { role } from "../../data/mainData"
 import UserHeader from "./components/UserHeader"
-import EmployeeHeader from "./components/EmployeeHeader"
-import OwnerHeader from "./components/OwnerHeader"
+import CompanyHeader from "./components/CompanyHeader"
+import AdminHeader from "./components/AdminHeader"
 
 const Header = () => {
+
   const checkUserRole = (userRole) => {
     switch (userRole) {
       case "user":
         return <UserHeader />
-      case "employee":
-        return <EmployeeHeader />
-      case "owner":
-        return <OwnerHeader />
+      case "company":
+        return <CompanyHeader />
+      case "admin":
+        return <AdminHeader />
       default:
         return <UserHeader />
     }
   }
 
-  return checkUserRole(role)
+  return (
+    <div className={`sticky top-0 w-full z-[9999]`}>
+      {checkUserRole(role)}
+    </div>
+  )
 }
 
 export default Header

@@ -1,14 +1,11 @@
 import { useState } from "react"
-import HistoryItem from "./components/HistoryItem"
-
+import OrdersHistoryItem from "./components/OrdersHistoryItem"
 
 import { dataOrderHistory } from "../../data/personalData"
 import { TriangleDownIcon } from "../../ui/icons/icons"
 
 const OrdersHistoryList = () => {
   const [datas, setDatas] = useState(dataOrderHistory)
-
- 
 
   return (
     <div className="p-[50px] font-poppins">
@@ -37,7 +34,7 @@ const OrdersHistoryList = () => {
           </div>
         </li>
         {datas?.map((data) => (
-					<HistoryItem data={data}/>
+					<OrdersHistoryItem data={data}/>
         ))}
       </ul>
     </div>

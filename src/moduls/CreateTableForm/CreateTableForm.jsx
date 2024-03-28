@@ -1,6 +1,4 @@
 import Button from "../../ui/Button/Button"
-import InputText from "../../ui/Field/InputText"
-import InputFile from "../../ui/Field/InputFile"
 import InputTextWrapper from "../../components/InputTextWrapper/InputTextWrapper"
 import InputFileWrapper from "../../components/InputFileWrapper/InputFileWrapper"
 import SelectWrapper from "../../components/SelectWrapper/SelectWrapper"

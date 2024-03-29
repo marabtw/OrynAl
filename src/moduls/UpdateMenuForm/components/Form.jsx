@@ -1,5 +1,3 @@
-import InputFile from "../../../ui/Field/InputFile"
-import InputText from "../../../ui/Field/InputText"
 import Button from "../../../ui/Button/Button"
 import InputTextWrapper from "../../../components/InputTextWrapper/InputTextWrapper"
 import InputFileWrapper from "../../../components/InputFileWrapper/InputFileWrapper"
@@ -24,7 +22,7 @@ const Form = ({ data }) => {
       <Button
         text="Изменить"
         gradient={true}
-        className={"mx-auto px-[110px] py-[20px]"}
+        spacingClass={"mx-auto px-[110px] py-[20px]"}
       />
     </form>
   )

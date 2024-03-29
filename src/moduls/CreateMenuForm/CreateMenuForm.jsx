@@ -20,7 +20,7 @@ const CreateMenuForm = () => {
           <SelectWrapper label={"Цена:"} placeholder={"1200 тенге"} />
           <InputTextWrapper label="Статус" placeholder="Забронирован" />
         </div>
-        <Button text="Создать" gradient={true} className={"mx-auto px-[120px] py-[30px]"} />
+        <Button text="Создать" gradient={true} spacingClass={"mx-auto px-[120px] py-[20px]"} />
       </form>
     </div>
   )

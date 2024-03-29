@@ -1,11 +1,11 @@
 import React from "react"
 import CreateOwnerForm from "../moduls/CreateOwnerForm/CreateOwnerForm"
-import PageIndicatorHeading from "../ui/Heading/PageIndicatorHeading"
+import PageHeading from "../ui/Heading/PageHeading"
 
 const CreateOwner = () => {
   return (
     <div className="p-[50px]">
-      <PageIndicatorHeading text={"Владельцы"} text2={"Создать владельца"} />
+			<PageHeading location={"Создать владельца"} preLocation={"Владельцы"}/>
       <div className="px-[40px] py-[60px] border-none rounded-[10px] bg-white">
         <CreateOwnerForm />
       </div>

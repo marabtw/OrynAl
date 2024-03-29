@@ -24,7 +24,7 @@ const UpdateRestaurantTable = () => {
         </div>
         <InfoPanel label={"Описание:"} value={data.description} />
         <InfoPanel label={"Вместимость:"} value={`${data.capacity} человек`} />
-				<Button text="Удалить" backgroundColor={"bg-[#FF5050]"} className={"mx-auto px-[90px] py-[20px]"}/>
+				<Button text="Удалить" backgroundColor={"#FF5050"} spacingClass={"mx-auto px-[110px] py-[20px]"}/>
       </div>
       <Form data={data} />
     </div>

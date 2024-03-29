@@ -1,8 +1,8 @@
 export const ROUTERS = {
 	Home: '/',
-	UserCreateOrder: '/create-order/:id',
+	CreateOrder: '/create-order/:id',
 	OrderHistory: '/order-history',
-	MyOrderPage: '/order-history/:id',
+	OrderDetails: '/order-history/:id',
 	MyRestaurants: '/my-restaurants',
 	MyRestaurantsTables: '/my-restaurants/tables',
 	MyRestaurantsMenus: '/my-restaurants/menus',
@@ -20,6 +20,6 @@ export const ROUTERS = {
 	MyProfile: "/my-profile",
 	Login: "/login",
 	Owners: "/owners",
-	OwnerRestaurants: "/owner-restaurants",
+	Restaurants: "/restaurants",
 	Clients: "/clients",
 }

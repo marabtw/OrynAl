@@ -3,18 +3,33 @@ import { Link } from "react-router-dom"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import logo from "../../assets/images/logo.png"
-import logosvg from "../../assets/svg/logosvg.svg"
-import art1 from "../../assets/svg/art1.svg"
-import art2 from "../../assets/svg/art2.svg"
-import art3 from "../../assets/svg/art3.svg"
+import LoginPageLogo from "../../assets/svg/LoginPageLogo.svg"
+import artRed from "../../assets/svg/LoginPageArtRed.svg"
+import artLightBlue from "../../assets/svg/LoginPageArtLightBlue.svg"
+import artBlue from "../../assets/svg/LoginPageArtBlue.svg"
+import { role } from "../../data/mainData"
 
 const LoginRegister = () => {
   const [auth, setAuth] = useState("login")
+
+  const checkRole = () => {
+    switch (role) {
+			case "user":
+				return "/"
+			case "company":
+				return "/my-restaurants"
+			case "admin":
+				return "/restaurants"
+      default:
+        return "/"
+    }
+  }
+
   return (
     <div className="flex w-[100vw] h-[100vh]">
       <div className="relative flex justify-center h-full max-w-[646px] bg-[#447bfb] z-50">
         <Link
-          to={"/"}
+          to={checkRole()}
           className="flex flex-col items-center h-max text-center mt-[20%] mx-[15%] text-white"
         >
           <img src={logo} alt="" className="w-1/2" />
@@ -24,18 +39,18 @@ const LoginRegister = () => {
           </p>
         </Link>
         <img
-          src={logosvg}
+          src={LoginPageLogo}
           className="absolute bottom-0 left-1/2 translate-x-[-50%]"
         />
       </div>
       <div className="relative flex justify-center items-center w-full">
-        <img src={art1} alt="" className="absolute right-0 top-0" />
+        <img src={artRed} alt="" className="absolute right-0 top-0" />
         <img
-          src={art2}
+          src={artLightBlue}
           alt=""
           className="absolute bottom-0 left-0 translate-x-[-60%]"
         />
-        <img src={art3} alt="" className="absolute bottom-0 right-0" />
+        <img src={artBlue} alt="" className="absolute bottom-0 right-0" />
         {auth === "login" ? (
           <Login changeAuth={() => setAuth("register")} />
         ) : (

@@ -1,4 +1,3 @@
-import React from "react"
 import RestaurantBriefInfo from "../../components/RestaurantBriefInfo/RestaurantBriefInfo"
 import ShowLocation from "../../components/ShowLocation/ShowLocation"
 import { dataRestaurant } from "../../data/restaurantData"

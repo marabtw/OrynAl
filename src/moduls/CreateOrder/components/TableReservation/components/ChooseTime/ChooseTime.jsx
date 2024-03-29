@@ -1,5 +1,5 @@
 import { ClockIcon } from "../../../../../../ui/icons/icons"
-import SelectItem from "../../../../../../ui/Select/SelectItems"
+import SelectItem from "../Select/SelectItem"
 
 const ChooseTime = () => {
   return (
@@ -10,11 +10,11 @@ const ChooseTime = () => {
           Выберите дату и время
         </h2>
         <div className="flex justify-between items-center gap-[100px]">
-          <div className="flex items-center">
+          <div className="flex items-center gap-[20px]">
             <h4 className="text-[20px] leading-[30px]">Дата</h4>
             <SelectItem />
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-[20px]">
             <h4 className="text-[20px] leading-[30px]">Время</h4>
             <SelectItem  />
           </div>

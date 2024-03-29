@@ -12,7 +12,7 @@ const CompanyHeader = () => {
       className={`relative w-full h-[120px] flex justify-between items-center px-[2%] z-[9999] bg-white rounded-bl-[50px] rounded-br-[50px] shadow-[0px_4px_10px_rgba(0,0,0,.25)]`}
     >
       <div className="h-[25%] flex gap-[36px] items-center">
-        <Link to={"/"} className="h-full">
+        <Link to={"/my-restaurants"} className="h-full">
           <img
             src={Logo}
             alt="logo"

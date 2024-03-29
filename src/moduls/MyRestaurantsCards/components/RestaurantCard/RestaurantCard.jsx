@@ -14,7 +14,7 @@ const RestaurantCard = ({ data }) => {
   ])
 
   return (
-    <div className="relative flex flex-col w-[400px] h-[300px] p-[20px] font-poppins shadow-[0px_4px_4px_rgba(0,0,0,.25)] rounded-[20px] bg-white">
+    <div className="relative flex flex-col w-full	 h-[300px] p-[20px] font-poppins shadow-[0px_4px_4px_rgba(0,0,0,.25)] rounded-[20px] bg-white">
       <div className="absolute top-[30px] right-[20px] text-center">
         <DotsHorizontalIcon
           className="text-[26px] text-[#C4C4C4] cursor-pointer"
@@ -48,7 +48,7 @@ const RestaurantCard = ({ data }) => {
           </div>
         </div>
       </div>
-      <p className="font-[700] text-[13px] text-[#c4c4c4] leading-[19.5px]">
+      <p className="font-[700] text-[13px] text-[#c4c4c4] leading-[19.5px] mt-[10px]">
         {data.description}
       </p>
       <div className="flex justify-between mt-auto px-[20px] pt-[20px] border-t-2 border-black border-dashed">

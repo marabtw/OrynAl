@@ -7,7 +7,7 @@ import InfoPanel from "../../components/InfoPanel/InfoPanel"
 const UpdateMenuForm = () => {
   const [data, setData] = useState(dataMenuUpdate)
   return (
-    <div className="grid grid-cols-2 gap-10 bg-white px-[40px] py-[80px] font-poppins rounded-[10px]">
+    <div className="grid grid-cols-2 gap-10 bg-white px-[40px] py-[70px] font-poppins rounded-[10px]">
       <div className="flex flex-col gap-[30px] w-full">
         <h3 className="text-[20px] font-[600] leading-[30px]">Изменить меню</h3>
         <div className="flex gap-[30px]">
@@ -27,7 +27,7 @@ const UpdateMenuForm = () => {
         <InfoPanel label={"Цена:"} value={`${data.price}`} />
         <InfoPanel label={"Статус:"} value={`${data.status}`} />
 				</div>
-				<Button text="Удалить" backgroundColor="bg-[#FF5050]" className={"mx-auto px-[90px] py-[20px]"}/>
+				<Button text="Удалить" backgroundColor="#FF5050" spacingClass={"mx-auto px-[110px] py-[20px]"}/>
       </div>
       <Form data={data} />
     </div>

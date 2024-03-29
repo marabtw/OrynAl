@@ -39,7 +39,7 @@ const Form = ({services, data}) => {
       </div>
       <div className="grid grid-cols-2 gap-[10px]">
         {services.map((service) => (
-          <Checkbox data={service} />
+          <Checkbox key={service} data={service} />
         ))}
       </div>
     </form>

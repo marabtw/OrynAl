@@ -30,9 +30,11 @@ const Router = () => {
   return (
     <Routes>
       <Route path={ROUTERS.Home} element={<Home />} />
-      <Route path={ROUTERS.UserCreateOrder} element={<CreateOrderPage />} />
+			<Route path={ROUTERS.Restaurants} element={<RestaurantsPage />} />
+
       <Route path={ROUTERS.OrderHistory} element={<OrderHistory />} />
-      <Route path={ROUTERS.MyOrderPage} element={<OrderDetailsPage />} />
+      <Route path={ROUTERS.OrderDetails} element={<OrderDetailsPage />} />
+
       <Route path={ROUTERS.MyRestaurants} element={<MyRestaurants />} />
       <Route
         path={ROUTERS.MyRestaurantsTables}
@@ -42,18 +44,22 @@ const Router = () => {
         path={ROUTERS.MyRestaurantsMenus}
         element={<MyRestaurantMenus />}
       />
+
       <Route path={ROUTERS.UpdateRestaurant} element={<UpdateRestaurant />} />
       <Route path={ROUTERS.UpdateTable} element={<UpdateTable />} />
       <Route path={ROUTERS.UpdateMenu} element={<UpdateMenu />} />
+
+      <Route path={ROUTERS.CreateOwner} element={<CreateOwner />} />
+      <Route path={ROUTERS.CreateRestaurant} element={<CreateRestaurant />} />
+      <Route path={ROUTERS.CreateOrder} element={<CreateOrderPage />} />
       <Route path={ROUTERS.CreateMenu} element={<CreateMenu />} />
       <Route path={ROUTERS.CreateTable} element={<CreateTable />} />
+
       <Route path={ROUTERS.MyProfile} element={<MyProfilePage />} />
       <Route path={ROUTERS.Login} element={<LoginPage />} />
-      <Route path={ROUTERS.OwnerRestaurants} element={<RestaurantsPage />} />
+
       <Route path={ROUTERS.Owners} element={<Owners />} />
       <Route path={ROUTERS.Clients} element={<Clients />} />
-      <Route path={ROUTERS.CreateRestaurant} element={<CreateRestaurant />} />
-      <Route path={ROUTERS.CreateOwner} element={<CreateOwner />} />
     </Routes>
   )
 }

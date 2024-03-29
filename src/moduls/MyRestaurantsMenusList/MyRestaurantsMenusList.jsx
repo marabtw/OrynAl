@@ -15,7 +15,7 @@ const MyRestaurantsMenusList = () => {
         <h4 className="flex justify-center items-center">Действие</h4>
       </li>
       {dataMyRestaurantMenus.map((table) => (
-        <MyRestaurantMenuItem item={table}/>
+        <MyRestaurantMenuItem key={table.id} item={table}/>
       ))}
     </ul>
   )

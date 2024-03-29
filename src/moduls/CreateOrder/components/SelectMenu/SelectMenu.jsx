@@ -11,7 +11,7 @@ const SelectMenu = () => {
         <FoodCategories />
         <div className="grid grid-cols-3 gap-y-[100px] gap-x-[50px] justify-between mt-[100px]">
           {dataSalads.map((salad) => (
-            <FoodCard salad={salad} />
+            <FoodCard key={salad.id} salad={salad} />
           ))}
         </div>
       </div>

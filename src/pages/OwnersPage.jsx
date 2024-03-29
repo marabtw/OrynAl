@@ -1,44 +1,43 @@
-import { useState } from 'react'
-import OwnersList from '../moduls/OwnersList/OwnersList'
-import CreateButton from '../components/CreateButton/CreateButton'
-import PageHeading from '../ui/Heading/PageHeading'
+import { useState } from "react"
+import OwnersList from "../moduls/OwnersList/OwnersList"
+import PageHeading from "../ui/Heading/PageHeading"
 
 const OwnersPage = () => {
-	const [data, setData] = useState([
+  const [data, setData] = useState([
     {
-      id: "1235432sdfsd",
+      id: "1235432sdfsd4",
       name: "Батырбек",
       callNumber: "+ 778 922 01 01",
       email: "+7778 891 32 01",
     },
     {
-      id: "1235432sdfsd",
+      id: "1235432sdfsd3",
       name: "Батырбек",
       callNumber: "+ 778 922 01 01",
       email: "+7778 891 32 01",
     },
     {
-      id: "1235432sdfsd",
+      id: "1235432sdfsd2",
       name: "Батырбек",
       callNumber: "+ 778 922 01 01",
       email: "+7778 891 32 01",
     },
     {
-      id: "1235432sdfsd",
+      id: "1235432sdfsd1",
       name: "Батырбек",
       callNumber: "+ 778 922 01 01",
       email: "+7778 891 32 01",
     },
   ])
-	return (
-		<div className='p-[60px]'>
-			<div className='flex items-center gap-[20px] mb-[40px]'>
-				<PageHeading text={"Владельцы"}/>
-				<CreateButton to={"/my-restaurants/owners/create"}/>
-			</div>
-			<OwnersList data={data}/>
-		</div>
-	)
+  return (
+    <div className="px-[60px] py-[50px]">
+      <PageHeading
+        location={"Владельцы"}
+        to={"/my-restaurants/owners/create"}
+      />
+      <OwnersList data={data} />
+    </div>
+  )
 }
 
 export default OwnersPage

@@ -1,13 +1,13 @@
-import React from 'react'
-import MyProfile from '../moduls/MyProfile/MyProfile'
+import MyProfile from "../moduls/MyProfile/MyProfile"
+import PageHeading from "../ui/Heading/PageHeading"
 
 const MyProfilePage = () => {
-	return (
-		<div className='p-[50px] font-poppins'>
-			<h2 className='mb-[30px] text-[32px] font-[700] leading-[48px]'>Мой аккаунт</h2>
-			<MyProfile/>
-		</div>
-	)
+  return (
+    <div className="px-[60px] py-[50px] font-poppins">
+      <PageHeading location={"Мой аккаунт"} />
+      <MyProfile />
+    </div>
+  )
 }
 
 export default MyProfilePage

@@ -1,7 +1,9 @@
 import Select from "react-select"
 
-const SelectItems = ({placeholder="Иван Петров", options=[{value: "...", label: "..."}], placeholderIcon=false}) => {
-
+const SelectItem = ({
+  placeholder = "21:00",
+  options = [{ value: "...", label: "..." }],
+}) => {
   const customStyles = {
     container: (provided, state) => ({
       ...provided,
@@ -9,23 +11,26 @@ const SelectItems = ({placeholder="Иван Петров", options=[{value: "...
     }),
     control: (provided, state) => ({
       ...provided,
-			width: "100%",
-      border: "3px solid #EBEBEB",
-      borderRadius: "20px",
-      padding: "20px",
+      width: "100%",
+      border: "3px solid #fff",
+      borderRadius: "10px",
+      padding: "2px 12px",
       cursor: "pointer",
-      fontSize: "15px",
-      fontWeight: "600",
-      lineHeight: "22.5px",
-			boxShadow: "none",
+      fontSize: "20px",
+      fontWeight: "400",
+      lineHeight: "30px",
+      boxShadow: "none",
+			backgroundColor: "transparent",
+			color: "#fff",
       "&:hover": {
-        borderColor: "#4277FB",
+        // borderColor: "#4277FB",
       },
     }),
     option: (provided, state) => ({
       ...provided,
       backgroundColor: state.isSelected ? "#4277FB" : "transparent",
       color: state.isSelected ? "#fff" : "#333",
+			cursor: "pointer",
       "&:hover": {
         backgroundColor: "#4277FB",
         color: "#fff",
@@ -35,19 +40,17 @@ const SelectItems = ({placeholder="Иван Петров", options=[{value: "...
     dropdownIndicator: (provided, state) => ({ display: "none" }), // Убираем стрелку
     placeholder: (provided, state) => ({
       ...provided,
-      color: "#C6C6C6",
+      color: "#fff",
     }),
   }
 
   return (
-    <div>
-      <Select
-        options={options}
-        styles={customStyles}
-        placeholder={`${placeholder} ${placeholderIcon ? "▼" : ""}`}
-      />
-    </div>
+    <Select
+      options={options}
+      styles={customStyles}
+      placeholder={`${placeholder} `}
+    />
   )
 }
 
-export default SelectItems
+export default SelectItem

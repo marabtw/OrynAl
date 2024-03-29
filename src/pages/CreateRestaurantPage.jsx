@@ -1,11 +1,10 @@
-import React from "react"
 import CreateRestaurantForm from "../moduls/CreateRestaurantForm/CreateRestaurantForm"
-import PageIndicatorHeading from "../ui/Heading/PageIndicatorHeading"
+import PageHeading from "../ui/Heading/PageHeading"
 
 const CreateRestaurantPage = () => {
   return (
     <div className="px-[40px] py-[60px]">
-      <PageIndicatorHeading text={"Ресторан"} text2={"Создать ресторан"} />
+			<PageHeading location={"Создать ресторан"} preLocation={"Ресторан"}/>
       <div className="px-[40px] py-[60px] rounded-[10px] bg-white">
         <CreateRestaurantForm />
       </div>

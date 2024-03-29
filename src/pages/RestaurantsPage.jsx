@@ -1,6 +1,5 @@
 import { useState } from "react"
 import RestaurantsList from "../moduls/RestaurantsList/RestaurantsList"
-import CreateButton from "../components/CreateButton/CreateButton"
 import PageHeading from "../ui/Heading/PageHeading"
 
 const RestaurantsPage = () => {
@@ -43,12 +42,9 @@ const RestaurantsPage = () => {
     },
   ])
   return (
-    <div className="p-[60px]">
-      <div className="flex items-center gap-[20px] mb-[40px]">
-        <PageHeading text={"Рестораны"} />
-        <CreateButton to={"/my-restaurants/create"} />
-      </div>
-      <RestaurantsList data={data}/>
+    <div className="px-[60px] py-[50px]">
+      <PageHeading location={"Рестораны"} to={"/my-restaurants/create"} />
+      <RestaurantsList data={data} />
     </div>
   )
 }

@@ -17,7 +17,7 @@ const CreateTableForm = () => {
           placeholder="Напишите краткое описание меню...."
         />
         <SelectWrapper label={"Вместимость:"} placeholder={"10 человек"} />
-        <Button text="Создать" gradient={true} className={"mx-auto px-[120px] py-[20px]"}/>
+        <Button text="Создать" gradient={true} spacingClass={"mx-auto px-[120px] py-[20px]"}/>
       </form>
     </div>
   )

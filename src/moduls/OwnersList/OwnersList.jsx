@@ -1,6 +1,5 @@
 import OwnerItem from "./components/OwnerItem"
 import { TriangleDownIcon } from "../../ui/icons/icons"
-import { useState } from "react"
 
 const OwnersList = ({ data }) => {
   return (

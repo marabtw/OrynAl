@@ -1,10 +1,11 @@
 import React from 'react'
 import MyRestaurantsCards from '../moduls/MyRestaurantsCards/MyRestaurantsCards'
+import PageHeading from '../ui/Heading/PageHeading'
 
 const MyRestaurantsPage = () => {
 	return (
-		<div className='p-[50px]'>
-			<h1 className='text-[32px] font-[700] leading-[48px]'>Мои рестораны</h1>
+		<div className='px-[70px] py-[50px]'>
+			<PageHeading location={"Мои рестораны"}/>
 			<MyRestaurantsCards/>
 		</div>
 	)

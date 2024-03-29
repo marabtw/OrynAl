@@ -21,7 +21,7 @@ const TableReservation = () => {
         <Sort sortList={sortLists} className={"mt-[50px] px-0"} />
         <div className="flex flex-wrap justify-between gap-[30px] mt-[50px]">
           {dataBookingTables.map((table) => (
-            <TableCard key={table.type} table={table} />
+            <TableCard key={table.type + `${Math.random() * 99999}`} table={table} />
           ))}
         </div>
       </div>

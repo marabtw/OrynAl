@@ -22,7 +22,7 @@ const Form = ({ data }) => {
       <Button
         text="Изменить"
         gradient={true}
-        className={"mx-auto px-[90px] py-[20px]"}
+        spacingClass={"mx-auto px-[110px] py-[20px]"}
       />
     </form>
   )

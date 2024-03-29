@@ -11,7 +11,7 @@ const OwnerMyRestaurantsItem = ({ item }) => {
     },
     {
       action: "Посмотреть",
-      to: "/restaurant/123234",
+      to: `/my-restaurants/${item.id}`,
     },
   ])
 

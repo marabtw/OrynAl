@@ -1,21 +1,38 @@
 import { dataMyRestaurantMenus } from "../../data/myRestaurantData"
-import MyRestaurantMenuItem from "./components/MyRestaurantMenuItem"
+import ListItem from "../../components/ListItem/ListItem"
+import ListCategories from "../../components/ListCategories/ListCategories"
+
+const categories = [
+  "ID",
+  "Фото",
+  "Название",
+  "Тип блюда",
+  "Описание",
+  "Цена",
+  "В наличии",
+  "Действие",
+]
 
 const MyRestaurantsMenusList = () => {
-	return (
+  return (
     <ul className="flex flex-col gap-[20px]">
-      <li className="grid grid-cols-[.5fr_repeat(6,1fr)_.5fr] p-[10px] rounded-[10px] bg-white">
-        <h4 className="flex items-center">ID</h4>
-        <h4 className="flex justify-center items-center">Фото</h4>
-        <h4 className="flex justify-center items-center">Название</h4>
-        <h4 className="flex justify-center items-center">Тип столика</h4>
-        <h4 className="flex justify-center items-center">Описание</h4>
-        <h4 className="flex justify-center items-center">Цена</h4>
-        <h4 className="flex justify-center items-center">В наличии</h4>
-        <h4 className="flex justify-center items-center">Действие</h4>
-      </li>
-      {dataMyRestaurantMenus.map((table) => (
-        <MyRestaurantMenuItem key={table.id} item={table}/>
+      <ListCategories categories={categories} />
+      {dataMyRestaurantMenus.map((elementData, index) => (
+        <ListItem
+          key={elementData.id}
+          elementData={elementData}
+          index={index}
+          menuActions={[
+            {
+              action: "Изменить",
+              to: `/my-restaurants/menus/${elementData.id}`,
+            },
+            {
+              action: "Удалить",
+              onClick: () => console.log("object"),
+            },
+          ]}
+        />
       ))}
     </ul>
   )

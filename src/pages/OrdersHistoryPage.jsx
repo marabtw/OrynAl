@@ -1,12 +1,13 @@
 import OrdersHistoryList from "../moduls/OrdersHistoryList/OrdersHistoryList"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const OrdersHistoryPage = () => {
   return (
-		<div className="px-[50px] py-[50px]">
+		<PageContainer>
 			<PageHeading location={"История заказов"}/>
 			<OrdersHistoryList />
-		</div>
+		</PageContainer>
 	)
 }
 

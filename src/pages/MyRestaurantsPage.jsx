@@ -1,14 +1,14 @@
-import React from 'react'
-import MyRestaurantsCards from '../moduls/MyRestaurantsCards/MyRestaurantsCards'
-import PageHeading from '../ui/Heading/PageHeading'
+import MyRestaurantsCards from "../moduls/MyRestaurantsCards/MyRestaurantsCards"
+import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const MyRestaurantsPage = () => {
-	return (
-		<div className='px-[70px] py-[50px]'>
-			<PageHeading location={"Мои рестораны"}/>
-			<MyRestaurantsCards/>
-		</div>
-	)
+  return (
+    <PageContainer>
+      <PageHeading location={"Мои рестораны"} />
+      <MyRestaurantsCards />
+    </PageContainer>
+  )
 }
 
 export default MyRestaurantsPage

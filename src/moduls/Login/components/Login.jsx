@@ -3,7 +3,7 @@ import Button from "../../../ui/Button/Button"
 
 const Login = ({ changeAuth }) => {
   return (
-    <div>
+    <div className="">
       <h2 className="mb-[20px] text-center text-[50px] left-[75px] font-[700]">
         Рады видеть вас снова!
       </h2>

@@ -14,12 +14,12 @@ const LoginRegister = () => {
 
   const checkRole = () => {
     switch (role) {
-			case "user":
-				return "/"
-			case "company":
-				return "/my-restaurants"
-			case "admin":
-				return "/restaurants"
+      case "user":
+        return "/"
+      case "company":
+        return "/my-restaurants"
+      case "admin":
+        return "/restaurants"
       default:
         return "/"
     }
@@ -27,7 +27,7 @@ const LoginRegister = () => {
 
   return (
     <div className="flex w-[100vw] h-[100vh]">
-      <div className="relative flex justify-center h-full max-w-[646px] bg-[#447bfb] z-50">
+      <div className="relative flex justify-center h-full max-w-[646px] bg-[#447bfb] z-50 max-lg:hidden">
         <Link
           to={checkRole()}
           className="flex flex-col items-center h-max text-center mt-[20%] mx-[15%] text-white"
@@ -43,19 +43,21 @@ const LoginRegister = () => {
           className="absolute bottom-0 left-1/2 translate-x-[-50%]"
         />
       </div>
-      <div className="relative flex justify-center items-center w-full">
+      <div className="relative flex justify-center items-center w-full max-md:items-start">
         <img src={artRed} alt="" className="absolute right-0 top-0" />
         <img
           src={artLightBlue}
           alt=""
-          className="absolute bottom-0 left-0 translate-x-[-60%]"
+          className="absolute bottom-0 left-0 translate-x-[-60%] max-md:hidden"
         />
-        <img src={artBlue} alt="" className="absolute bottom-0 right-0" />
-        {auth === "login" ? (
-          <Login changeAuth={() => setAuth("register")} />
-        ) : (
-          <Register changeAuth={() => setAuth("login")} />
-        )}
+        <img src={artBlue} alt="" className="absolute bottom-0 right-0 max-md:hidden" />
+        <div className="z-50 max-md:px-[20px]">
+          {auth === "login" ? (
+            <Login changeAuth={() => setAuth("register")} />
+          ) : (
+            <Register changeAuth={() => setAuth("login")} />
+          )}
+        </div>
       </div>
     </div>
   )

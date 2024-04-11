@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { HeartFullIcon, HeartEmptyIcon } from "../../../../ui/icons/icons"
-import LinkButton from "../../../../ui/LInkButton/LinkButton"
-import ShowRating from "../../../../components/ShowRating/ShowRating"
+import LinkButton from "../../../../ui/Button/LinkButton"
+import RatingStars from "../../../../components/RatingStars/RatingStars"
 
 const RestaurantItemCard = ({data}) => {
   const [favorive, setFavorite] = useState(false)
@@ -24,7 +24,7 @@ const RestaurantItemCard = ({data}) => {
       </div>
       <h2 className="text-[40px] leading-[60px] font-[600]">{data.name}</h2>
       <div className="">
-        <ShowRating fontSize={"32px"} rate={data.rate}/>
+        <RatingStars fontSize={"32px"} rate={data.rate}/>
       </div>
       <p className="w-[204px] text-center text-[17px] leading-[25.5px]">
         {data.categories}

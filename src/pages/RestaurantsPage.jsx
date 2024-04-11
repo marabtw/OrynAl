@@ -1,6 +1,7 @@
 import { useState } from "react"
 import RestaurantsList from "../moduls/RestaurantsList/RestaurantsList"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const RestaurantsPage = () => {
   const [data, setData] = useState([
@@ -42,10 +43,10 @@ const RestaurantsPage = () => {
     },
   ])
   return (
-    <div className="px-[60px] py-[50px]">
+    <PageContainer>
       <PageHeading location={"Рестораны"} to={"/my-restaurants/create"} />
       <RestaurantsList data={data} />
-    </div>
+    </PageContainer>
   )
 }
 

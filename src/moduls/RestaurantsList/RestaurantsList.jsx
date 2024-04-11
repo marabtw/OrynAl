@@ -1,24 +1,37 @@
-import { TriangleDownIcon } from "../../ui/icons/icons"
-import OwnerMyRestaurantsItem from "./components/OwnerMyRestaurantsItem"
+import ListItem from "../../components/ListItem/ListItem"
+import ListCategories from "../../components/ListCategories/ListCategories"
+
+const categories = [
+  "id",
+  "Название",
+  "Адрес",
+  "Город",
+  "Номер телефона",
+  "Статус",
+  "Владелец",
+  "Действие",
+]
 
 const RestaurantsList = ({ data }) => {
-
   return (
     <ul className="flex flex-col gap-[20px]">
-      <li className="grid grid-cols-[.7fr_repeat(6,1fr)_.4fr] px-[20px] py-[10px] bg-white rounded-[10px]">
-        <h4 className="flex">
-          id <TriangleDownIcon />
-        </h4>
-        <h4 className="text-center">Название</h4>
-        <h4 className="text-center">Адрес</h4>
-        <h4 className="text-center">Город</h4>
-        <h4 className="text-center">Номер телефона</h4>
-        <h4 className="text-center">Статус</h4>
-        <h4 className="text-center">Владелец</h4>
-        <h4 className="text-center">Действие</h4>
-      </li>
-      {data.map((item) => (
-				<OwnerMyRestaurantsItem item={item}/>
+      <ListCategories categories={categories} />
+      {data.map((elementData, index) => (
+        <ListItem
+          key={elementData.id}
+          elementData={elementData}
+          index={index}
+          menuActions={[
+            {
+              action: "Удалить",
+              onClick: () => console.log("object"),
+            },
+            {
+              action: "Посмотреть",
+              to: `/my-restaurants/${elementData.id}`,
+            },
+          ]}
+        />
       ))}
     </ul>
   )

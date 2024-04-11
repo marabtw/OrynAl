@@ -1,5 +1,3 @@
-import React from "react"
-
 const CommentsContainer = ({ comments }) => {
   return (
     <div className="mt-[50px] px-[40px] py-[20px] bg-[#FDFDFD] border border-[#F1F1F1] rounded-[34px] shadow-[0px_16px_35px_-17px_rgba(0,0,0,.2)]">

@@ -3,7 +3,7 @@ import PopularRestaurants from "./components/PopularRestaurants/PopularRestauran
 
 const RestaurantsHome = () => {
 	return (
-		<div>
+		<div className="px-[70px] max-xl:px-[20px]">
 			<Restaurants/>
 			<PopularRestaurants/>
 		</div>

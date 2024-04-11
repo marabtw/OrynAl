@@ -1,4 +1,3 @@
-import React from 'react'
 import SelectMenu from './components/SelectMenu/SelectMenu'
 import TableReservation from './components/TableReservation/TableReservation'
 

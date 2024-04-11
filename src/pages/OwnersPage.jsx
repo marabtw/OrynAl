@@ -1,6 +1,7 @@
 import { useState } from "react"
 import OwnersList from "../moduls/OwnersList/OwnersList"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const OwnersPage = () => {
   const [data, setData] = useState([
@@ -30,13 +31,13 @@ const OwnersPage = () => {
     },
   ])
   return (
-    <div className="px-[60px] py-[50px]">
+    <PageContainer>
       <PageHeading
         location={"Владельцы"}
         to={"/my-restaurants/owners/create"}
       />
       <OwnersList data={data} />
-    </div>
+    </PageContainer>
   )
 }
 

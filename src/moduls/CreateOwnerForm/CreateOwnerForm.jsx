@@ -1,32 +1,32 @@
 import Button from "../../ui/Button/Button"
-import InputTextWrapper from "../../components/InputTextWrapper/InputTextWrapper"
+import FormInputTextWrapper from "../../components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
 
 const CreateOwnerForm = () => {
   return (
-    <div className="w-1/2">
-      <h3 className="mb-[40px] font-[600] text-[20px] leading-[30px]">
+    <div className="w-full">
+      <h3 className="mb-[40px] font-[600] text-[20px] leading-[30px] max-lg:mb-[10px] max-xl:mb-[20px]">
         Создать владельца
       </h3>
       <form className="flex flex-col gap-[30px] w-full px-[20px] py-[40px] border-[3px] border-[#ebebeb] rounded-[20px] ">
-        <InputTextWrapper placeholder="Батырбек" label="Имя:" />
-        <InputTextWrapper
+        <FormInputTextWrapper placeholder="Батырбек" label="Имя:" />
+        <FormInputTextWrapper
           placeholder="batyrbek@gmail.com"
           label="Почта:"
           type="email"
         />
-        <InputTextWrapper
+        <FormInputTextWrapper
           placeholder="+7 778 891 32 09"
           label="Телефон номер:"
           type="tel"
           pattern={"[7]"}
         />
-        <div className="flex gap-[30px]">
-          <InputTextWrapper
+        <div className="flex gap-[30px] max-md:flex-col">
+          <FormInputTextWrapper
             placeholder="*********"
             label="Пароль"
             type="password"
           />
-          <InputTextWrapper
+          <FormInputTextWrapper
             placeholder="*********"
             label="Повторите пароль"
             type="password"
@@ -35,7 +35,7 @@ const CreateOwnerForm = () => {
         <Button
           text="Создать"
           gradient={true}
-          spacingClass={"mx-auto px-[150px] py-[20px]"}
+          spacingClass={"mx-auto px-[150px] py-[20px] max-md:mx-0 max-md:px-0"}
         />
       </form>
     </div>

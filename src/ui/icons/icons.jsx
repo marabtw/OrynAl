@@ -1,19 +1,25 @@
 import { RxTriangleDown, RxCross2 } from "react-icons/rx"
 import { IoIosSettings, IoMdHeartEmpty, IoMdHeart } from "react-icons/io"
 import { ImExit } from "react-icons/im"
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaCartPlus } from "react-icons/fa"
 import {
   FaLocationDot,
   FaStar,
   FaRegStarHalfStroke,
   FaRegStar,
-	FaMinus,
-	FaPlus,
+  FaMinus,
+  FaPlus,
+  FaUtensils,
+  FaUserTie,
 } from "react-icons/fa6"
 import { GoClock } from "react-icons/go"
-import { IoCallOutline } from "react-icons/io5"
-import { BsPlusCircle, BsThreeDotsVertical, BsThreeDots  } from "react-icons/bs";
-import { CiGrid2H, CiGrid41 } from "react-icons/ci";
+import { IoCallOutline, IoMenu } from "react-icons/io5"
+import { BsPlusCircle, BsThreeDotsVertical, BsThreeDots } from "react-icons/bs"
+import { CiGrid2H, CiGrid41 } from "react-icons/ci"
+import { VscAccount } from "react-icons/vsc"
+import { FiUser } from "react-icons/fi"
+import { TiDocumentText } from "react-icons/ti"
+import { AiFillHome } from "react-icons/ai"
 
 export {
   IoMdHeart as HeartFullIcon,
@@ -27,13 +33,21 @@ export {
   FaLocationDot as LocationIcon,
   GoClock as ClockIcon,
   IoCallOutline as CallIcon,
-	BsPlusCircle as CircleAddIcon,
-	RxCross2 as CrossIcon,
-	FaPlus as PlusIcon,
-	FaMinus as MinusIcon,
-	BsThreeDotsVertical as DotsVerticalIcon,
-	BsThreeDots as DotsHorizontalIcon,
-	CiGrid41 as Grid2x2Icon,
-	CiGrid2H as Grid1x2Icon,
-	FaSearch as SearchIcon,
+  BsPlusCircle as CircleAddIcon,
+  RxCross2 as CrossIcon,
+  FaPlus as PlusIcon,
+  FaMinus as MinusIcon,
+  BsThreeDotsVertical as DotsVerticalIcon,
+  BsThreeDots as DotsHorizontalIcon,
+  CiGrid41 as Grid2x2Icon,
+  CiGrid2H as Grid1x2Icon,
+  FaSearch as SearchIcon,
+  VscAccount as ProfileMenuIcon,
+  IoMenu as MenuIcon,
+  FaUtensils as RestaurantsIconForHeader,
+  FaUserTie as OwnersIconForHeader,
+  FiUser as ClientsIconForHeader,
+  TiDocumentText as HistoryIconForHeader,
+  AiFillHome as HomeIcon,
+	FaCartPlus as CartIcon,
 }

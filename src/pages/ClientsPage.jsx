@@ -1,6 +1,7 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import ClientsList from "../moduls/ClientsList/ClientsList"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const ClientsPage = () => {
   const [data, setData] = useState([
@@ -35,10 +36,10 @@ const ClientsPage = () => {
   ])
 
   return (
-    <div className="px-[60px] py-[50px]">
+    <PageContainer>
       <PageHeading location={"Клиенты"} />
       <ClientsList data={data} />
-    </div>
+    </PageContainer>
   )
 }
 

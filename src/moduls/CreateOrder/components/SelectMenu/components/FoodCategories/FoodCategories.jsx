@@ -2,12 +2,12 @@ import { dataFoodCategories } from "../../../../../../data/bookingData"
 
 const FoodCategories = () => {
   return (
-    <div className="w-full overflow-auto font-poppins">
+    <div className="overflow-x-scroll font-poppins">
       <div className="flex gap-[10px]">
         {dataFoodCategories.map((category) => (
           <div
             key={category.title}
-            className="flex flex-col justify-center items-center gap-[10px] w-[181px] h-[193px] border border-[#c4c4c4] rounded-[20px] shadow-[0px_4px_12px_-2px_rgba(0,0,0,.2)"
+            className="flex flex-col justify-center items-center gap-[10px] min-w-[181px] h-[193px] border border-[#c4c4c4] rounded-[20px] shadow-[0px_4px_12px_-2px_rgba(0,0,0,.2)"
           >
             <div className={`flex justify-center items-center w-[100px] aspect-square rounded-full overflow-hidden ${!category.image && "bg-green-400"}`}>
               <img

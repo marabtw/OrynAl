@@ -1,39 +1,68 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import Logo from "../../../assets/images/logo.png"
-import { TriangleDownIcon } from "../../../ui/icons/icons"
-import MiniProfileMenu from "./MiniProfileMenu"
+import {
+  MenuIcon,
+  ProfileMenuIcon,
+  HistoryIconForHeader,
+  HomeIcon,
+} from "../../../ui/icons/icons"
+import ProfileMenuDropdown from "./ProfileMenuDropdown"
+import MobileMenuNavigation from "./MobileMenuNavigation"
+
+const menu = [
+  {
+    label: "Home",
+    icon: <HomeIcon />,
+    to: "/",
+  },
+  {
+    label: "История заказов",
+    icon: <HistoryIconForHeader />,
+    to: "/order-history",
+  },
+]
 
 const UserHeader = () => {
-  const [active, setActive] = useState(false)
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
 
   return (
     <header
-      className={`relative w-full h-[120px] flex justify-between items-center px-[2%] z-[9999] bg-white rounded-bl-[50px] rounded-br-[50px] shadow-[0px_4px_10px_rgba(0,0,0,.25)]`}
+      className={`relative w-full h-full flex justify-between items-center`}
     >
+      <MenuIcon
+        className="text-[20px] cursor-pointer md:hidden"
+        onClick={() => setIsMobileNavOpen(true)}
+      />
       <div className="h-[25%] flex gap-[36px] items-center">
-        <Link to={"/"} className="h-full">
+        <Link to={"/"} className="h-full max-md:hidden">
           <img
             src={Logo}
             alt="logo"
             className="bg-slate-500 h-full rounded-full cursor-pointer"
           />
         </Link>
-        <h3>OrynAl - Сервис онлайн-заказов</h3>
+        <h className="max-md:hidden">OrynAl - Сервис онлайн-заказов</h>
       </div>
       <ul className="flex gap-[36px]">
-        <li className="cursor-pointer">
+        <li className="cursor-pointer max-md:hidden">
           <Link to={"/order-history"}>Мои заказы</Link>
         </li>
         <li
-          className="flex items-center text-[#4B85FB] relative cursor-pointer"
-          onClick={() => setActive(!active)}
+          className="flex items-center relative cursor-pointer"
+          onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
         >
-          <span>Мой аккаунт</span>
-          <TriangleDownIcon className="relative top-[50%] transform translate-y-[-60%]" />
-          {active && <MiniProfileMenu />}
+          <ProfileMenuIcon className="text-[30px]" />
+          {isProfileMenuOpen && <ProfileMenuDropdown />}
         </li>
       </ul>
+      {isMobileNavOpen && (
+        <MobileMenuNavigation
+          items={menu}
+          closeMobileNav={() => setIsMobileNavOpen(false)}
+        />
+      )}
     </header>
   )
 }

@@ -2,7 +2,7 @@ import { CircleAddIcon } from "../../../../../../ui/icons/icons"
 
 const FoodCard = ({ salad }) => {
   return (
-    <div className="relative flex flex-col items-center justify-between w-[313px] h-[362px] px-[30px] py-[40px] font-poppins transition-all duration-200 border border-[#c4c4c4] shadow-[0px_4px_4px_rgba(0,0,0,.25)] rounded-[50px] hover:border-[5px] hover:border-[#447bfb]">
+    <div className="relative flex flex-col items-center justify-between w-full h-[362px] px-[30px] py-[40px] font-poppins transition-all duration-200 border border-[#c4c4c4] shadow-[0px_4px_4px_rgba(0,0,0,.25)] rounded-[50px] hover:border-[5px] hover:border-[#447bfb]">
       <img
         src={salad.image}
         alt=""

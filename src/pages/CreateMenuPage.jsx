@@ -1,12 +1,16 @@
 import CreateMenuForm from "../moduls/CreateMenuForm/CreateMenuForm"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
+import CreateFormsContainer from "../components/CreateFormsContainer/CreateFormsContainer"
 
 const CreateMenu = () => {
   return (
-    <div className="px-[60px] py-[50px]">
+    <PageContainer>
       <PageHeading location={"Создать меню"} preLocation={"Мои рестораны"} />
-      <CreateMenuForm />
-    </div>
+      <CreateFormsContainer>
+        <CreateMenuForm />
+      </CreateFormsContainer>
+    </PageContainer>
   )
 }
 

@@ -1,7 +1,7 @@
 import Button from "../../../../../../ui/Button/Button"
 const TableCard = ({ table }) => {
   return (
-    <div className="relative min-w-[313px] min-h-[362px] flex flex-col items-center justify-between px-[20px] py-[20px] font-poppins border-4 border-[#8AB8FF] rounded-[31px]">
+    <div className="relative min-h-[362px] w-full flex flex-col items-center justify-between px-[20px] py-[20px] font-poppins border-4 border-[#8AB8FF] rounded-[31px]">
       <div
         className={`absolute right-[20px] top-[20px] w-[20px] aspect-square rounded-full ${
           table.status ? "bg-[#31A24C]" : "bg-red-700"

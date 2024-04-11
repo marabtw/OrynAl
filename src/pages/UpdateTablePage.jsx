@@ -1,12 +1,13 @@
 import UpdateRestaurantTable from "../moduls/UpdateRestaurantTable/UpdateRestaurantTable"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const UpdateTablePage = () => {
-	return (
-    <div className="px-[60px] py-[50px]">
-			<PageHeading location={"Изменить столик"} preLocation={"Мои рестораны"}/>
-			<UpdateRestaurantTable/>
-    </div>
+  return (
+    <PageContainer>
+      <PageHeading location={"Изменить столик"} preLocation={"Мои рестораны"} />
+      <UpdateRestaurantTable />
+    </PageContainer>
   )
 }
 

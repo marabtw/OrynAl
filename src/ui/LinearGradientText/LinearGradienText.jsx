@@ -4,6 +4,7 @@ const LinearGradientText = ({
   to = "#000",
   text = "not transmitted",
   className,
+	clampsObject,
 }) => {
   const Tag = tag
   return (
@@ -14,6 +15,8 @@ const LinearGradientText = ({
         WebkitBackgroundClip: "text",
         backgroundClip: "text",
         color: "transparent",
+        fontSize: clampsObject?.fontSize ? clampsObject.fontSize : undefined,
+        lineHeight: clampsObject?.lineHeight ? clampsObject.lineHeight : undefined,
       }}
     >
       {text}

@@ -1,12 +1,13 @@
 import MyProfile from "../moduls/MyProfile/MyProfile"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const MyProfilePage = () => {
   return (
-    <div className="px-[60px] py-[50px] font-poppins">
+    <PageContainer>
       <PageHeading location={"Мой аккаунт"} />
       <MyProfile />
-    </div>
+    </PageContainer>
   )
 }
 

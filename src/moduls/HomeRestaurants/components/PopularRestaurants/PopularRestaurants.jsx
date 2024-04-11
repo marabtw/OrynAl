@@ -1,14 +1,12 @@
-import { useState } from "react"
 import RestaurantItemCard from "../RestaurantItemCard/RestaurantItemCard"
 import { dataPopularRestaurants } from "../../../../data/restaurantsData"
 import LinearGradientText from "../../../../ui/LinearGradientText/LinearGradienText"
 
 const PopularRestaurants = () => {
-  const [data, setData] = useState(dataPopularRestaurants)
 
   return (
-    <div className="mt-[50px]  px-[70px] py-[50px] flex flex-col gap-[30px]">
-      <div className="my-[50px] text-center">
+    <div className="mt-[50px] py-[50px] flex flex-col gap-[80px] max-md:gap-[20px] max-md:mt-[20px]">
+      <div className=" text-center">
         <LinearGradientText
           tag={"h2"}
           text={"Популярные заведения"}
@@ -20,8 +18,8 @@ const PopularRestaurants = () => {
           Посетители сайта часто бронирует здесь
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-[20px]">
-        {data.map((restaurant) => (
+      <div className="grid grid-cols-3 gap-[20px] max-lg:grid-cols-2 max-md:grid-cols-1">
+        {dataPopularRestaurants.map((restaurant) => (
           <RestaurantItemCard key={restaurant.id} data={restaurant} />
         ))}
       </div>

@@ -2,8 +2,8 @@ import React from "react"
 
 const OrderBriefInfo = ({ id }) => {
   return (
-    <div className="w-max min-w-[647px] px-[60px] py-[60px] font-poppins rounded-[20px] bg-white">
-      <div className="w-max">
+    <div className="min-w-[647px] px-[60px] py-[60px] font-poppins rounded-[20px] bg-white max-md:w-full max-md:min-w-0 max-md:p-[15px]">
+      <div className="">
         <h2 className="font-[700] text-[32px] leading-[48px]">Ваш столик, дата и время</h2>
         <div className="w-[70%] h-[3px] bg-black rounded-full"></div>
       </div>

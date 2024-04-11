@@ -1,17 +1,17 @@
 import MyRestaurantTablesList from "../moduls/MyRestaurantTablesList/MyRestaurantTablesList"
-import { Link } from "react-router-dom"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const MyRestaurantTablesPage = () => {
   return (
-    <div className="px-[60px] py-[50px] font-poppins">
+    <PageContainer>
       <PageHeading
         location={"Cтолик"}
         preLocation={"Мои рестораны"}
         to={"/my-restaurants/tables/create"}
       />
       <MyRestaurantTablesList />
-    </div>
+    </PageContainer>
   )
 }
 

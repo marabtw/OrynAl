@@ -1,12 +1,13 @@
 import { useParams } from "react-router-dom"
 import OrderDetails from "../moduls/OrderDetails/OrderDetails"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const OrderDetailsPage = () => {
   const { id } = useParams()
   return (
-    <div className="py-[50px] px-[60px] font-poppins">
+    <PageContainer>
       <OrderDetails id={id}/>
-    </div>
+    </PageContainer>
   )
 }
 

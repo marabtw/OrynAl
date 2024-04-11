@@ -1,13 +1,14 @@
-import UpdateMenuForm from '../moduls/UpdateMenuForm/UpdateMenuForm'
-import PageHeading from '../ui/Heading/PageHeading'
+import UpdateMenuForm from "../moduls/UpdateMenuForm/UpdateMenuForm"
+import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
 
 const UpdateMenuPage = () => {
-	return (
-		<div className="px-[60px] py-[50px]">
-			<PageHeading location={"Изменить Меню"} preLocation={"Мои рестораны"}/>
-			<UpdateMenuForm/>
-    </div>
-	)
+  return (
+    <PageContainer>
+      <PageHeading location={"Изменить Меню"} preLocation={"Мои рестораны"} />
+      <UpdateMenuForm />
+    </PageContainer>
+  )
 }
 
 export default UpdateMenuPage

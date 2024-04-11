@@ -8,7 +8,7 @@ const OrderMenu = () => {
   const [allPrice, setAllPrice] = useState(0)
 
   return (
-    <div className="min-w-[528px]">
+    <div className="min-w-[528px] max-md:min-w-0">
       <div className="flex justify-between items-center w-full h-[137px] px-[30px] py-[20px] text-white font-poppins shadow-[0px 4px 21px rgba(0,0,0,.1) rounded-tr-[50px] rounded-tl-[50px] bg-gradient-to-r from-[#62ADFC] to-[#447BFB]">
         <h4 className="relative text-[30px] font-[800] leading-[24px] before:w-[47px] before:h-[5px] before:absolute before:top-[120%] before:left-0 before:translate-y-[100%] before:bg-white before:rounded-[10px]">
           Мой заказ
@@ -16,7 +16,7 @@ const OrderMenu = () => {
         <img src={logo} alt="" className="w-[85px] aspect-square" />
       </div>
       <div className="w-full h-[904px] p-[5px] rounded-bl-[50px] rounded-br-[50px] bg-gradient-to-r from-[#62ADFC] to-[#447BFB]">
-        <div className="flex flex-col justify-between w-full h-full px-[30px] py-[40px] bg-white rounded-bl-[50px] rounded-br-[50px]">
+        <div className="flex flex-col justify-between w-full h-full px-[30px] py-[40px] bg-white rounded-bl-[50px] rounded-br-[50px] max-md:p-[10px]">
           <ul className="flex-1 overflow-auto px-[10px]">
             {cart.map((el, index) => (
               <li key={el.id}>

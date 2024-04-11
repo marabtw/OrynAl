@@ -5,5 +5,5 @@ export const dataSiteStatistics = {
 }
 
 export const role = "user"
-// export const role = "company"
+// export const role = "manager"
 // export const role = "admin"

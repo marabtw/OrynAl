@@ -1,12 +1,16 @@
 import CreateTableForm from "../moduls/CreateTableForm/CreateTableForm"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
+import CreateFormsContainer from "../components/CreateFormsContainer/CreateFormsContainer"
 
 const CreateTablePage = () => {
   return (
-    <div className="px-[60px] py-[50px]">
-			<PageHeading location={"Создать столик"} preLocation={"Мои рестораны"}/>
-			<CreateTableForm/>
-    </div>
+    <PageContainer>
+      <PageHeading location={"Создать столик"} preLocation={"Мои рестораны"} />
+      <CreateFormsContainer>
+        <CreateTableForm />
+      </CreateFormsContainer>
+    </PageContainer>
   )
 }
 

@@ -1,15 +1,17 @@
 import React from "react"
 import CreateOwnerForm from "../moduls/CreateOwnerForm/CreateOwnerForm"
 import PageHeading from "../ui/Heading/PageHeading"
+import PageContainer from "../components/PageContainer/PageContainer"
+import CreateFormsContainer from "../components/CreateFormsContainer/CreateFormsContainer"
 
 const CreateOwner = () => {
   return (
-    <div className="p-[50px]">
-			<PageHeading location={"Создать владельца"} preLocation={"Владельцы"}/>
-      <div className="px-[40px] py-[60px] border-none rounded-[10px] bg-white">
+    <PageContainer>
+      <PageHeading location={"Создать владельца"} preLocation={"Владельцы"} />
+      <CreateFormsContainer>
         <CreateOwnerForm />
-      </div>
-    </div>
+      </CreateFormsContainer>
+    </PageContainer>
   )
 }
 

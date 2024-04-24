@@ -72,6 +72,11 @@ const Router = () => {
       <Route path={ROUTERS.Owners} element={<OwnersPage />} />
       <Route path={ROUTERS.Clients} element={<ClientsPage />} />
       <Route path={ROUTERS.Restaurants} element={<RestaurantsPage />} />
+
+      <Route
+        path={ROUTERS.UpdateRestaurantByAdmin}
+        element={<UpdateRestaurantPage />}
+      />
       <Route path={ROUTERS.CreateOwner} element={<CreateOwnerPage />} />
       <Route
         path={ROUTERS.CreateRestaurant}

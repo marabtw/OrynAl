@@ -1,23 +1,53 @@
-import ListItem from "../../components/ListItem/ListItem"
+import { useEffect, useState } from "react"
+import { getClients, deleteClient } from "./api/api"
 import ListCategories from "../../components/ListCategories/ListCategories"
-
-const menuActions = [
-  {
-    action: "Удалить",
-    onClick: () => console.log("object"),
-  },
-]
+import ListItem from "../../components/ListItem/ListItem"
 
 const categories = ["id", "Имя", "Фамилия", "Телефон", "Почта", "Действие"]
-const ClientsList = ({ data }) => {
+
+const ClientsList = () => {
+  const [clients, setClients] = useState([])
+
+  const getMenuActions = (id) => {
+    return [
+      {
+        action: "Удалить",
+        onClick: () => deleteClientData(id),
+      },
+    ]
+  }
+
+  const deleteClientData = (clientId) => {
+    deleteClient(clientId)
+      .then(
+        setClients((prevOwnersData) =>
+          prevOwnersData.filter((owner) => owner.id !== clientId)
+        )
+      )
+      .catch()
+  }
+
+  useEffect(() => {
+    getClients()
+      .then((res) => {
+        setClients(
+          res.data.map((client) => {
+            const { role, ...rest } = client
+            return rest
+          })
+        )
+      })
+      .catch((error) => console.log(error))
+  }, [])
+
   return (
     <ul className="flex flex-col gap-[20px]">
       <ListCategories categories={categories} />
-      {data.map((element, index) => (
+      {clients?.map((item, index) => (
         <ListItem
-          key={element.id}
-          elementData={element}
-          menuActions={menuActions}
+          key={item.id}
+          elementData={item}
+          menuActions={getMenuActions(item.id)}
           index={index}
         />
       ))}

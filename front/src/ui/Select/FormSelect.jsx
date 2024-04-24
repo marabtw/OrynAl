@@ -1,7 +1,11 @@
 import Select from "react-select"
 
-const SelectItems = ({placeholder="Иван Петров", options=[{value: "...", label: "..."}], placeholderIcon=false}) => {
-
+const SelectItems = ({
+  placeholder = "Иван Петров",
+  options = [],
+  placeholderIcon = false,
+  onChange,
+}) => {
   const customStyles = {
     container: (provided, state) => ({
       ...provided,
@@ -9,7 +13,7 @@ const SelectItems = ({placeholder="Иван Петров", options=[{value: "...
     }),
     control: (provided, state) => ({
       ...provided,
-			width: "100%",
+      width: "100%",
       border: "3px solid #EBEBEB",
       borderRadius: "20px",
       padding: "20px",
@@ -17,7 +21,7 @@ const SelectItems = ({placeholder="Иван Петров", options=[{value: "...
       fontSize: "15px",
       fontWeight: "600",
       lineHeight: "22.5px",
-			boxShadow: "none",
+      boxShadow: "none",
       "&:hover": {
         borderColor: "#4277FB",
       },
@@ -29,7 +33,6 @@ const SelectItems = ({placeholder="Иван Петров", options=[{value: "...
       "&:hover": {
         backgroundColor: "#4277FB",
         color: "#fff",
-				
       },
     }),
     indicatorSeparator: (provided, state) => ({ display: "none" }), // Убираем разделитель
@@ -46,6 +49,7 @@ const SelectItems = ({placeholder="Иван Петров", options=[{value: "...
         options={options}
         styles={customStyles}
         placeholder={`${placeholder} ${placeholderIcon ? "▼" : ""}`}
+        onChange={onChange}
       />
     </div>
   )

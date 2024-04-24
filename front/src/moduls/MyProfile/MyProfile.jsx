@@ -6,7 +6,6 @@ import {
   updateProfileData,
   deleteProfileData,
 } from "./api/profileRequest"
-import Cookies from "js-cookie"
 
 const MyProfile = () => {
   const [profileData, setProfileData] = useState({})
@@ -24,7 +23,6 @@ const MyProfile = () => {
   }, [])
 
   const updateUserData = (data) => {
-    console.log(data)
     updateProfileData(data)
       .then((res) => {
         console.log("success: ", res)
@@ -34,7 +32,7 @@ const MyProfile = () => {
       })
   }
   const deleteUser = (id) => {
-    deleteProfileData(2)
+    deleteProfileData(id)
       .then((res) => {
         console.log(res)
       })
@@ -45,7 +43,7 @@ const MyProfile = () => {
 
   return (
     <div className="flex justify-between gap-[30px] px-[40px] py-[60px] bg-white rounded-[10px] max-md:flex-col max-lg:py-[30px] max-lg:px-[10px]">
-      <AccoutInfo currentUserData={profileData} deleteUser={deleteUser}/>
+      <AccoutInfo currentUserData={profileData} deleteUser={deleteUser} />
       <UpdateAccoutForm
         currentUserData={profileData}
         updateUserData={updateUserData}

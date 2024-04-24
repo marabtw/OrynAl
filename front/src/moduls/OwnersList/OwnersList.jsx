@@ -1,26 +1,43 @@
 import ListItem from "../../components/ListItem/ListItem"
 import ListCategories from "../../components/ListCategories/ListCategories"
-import { getOwners } from "./api/api"
+import { getAllOwners, deleteOwner } from "./api/api"
 import { useEffect, useState } from "react"
 
-const getMenuActions = () => {
-  return [
-    {
-      action: "Удалить",
-      onClick: () => console.log("object"),
-    },
-  ]
-}
-
-const categories = ["id", "Имя", "Телефон", "Почта", "Действие"]
+const categories = ["id", "Имя", "Фамилия", "Почта", "Телефон", "Действие"]
 
 const OwnersList = () => {
   const [ownersData, setOwnerData] = useState([])
 
+  const getMenuActions = (id) => {
+    return [
+      {
+        action: "Удалить",
+        onClick: () => deleteOwnerData(id),
+      },
+    ]
+  }
+
+  const deleteOwnerData = (ownerId) => {
+    deleteOwner(ownerId)
+      .then(() => {
+        setOwnerData((prevOwnersData) =>
+          prevOwnersData.filter((owner) => owner.id !== ownerId)
+        )
+      })
+      .catch((error) => console.log(error))
+  }
+
   useEffect(() => {
-    getOwners()
-      .then((response) => {
-				if(response.status === 200) setOwnerData(response.data)
+    getAllOwners()
+      .then((res) => {
+        if (res.data === null) setOwnerData([])
+        else
+          setOwnerData(
+            res.data.map((owner) => {
+              const { role, ...rest } = owner
+              return rest
+            })
+          )
       })
       .catch((error) => console.log(error))
   }, [])
@@ -28,14 +45,16 @@ const OwnersList = () => {
   return (
     <ul className="flex flex-col gap-[20px]">
       <ListCategories categories={categories} />
-      {ownersData?.map((element, index) => (
-        <ListItem
-          key={element.id}
-          elementData={element}
-          menuActions={getMenuActions()}
-          index={index}
-        />
-      ))}
+      {ownersData?.length > 0
+        ? ownersData?.map((element, index) => (
+            <ListItem
+              key={element.id}
+              elementData={element}
+              menuActions={getMenuActions(element.id)}
+              index={index}
+            />
+          ))
+        : ""}
     </ul>
   )
 }

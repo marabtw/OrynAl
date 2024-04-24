@@ -39,7 +39,7 @@ const ListItem = ({ elementData, menuActions, index }) => {
       return <img src={value} className="w-[38px] aspect-square rounded-full" />
     } else {
       return (
-        <h4 className="flex">{statusMap[key] || availableMap[key] || value}</h4>
+        <h4 className="flex">{key === "can_work" ? statusMap[value] : availableMap[key] || value}</h4>
       )
     }
   }
@@ -85,7 +85,7 @@ const ListItem = ({ elementData, menuActions, index }) => {
   return (
     <>
       <li
-        className={`grid p-[10px] py-[20px] rounded-[10px] bg-white max-md:hidden`}
+        className={`grid px-[20px] py-[20px] rounded-[10px] bg-white max-md:hidden`}
         style={{
           gridTemplateColumns: `.5fr repeat(${
             Object.keys(elementData).length - 1
@@ -93,7 +93,12 @@ const ListItem = ({ elementData, menuActions, index }) => {
         }}
       >
         {Object.keys(elementData)?.map((key) => (
-          <div key={key} className="flex justify-center items-center">
+          <div
+            key={key}
+            className={`flex ${
+              key.toLowerCase() !== "id" ? "justify-center" : ""
+            } items-center`}
+          >
             {renderValue(key, elementData[key])}
           </div>
         ))}
@@ -129,12 +134,12 @@ const translations = {
   available: "В наличии",
 }
 const statusMap = {
-	true: "Активный",
-	false: "Неактивный",
+  true: "Активный",
+  false: "Неактивный",
 }
 const availableMap = {
-	true: "Да",
-	false: "Нет",
+  true: "Да",
+  false: "Нет",
 }
 
 export default ListItem

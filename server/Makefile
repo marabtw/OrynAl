@@ -10,3 +10,5 @@ migrate_up:
 migrate_down:
 	 migrate -path ./app/schema -database 'postgres://postgres:postgres@localhost:5432/orynal_db?sslmode=disable' down
 
+migrate_admin:
+	./insert_user.sh

@@ -1,8 +1,8 @@
 import myApi from "../../../app/lib/axios"
 
-export const getRestaurants = async () => {
+export const getRestaurantRequest = async (restaurantId) => {
   try {
-    const response = await myApi.get("/api/admin/restaurants")
+    const response = await myApi.get(`/api/admin/restaurants/${restaurantId}`)
     return response.data
   } catch (error) {
     if (error.response) {
@@ -13,10 +13,11 @@ export const getRestaurants = async () => {
   }
 }
 
-export const deleteRestaurantData = async (restaurantId) => {
+export const putRestaurantDataRequest = async (restaurantId, body) => {
   try {
-    const response = await myApi.delete(
-      `/api/admin/restaurants/${restaurantId}`
+    const response = await myApi.put(
+      `/api/admin/restaurants/${restaurantId}`,
+      body
     )
     return response.data
   } catch (error) {
@@ -28,9 +29,11 @@ export const deleteRestaurantData = async (restaurantId) => {
   }
 }
 
-export const getAllOwners = async () => {
+export const deleteRestaurantRequest = async (restaurantId) => {
   try {
-    const response = await myApi.get("/api/admin/owners")
+    const response = await myApi.delete(
+      `/api/admin/restaurants/${restaurantId}`
+    )
     return response.data
   } catch (error) {
     if (error.response) {

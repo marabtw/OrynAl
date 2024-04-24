@@ -1,8 +1,8 @@
 import myApi from "../../../app/lib/axios"
 
-export const postRestaurant = async (body) => {
+export const getClients = async () => {
   try {
-    const response = await myApi.post("/api/admin/restaurants", body)
+    const response = await myApi.get("/api/admin/clients")
     return response.data
   } catch (error) {
     if (error.response) {
@@ -13,9 +13,9 @@ export const postRestaurant = async (body) => {
   }
 }
 
-export const getOwners = async () => {
+export const deleteClient = async (clientId) => {
   try {
-    const response = await myApi.get("/api/admin/owners")
+    const response = await myApi.delete(`/api/admin/clients/${clientId}`)
     return response.data
   } catch (error) {
     if (error.response) {

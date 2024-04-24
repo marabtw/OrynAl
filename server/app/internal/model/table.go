@@ -7,5 +7,5 @@ type Table struct {
 	Description  string `json:"description"`
 	Capacity     int    `gorm:"not null" json:"capacity"`
 	Photo        []byte `gorm:"type:bytea" json:"photo,omitempty"`
-	RestaurantID uint   `gorm:"not null" json:"restaurantId"`
+	RestaurantID uint   `gorm:"not null" json:"restaurant_id"`
 }

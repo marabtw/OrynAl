@@ -72,7 +72,6 @@ const UpdateAccoutForm = ({ currentUserData, updateUserData }) => {
                 return acc
               }, {}),
             }
-            console.log(updatedUserData)
             updateUserData(updatedUserData)
           }}
         />

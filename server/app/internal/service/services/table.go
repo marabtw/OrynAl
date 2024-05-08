@@ -6,23 +6,25 @@ import (
 	"github.com/alibekabdrakhman1/orynal/config"
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/internal/repository"
+	"github.com/alibekabdrakhman1/orynal/internal/service/infrastructure"
 	"github.com/alibekabdrakhman1/orynal/pkg/utils"
 	"go.uber.org/zap"
 	"time"
 )
 
 func NewTableService(repository *repository.Manager, config *config.Config, logger *zap.SugaredLogger) *TableService {
-	return &TableService{repository: repository, config: config, logger: logger}
+	return &TableService{repository: repository, config: config, logger: logger, FormatParams: infrastructure.NewFormatParams()}
 }
 
 type TableService struct {
 	repository *repository.Manager
 	config     *config.Config
 	logger     *zap.SugaredLogger
+	FormatParams
 }
 
-func (s *TableService) GetRestaurantTables(ctx context.Context, restaurantID uint) ([]model.Table, error) {
-	return s.repository.Table.GetRestaurantTables(ctx, restaurantID)
+func (s *TableService) GetRestaurantTables(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error) {
+	return s.repository.Table.GetRestaurantTables(ctx, restaurantID, params)
 }
 
 func (s *TableService) GetRestaurantTable(ctx context.Context, restaurantID uint, tableID uint) (*model.Table, error) {
@@ -35,6 +37,8 @@ func (s *TableService) CreateRestaurantTable(ctx context.Context, restaurantID u
 		return nil, err
 	}
 
+	table.RestaurantID = restaurantID
+
 	return s.repository.Table.CreateTable(ctx, table)
 }
 
@@ -43,6 +47,8 @@ func (s *TableService) UpdateRestaurantTable(ctx context.Context, restaurantID u
 	if err != nil {
 		return nil, err
 	}
+
+	table.RestaurantID = restaurantID
 
 	return s.repository.Table.UpdateTable(ctx, table)
 }
@@ -74,7 +80,7 @@ func (s *TableService) checkOwner(ctx context.Context, restaurantID uint) error 
 		return fmt.Errorf("there is not user id from ctx")
 	}
 
-	if restaurant.OwnerID != userID {
+	if restaurant.Owner.ID != userID {
 		s.logger.Error(fmt.Errorf("the user id is not owner of restaurant"))
 		return fmt.Errorf("permission denied")
 	}

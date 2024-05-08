@@ -6,22 +6,24 @@ import (
 	"github.com/alibekabdrakhman1/orynal/config"
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/internal/repository"
+	"github.com/alibekabdrakhman1/orynal/internal/service/infrastructure"
 	"github.com/alibekabdrakhman1/orynal/pkg/enums"
 	"github.com/alibekabdrakhman1/orynal/pkg/utils"
 	"go.uber.org/zap"
 )
 
 func NewOrderService(repository *repository.Manager, config *config.Config, logger *zap.SugaredLogger) *OrderService {
-	return &OrderService{repository: repository, config: config, logger: logger}
+	return &OrderService{repository: repository, config: config, logger: logger, FormatParams: infrastructure.NewFormatParams()}
 }
 
 type OrderService struct {
 	repository *repository.Manager
 	config     *config.Config
 	logger     *zap.SugaredLogger
+	FormatParams
 }
 
-func (s *OrderService) Create(ctx context.Context, order *model.Order) (*model.Order, error) {
+func (s *OrderService) Create(ctx context.Context, order *model.Order) (*model.OrderResponse, error) {
 	if order.Status != enums.Reserved {
 		return nil, errors.New("order status is invalid")
 	}
@@ -32,7 +34,7 @@ func (s *OrderService) Create(ctx context.Context, order *model.Order) (*model.O
 	return createdOrder, nil
 }
 
-func (s *OrderService) Update(ctx context.Context, id uint, order *model.Order) (*model.Order, error) {
+func (s *OrderService) Update(ctx context.Context, id uint, order *model.Order) (*model.OrderResponse, error) {
 	userID, err := utils.GetIDFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -75,7 +77,7 @@ func (s *OrderService) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 
-func (s *OrderService) GetByID(ctx context.Context, id uint) (*model.Order, error) {
+func (s *OrderService) GetByID(ctx context.Context, id uint) (*model.OrderResponse, error) {
 	userID, err := utils.GetIDFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -88,13 +90,13 @@ func (s *OrderService) GetByID(ctx context.Context, id uint) (*model.Order, erro
 	return order, nil
 }
 
-func (s *OrderService) GetAllOrders(ctx context.Context) ([]model.Order, error) {
+func (s *OrderService) GetAllOrders(ctx context.Context, params *model.Params) (*model.ListResponse, error) {
 	id, err := utils.GetIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	orders, err := s.repository.Order.GetAllOrders(ctx, id)
+	orders, err := s.repository.Order.GetAllOrders(ctx, id, params)
 	if err != nil {
 		return nil, err
 	}

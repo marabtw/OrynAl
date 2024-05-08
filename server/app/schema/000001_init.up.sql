@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS restaurants (
     mode_from TIMESTAMP NOT NULL,
     mode_to TIMESTAMP NOT NULL,
     icon VARCHAR,
+    available BOOLEAN DEFAULT TRUE,
     can_work BOOLEAN DEFAULT FALSE,
     live_music BOOLEAN DEFAULT FALSE,
     banquet_hall BOOLEAN DEFAULT FALSE,
@@ -92,7 +93,7 @@ CREATE TABLE IF NOT EXISTS foods (
       type VARCHAR(100) NOT NULL,
       description TEXT,
       price FLOAT NOT NULL,
-      status VARCHAR(100) NOT NULL,
+      available BOOLEAN NOT NULL DEFAULT TRUE,
       photo VARCHAR,
       restaurant_id INTEGER NOT NULL,
       FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
@@ -109,7 +110,7 @@ CREATE TABLE IF NOT EXISTS order_foods (
 CREATE TABLE IF NOT EXISTS restaurant_reviews (
     id SERIAL PRIMARY KEY,
     stars INTEGER NOT NULL,
-    DESCRIPTION VARCHAR,
+    description VARCHAR,
     user_id INTEGER NOT NULL,
     restaurant_id INTEGER NOT NULL,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

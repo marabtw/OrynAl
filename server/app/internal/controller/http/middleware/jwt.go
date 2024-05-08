@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/alibekabdrakhman1/orynal/internal/model"
-	"github.com/alibekabdrakhman1/orynal/internal/service"
 	"github.com/alibekabdrakhman1/orynal/internal/service/services"
 	"github.com/alibekabdrakhman1/orynal/pkg/enums"
 	"github.com/alibekabdrakhman1/orynal/pkg/utils"
@@ -21,11 +20,11 @@ const (
 
 type JWTAuth struct {
 	jwtKey      []byte
-	AuthService service.IAuthService
+	AuthService services.IAuthService
 	logger      *zap.SugaredLogger
 }
 
-func NewJWTAuth(jwtKey []byte, service service.IAuthService, logger *zap.SugaredLogger) *JWTAuth {
+func NewJWTAuth(jwtKey []byte, service services.IAuthService, logger *zap.SugaredLogger) *JWTAuth {
 	return &JWTAuth{jwtKey: jwtKey, AuthService: service, logger: logger}
 }
 

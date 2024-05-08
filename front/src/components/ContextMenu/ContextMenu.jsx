@@ -1,16 +1,13 @@
+import { useContext } from "react"
 import { Link } from "react-router-dom"
-// [
-// 	{
-// 		action: "удалить",
-// 		onClick: () => {},
-// 	},
-// 	{
-// 		action: "посмотреть",
-// 		to: "/"
-// 	}
-// ]
+import { UIContext } from "@context/UIContext"
 
-const ContextMenu = ({ menuActions, position }) => {
+const ContextMenu = ({ menuActions = [], position, index = -1 }) => {
+  const { setOpenedContextMenuIndex } = useContext(UIContext)
+  const closeContextMenuFunction = () => {
+    setOpenedContextMenuIndex(null)
+  }
+
   return (
     <div
       className={`absolute ${
@@ -19,14 +16,22 @@ const ContextMenu = ({ menuActions, position }) => {
     >
       {menuActions.map((action, index) =>
         action.hasOwnProperty("to") ? (
-          <Link key={action.action + `${Math.random() * 99999999}`} to={action.to} className="hover:text-[#FF0000]">
+          <Link
+            key={action.action + `${Math.random() * 99999999}`}
+            to={action.to}
+            className="hover:text-[#FF0000]"
+            onClick={() => closeContextMenuFunction()}
+          >
             {action.action}
           </Link>
         ) : (
           <h4
             key={action.action + `${Math.random() * 99999999}`}
             className="hover:text-[#FF0000] cursor-pointer"
-            onClick={action.onClick}
+            onClick={() => {
+              action.onClick()
+              closeContextMenuFunction()
+            }}
           >
             {action.action}
           </h4>

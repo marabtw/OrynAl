@@ -4,6 +4,7 @@ import (
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/internal/service"
 	"github.com/alibekabdrakhman1/orynal/pkg/response"
+	"github.com/alibekabdrakhman1/orynal/pkg/utils"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"net/http"
@@ -23,7 +24,15 @@ type MenuHandler struct {
 }
 
 func (h *MenuHandler) GetRestaurantMenu(c echo.Context) error {
-	restaurantID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	restaurantID := c.Param("id")
+	if restaurantID == "" {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Restaurant ID is required",
+		})
+	}
+
+	id, err := strconv.ParseUint(restaurantID, 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -32,9 +41,7 @@ func (h *MenuHandler) GetRestaurantMenu(c echo.Context) error {
 		})
 	}
 
-	foodType := c.QueryParam("foodType")
-
-	menu, err := h.service.Menu.GetRestaurantMenu(c.Request().Context(), uint(restaurantID), foodType)
+	menu, err := h.service.Menu.GetRestaurantMenu(c.Request().Context(), uint(id))
 	if err != nil {
 		h.logger.Error("Failed to get restaurant menu:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -52,7 +59,15 @@ func (h *MenuHandler) GetRestaurantMenu(c echo.Context) error {
 }
 
 func (h *MenuHandler) GetRestaurantFood(c echo.Context) error {
-	restaurantID, err := strconv.ParseUint(c.Param("restaurant_id"), 10, 64)
+	restaurantID := c.Param("id")
+	if restaurantID == "" {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Restaurant ID is required",
+		})
+	}
+
+	id, err := strconv.ParseUint(restaurantID, 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -70,7 +85,7 @@ func (h *MenuHandler) GetRestaurantFood(c echo.Context) error {
 		})
 	}
 
-	food, err := h.service.Menu.GetRestaurantFood(c.Request().Context(), uint(restaurantID), uint(foodID))
+	food, err := h.service.Menu.GetRestaurantFood(c.Request().Context(), uint(id), uint(foodID))
 	if err != nil {
 		h.logger.Error("Failed to get restaurant food:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -124,7 +139,7 @@ func (h *MenuHandler) CreateRestaurantFood(c echo.Context) error {
 }
 
 func (h *MenuHandler) UpdateRestaurantFood(c echo.Context) error {
-	restaurantID, err := strconv.ParseUint(c.Param("restaurant_id"), 10, 64)
+	restaurantID, err := utils.ConvertIdToUint(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -133,7 +148,7 @@ func (h *MenuHandler) UpdateRestaurantFood(c echo.Context) error {
 		})
 	}
 
-	foodID, err := strconv.ParseUint(c.Param("food_id"), 10, 64)
+	foodID, err := utils.ConvertIdToUint(c.Param("food_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -151,7 +166,7 @@ func (h *MenuHandler) UpdateRestaurantFood(c echo.Context) error {
 		})
 	}
 
-	updatedFood.ID = uint(foodID)
+	updatedFood.ID = foodID
 	food, err := h.service.Menu.UpdateRestaurantFood(c.Request().Context(), uint(restaurantID), &updatedFood)
 	if err != nil {
 		h.logger.Error("Failed to update restaurant food:", err)
@@ -170,7 +185,7 @@ func (h *MenuHandler) UpdateRestaurantFood(c echo.Context) error {
 }
 
 func (h *MenuHandler) DeleteRestaurantFood(c echo.Context) error {
-	restaurantID, err := strconv.ParseUint(c.Param("restaurant_id"), 10, 64)
+	restaurantID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,

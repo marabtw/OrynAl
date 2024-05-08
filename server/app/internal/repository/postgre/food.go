@@ -16,12 +16,19 @@ type FoodRepository struct {
 	DB *gorm.DB
 }
 
-func (r *FoodRepository) GetRestaurantMenu(ctx context.Context, restaurantID uint, foodType string) ([]model.Food, error) {
+func (r *FoodRepository) GetRestaurantMenu(ctx context.Context, restaurantID uint) (map[string][]model.Food, error) {
+	menu := make(map[string][]model.Food)
+
 	var foods []model.Food
-	if err := r.DB.WithContext(ctx).Where("restaurant_id = ? AND type = ?", restaurantID, foodType).Find(&foods).Error; err != nil {
+	if err := r.DB.WithContext(ctx).Where("restaurant_id = ?", restaurantID).Find(&foods).Error; err != nil {
 		return nil, err
 	}
-	return foods, nil
+
+	for _, food := range foods {
+		menu[food.Type] = append(menu[food.Type], food)
+	}
+
+	return menu, nil
 }
 
 func (r *FoodRepository) GetRestaurantFood(ctx context.Context, restaurantID uint, foodID uint) (*model.Food, error) {
@@ -40,9 +47,15 @@ func (r *FoodRepository) CreateRestaurantFood(ctx context.Context, food *model.F
 }
 
 func (r *FoodRepository) UpdateRestaurantFood(ctx context.Context, food *model.Food) (*model.Food, error) {
-	if err := r.DB.WithContext(ctx).Model(&model.Food{}).Save(food).Error; err != nil {
+	var of model.Food
+	if err := r.DB.WithContext(ctx).First(&of, food.ID).Error; err != nil {
 		return nil, err
 	}
+
+	if err := r.DB.WithContext(ctx).Model(&of).Updates(food).Error; err != nil {
+		return nil, err
+	}
+
 	return food, nil
 }
 

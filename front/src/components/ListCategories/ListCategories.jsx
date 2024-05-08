@@ -1,4 +1,4 @@
-import { DropDownIcon } from "../../ui/icons/icons"
+import { DropDownIcon } from "@ui/icons/icons"
 
 const ListCategories = ({ categories }) => {
   return (

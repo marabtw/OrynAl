@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/internal/service"
+	"github.com/alibekabdrakhman1/orynal/internal/service/infrastructure"
 	"github.com/alibekabdrakhman1/orynal/pkg/response"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
@@ -12,14 +13,16 @@ import (
 
 func NewRestaurantHandler(service *service.Manager, logger *zap.SugaredLogger) *RestaurantHandler {
 	return &RestaurantHandler{
-		service: service,
-		logger:  logger,
+		service:      service,
+		logger:       logger,
+		FormatParams: infrastructure.NewFormatParams(),
 	}
 }
 
 type RestaurantHandler struct {
 	service *service.Manager
 	logger  *zap.SugaredLogger
+	*infrastructure.FormatParams
 }
 
 func (h *RestaurantHandler) DeleteRestaurant(c echo.Context) error {
@@ -103,7 +106,16 @@ func (h *RestaurantHandler) UpdateRestaurant(c echo.Context) error {
 }
 
 func (h *RestaurantHandler) GetRestaurants(c echo.Context) error {
-	restaurants, err := h.service.Restaurant.GetRestaurants(c.Request().Context())
+	searchParams, err := h.service.Restaurant.RestaurantsSearchFormatting(model.NewParams(), c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed reading params",
+			Data:    err.Error(),
+		})
+	}
+
+	restaurants, err := h.service.Restaurant.GetRestaurants(c.Request().Context(), searchParams)
 	if err != nil {
 		h.logger.Error("Failed to get restaurants:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -173,7 +185,16 @@ func (h *RestaurantHandler) GetRestaurantOrders(c echo.Context) error {
 		})
 	}
 
-	orders, err := h.service.Restaurant.GetRestaurantOrders(c.Request().Context(), uint(id))
+	searchParams, err := h.service.Order.OrderSearchFormatting(model.NewParams(), c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed reading params",
+			Data:    err.Error(),
+		})
+	}
+
+	orders, err := h.service.Restaurant.GetRestaurantOrders(c.Request().Context(), uint(id), searchParams)
 	if err != nil {
 		h.logger.Error("Failed to get orders for restaurant:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{

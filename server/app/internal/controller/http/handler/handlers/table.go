@@ -40,7 +40,16 @@ func (h *TableHandler) GetRestaurantTables(c echo.Context) error {
 		})
 	}
 
-	tables, err := h.service.Table.GetRestaurantTables(c.Request().Context(), uint(id))
+	searchParams, err := h.service.Table.TablesSearchFormatting(model.NewParams(), c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed reading params",
+			Data:    err.Error(),
+		})
+	}
+
+	tables, err := h.service.Table.GetRestaurantTables(c.Request().Context(), uint(id), searchParams)
 	if err != nil {
 		h.logger.Error("Failed to get tables for restaurant:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{

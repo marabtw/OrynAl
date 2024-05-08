@@ -1,4 +1,4 @@
-import { CallIcon, ClockIcon } from "../../ui/icons/icons"
+import { CallIcon, ClockIcon } from "@ui/icons/icons"
 
 const RestaurantBriefInfo = ({ data, className }) => {
   return (

@@ -56,10 +56,13 @@ func (s *Server) setupOrderRoutes(g *echo.Group) {
 func (s *Server) setupRestaurantRoutes(g *echo.Group) {
 	restaurant := g.Group("/restaurants")
 	restaurant.Use(s.jwt.ValidateAuth)
+
 	restaurant.GET("", s.handler.Restaurant.GetRestaurants)
 	restaurant.GET("/:id", s.handler.Restaurant.GetRestaurantByID)
-	restaurant.GET("/:id/orders", s.handler.Restaurant.GetRestaurantByID, s.jwt.ValidateOwner)
+	restaurant.GET("/:id/orders", s.handler.Restaurant.GetRestaurantOrders, s.jwt.ValidateOwner)
 	//restaurant.GET("/favorite", s.handler.Restaurant.FavoriteRestaurants)
+	restaurant.POST("/:id/reviews", s.handler.Reviews.CreateReview)
+	restaurant.GET("/:id/reviews", s.handler.Reviews.GetReviews)
 
 	s.setupMenuRoutes(restaurant)
 	s.setupTableRoutes(restaurant)

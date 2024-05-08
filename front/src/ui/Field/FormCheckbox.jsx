@@ -4,14 +4,14 @@ const getRandomNumber = () => {
   return Math.floor(Math.random() * 99999999999)
 }
 
-const FormCheckbox = ({ data, key = "", onChange }) => {
+const FormCheckbox = ({ label, forKey, onChange }) => {
   const [checked, setChecked] = useState(false)
   const randomNumber = getRandomNumber()
 
   return (
     <label
       htmlFor={`checkbox-${randomNumber}`}
-      key={key}
+      key={forKey}
       className="relative flex gap-[10px] items-center max-w-max"
     >
       <input
@@ -29,7 +29,7 @@ const FormCheckbox = ({ data, key = "", onChange }) => {
       >
         {checked && <div className="w-full h-full bg-[#05FF00]"></div>}
       </span>
-      <p className="cursor-pointer">{data}</p>
+      <p className="cursor-pointer">{label}</p>
     </label>
   )
 }

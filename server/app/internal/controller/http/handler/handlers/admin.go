@@ -4,10 +4,10 @@ import (
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/internal/service"
 	"github.com/alibekabdrakhman1/orynal/pkg/response"
+	"github.com/alibekabdrakhman1/orynal/pkg/utils"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"net/http"
-	"strconv"
 )
 
 func NewAdminHandler(service *service.Manager, logger *zap.SugaredLogger) *AdminHandler {
@@ -32,7 +32,16 @@ type AdminHandler struct {
 // @Failure 500 {object} CustomResponse "Internal server error"
 // @Router /admin/clients [get]
 func (h *AdminHandler) GetClients(c echo.Context) error {
-	clients, err := h.service.User.GetAllClients(c.Request().Context())
+	searchParams, err := h.service.User.UserSearchFormatting(model.NewParams(), c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed reading params",
+			Data:    err.Error(),
+		})
+	}
+
+	clients, err := h.service.User.GetAllClients(c.Request().Context(), searchParams)
 	if err != nil {
 		h.logger.Error("Failed to get clients:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -49,7 +58,7 @@ func (h *AdminHandler) GetClients(c echo.Context) error {
 }
 
 func (h *AdminHandler) GetClient(c echo.Context) error {
-	clientID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	clientID, err := utils.ConvertIdToUint(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -58,7 +67,7 @@ func (h *AdminHandler) GetClient(c echo.Context) error {
 		})
 	}
 
-	client, err := h.service.User.GetByID(c.Request().Context(), uint(clientID))
+	client, err := h.service.User.GetByID(c.Request().Context(), clientID)
 	if err != nil {
 		h.logger.Error("Failed to get client:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -76,7 +85,7 @@ func (h *AdminHandler) GetClient(c echo.Context) error {
 }
 
 func (h *AdminHandler) DeleteClient(c echo.Context) error {
-	clientID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	clientID, err := utils.ConvertIdToUint(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -85,7 +94,7 @@ func (h *AdminHandler) DeleteClient(c echo.Context) error {
 		})
 	}
 
-	err = h.service.User.Delete(c.Request().Context(), uint(clientID))
+	err = h.service.User.Delete(c.Request().Context(), clientID)
 	if err != nil {
 		h.logger.Error("Failed to delete client:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -102,7 +111,16 @@ func (h *AdminHandler) DeleteClient(c echo.Context) error {
 }
 
 func (h *AdminHandler) GetOwners(c echo.Context) error {
-	owners, err := h.service.User.GetAllOwners(c.Request().Context())
+	searchParams, err := h.service.User.UserSearchFormatting(model.NewParams(), c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed reading params",
+			Data:    err.Error(),
+		})
+	}
+
+	owners, err := h.service.User.GetAllOwners(c.Request().Context(), searchParams)
 	if err != nil {
 		h.logger.Error("Failed to get owners:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -147,7 +165,7 @@ func (h *AdminHandler) CreateOwner(c echo.Context) error {
 }
 
 func (h *AdminHandler) DeleteOwner(c echo.Context) error {
-	ownerID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	ownerID, err := utils.ConvertIdToUint(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -156,7 +174,7 @@ func (h *AdminHandler) DeleteOwner(c echo.Context) error {
 		})
 	}
 
-	err = h.service.User.Delete(c.Request().Context(), uint(ownerID))
+	err = h.service.User.Delete(c.Request().Context(), ownerID)
 	if err != nil {
 		h.logger.Error("Failed to delete owner:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -170,7 +188,16 @@ func (h *AdminHandler) DeleteOwner(c echo.Context) error {
 }
 
 func (h *AdminHandler) GetRestaurants(c echo.Context) error {
-	restaurants, err := h.service.Restaurant.GetRestaurants(c.Request().Context())
+	searchParams, err := h.service.Restaurant.RestaurantsSearchFormatting(model.NewParams(), c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed reading params",
+			Data:    err.Error(),
+		})
+	}
+
+	restaurants, err := h.service.Restaurant.GetRestaurants(c.Request().Context(), searchParams)
 	if err != nil {
 		h.logger.Error("Failed to get restaurants:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -188,7 +215,7 @@ func (h *AdminHandler) GetRestaurants(c echo.Context) error {
 }
 
 func (h *AdminHandler) GetRestaurant(c echo.Context) error {
-	restaurantID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	restaurantID, err := utils.ConvertIdToUint(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -197,7 +224,7 @@ func (h *AdminHandler) GetRestaurant(c echo.Context) error {
 		})
 	}
 
-	restaurant, err := h.service.Restaurant.GetRestaurantByID(c.Request().Context(), uint(restaurantID))
+	restaurant, err := h.service.Restaurant.GetRestaurantByID(c.Request().Context(), restaurantID)
 	if err != nil {
 		h.logger.Error("Failed to get restaurant:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -242,7 +269,7 @@ func (h *AdminHandler) CreateRestaurant(c echo.Context) error {
 }
 
 func (h *AdminHandler) DeleteRestaurant(c echo.Context) error {
-	restaurantID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	restaurantID, err := utils.ConvertIdToUint(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -251,7 +278,7 @@ func (h *AdminHandler) DeleteRestaurant(c echo.Context) error {
 		})
 	}
 
-	err = h.service.Restaurant.DeleteRestaurant(c.Request().Context(), uint(restaurantID))
+	err = h.service.Restaurant.DeleteRestaurant(c.Request().Context(), restaurantID)
 	if err != nil {
 		h.logger.Error("Failed to delete restaurant:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
@@ -269,7 +296,7 @@ func (h *AdminHandler) DeleteRestaurant(c echo.Context) error {
 }
 
 func (h *AdminHandler) UpdateRestaurant(c echo.Context) error {
-	restaurantID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	restaurantID, err := utils.ConvertIdToUint(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -287,8 +314,8 @@ func (h *AdminHandler) UpdateRestaurant(c echo.Context) error {
 		})
 	}
 
-	updatedRestaurant.ID = uint(restaurantID)
-	restaurant, err := h.service.Restaurant.UpdateRestaurant(c.Request().Context(), &updatedRestaurant, uint(restaurantID))
+	updatedRestaurant.ID = restaurantID
+	restaurant, err := h.service.Restaurant.UpdateRestaurant(c.Request().Context(), &updatedRestaurant, restaurantID)
 	if err != nil {
 		h.logger.Error("Failed to update restaurant:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{

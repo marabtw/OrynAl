@@ -5,10 +5,10 @@ import { BrowserRouter } from "react-router-dom"
 import reportWebVitals from "./reportWebVitals"
 import store from "./store/store"
 
-import "./app/globals.css"
-import App from "./app/App/App"
-import { UIContextProvider } from "./app/Context/UIContext"
-import { AuthContextProvider } from "./app/Context/AuthContext"
+import "@styles/global.css"
+import App from "./app/App"
+import { UIContextProvider } from "@context/UIContext"
+import { AuthContextProvider } from "@context/AuthContext"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
@@ -16,9 +16,9 @@ root.render(
     <BrowserRouter>
       <AuthContextProvider>
         <UIContextProvider>
-          <Provider store={store}>
+          {/* <Provider store={store}> */}
             <App />
-          </Provider>
+          {/* </Provider> */}
         </UIContextProvider>
       </AuthContextProvider>
     </BrowserRouter>

@@ -34,6 +34,11 @@ type IRestaurantHandler interface {
 	UpdateRestaurant(c echo.Context) error
 }
 
+type IReviewsHandler interface {
+	CreateReview(c echo.Context) error
+	GetReviews(c echo.Context) error
+}
+
 type ITableHandler interface {
 	GetRestaurantTables(c echo.Context) error
 	GetRestaurantTable(c echo.Context) error

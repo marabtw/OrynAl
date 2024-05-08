@@ -18,3 +18,16 @@ type OrderFood struct {
 	OrderID uint `gorm:"not null" json:"orderId"`
 	FoodID  uint `gorm:"not null" json:"foodId"`
 }
+
+type OrderResponse struct {
+	ID           uint       `gorm:"primaryKey;autoIncrement" json:"id"`
+	TotalSum     float64    `json:"totalSum"`
+	Date         time.Time  `gorm:"not null" json:"date"`
+	Status       string     `gorm:"not null" json:"status"`
+	RestaurantID uint       `gorm:"not null" json:"restaurantId"`
+	Restaurant   Restaurant `gorm:"foreignKey:RestaurantID" json:"restaurant"`
+	TableID      uint       `json:"tableId"`
+	Table        Table      `gorm:"foreignKey:TableID" json:"table"`
+	UserID       uint       `json:"userId"`
+	User         User       `gorm:"foreignKey:UserID" json:"user"`
+}

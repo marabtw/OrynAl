@@ -1,4 +1,4 @@
-import FormSelect from "../../../ui/Select/FormSelect"
+import FormSelect from "@ui/Select/FormSelect"
 
 const FormSelectWrapper = ({
   placeholder,

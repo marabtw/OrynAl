@@ -2,7 +2,7 @@ import {
   StarFullIcon,
   StarHalfIcon,
   StarEmptyIcon,
-} from "../../ui/icons/icons"
+} from "@ui/icons/icons"
 
 const RatingStars = ({ fontSize, rate }) => {
 

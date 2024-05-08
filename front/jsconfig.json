@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "@modules/*": ["src/modules/*"],
+      "@modules": ["src/modules"],
+      "@components/*": ["src/components/*"],
+      "@components": ["src/components"],
+      "@router/*": ["src/router/*"],
+      "@router": ["src/router"],
+      "@ui/*": ["src/ui/*"],
+      "@ui": ["src/ui"],
+      "@assets/*": ["src/assets/*"],
+      "@assets": ["src/assets"],
+      "@lib/*": ["src/lib/*"],
+      "@lib": ["src/lib"],
+      "@context/*": ["src/context/*"],
+      "@context": ["src/context"],
+      "@store/*": ["src/store/*"],
+      "@store": ["src/store"],
+      "@helpers/*": ["src/helpers/*"],
+      "@helpers": ["src/helpers"],
+      "@styles/*": ["src/styles/*"],
+      "@styles": ["src/styles"],
+      "@data/*": ["src/data/*"],
+      "@data": ["src/data"]
+    }
+  }
+}

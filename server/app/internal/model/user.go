@@ -18,3 +18,7 @@ type UserResponse struct {
 	Phone   string `gorm:"unique;not null" json:"phone"`
 	Role    string `gorm:"not null" json:"role"`
 }
+
+func (UserResponse) TableName() string {
+	return "users"
+}

@@ -100,9 +100,35 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*model.U
 	return user, nil
 }
 
-func (r *UserRepository) GetAllClients(ctx context.Context) ([]model.UserResponse, error) {
+func (r *UserRepository) GetAllClients(ctx context.Context, params *model.Params) (*model.ListResponse, error) {
 	var clients []model.User
-	if err := r.DB.WithContext(ctx).Where("role = ?", enums.User).Find(&clients).Error; err != nil {
+	var totalItems int64
+
+	countQuery := r.DB.WithContext(ctx).Where("role = ?", enums.User)
+	if params.Query != "" {
+		countQuery = countQuery.Where("name LIKE ?", "%"+params.Query+"%")
+	}
+	if err := countQuery.Model(&model.User{}).Count(&totalItems).Error; err != nil {
+		return nil, err
+	}
+
+	if int64(params.Offset) >= totalItems {
+		return nil, errors.New("offset exceeds total items")
+	}
+
+	query := r.DB.WithContext(ctx).Where("role = ?", enums.User).
+		Limit(params.Limit).
+		Offset(params.Offset)
+
+	if params.Query != "" {
+		query = query.Where("name LIKE ?", "%"+params.Query+"%")
+	}
+
+	if params.Order != nil && params.SortVector != nil {
+		query.Order(params.Order.(string) + params.SortVector.(string))
+	}
+
+	if err := query.Find(&clients).Error; err != nil {
 		return nil, err
 	}
 
@@ -118,12 +144,43 @@ func (r *UserRepository) GetAllClients(ctx context.Context) ([]model.UserRespons
 		})
 	}
 
-	return userResponses, nil
+	return &model.ListResponse{
+		Items:        userResponses,
+		ItemsPerPage: params.Limit,
+		PageIndex:    params.PageIndex,
+		TotalItems:   int(totalItems),
+	}, nil
 }
 
-func (r *UserRepository) GetAllOwners(ctx context.Context) ([]model.UserResponse, error) {
+func (r *UserRepository) GetAllOwners(ctx context.Context, params *model.Params) (*model.ListResponse, error) {
 	var owners []model.User
-	if err := r.DB.WithContext(ctx).Where("role = ?", "owner").Find(&owners).Error; err != nil {
+	var totalItems int64
+
+	countQuery := r.DB.WithContext(ctx).Where("role = ?", enums.Owner)
+	if params.Query != "" {
+		countQuery = countQuery.Where("name LIKE ?", "%"+params.Query+"%")
+	}
+	if err := countQuery.Model(&model.User{}).Count(&totalItems).Error; err != nil {
+		return nil, err
+	}
+
+	if int64(params.Offset) >= totalItems {
+		return nil, errors.New("offset exceeds total items")
+	}
+
+	query := r.DB.WithContext(ctx).Where("role = ?", enums.Owner).
+		Limit(params.Limit).
+		Offset(params.Offset)
+
+	if params.Query != "" {
+		query = query.Where("name LIKE ?", "%"+params.Query+"%")
+	}
+
+	if params.Order != nil && params.SortVector != nil {
+		query.Order(params.Order.(string) + params.SortVector.(string))
+	}
+
+	if err := query.Find(&owners).Error; err != nil {
 		return nil, err
 	}
 
@@ -139,5 +196,10 @@ func (r *UserRepository) GetAllOwners(ctx context.Context) ([]model.UserResponse
 		})
 	}
 
-	return userResponses, nil
+	return &model.ListResponse{
+		Items:        userResponses,
+		ItemsPerPage: params.Limit,
+		PageIndex:    params.PageIndex,
+		TotalItems:   int(totalItems),
+	}, nil
 }

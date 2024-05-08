@@ -1,5 +1,4 @@
-import React from "react"
-import { LocationIcon } from "../../ui/icons/icons"
+import { LocationIcon } from "@ui/icons/icons"
 
 const LocationInfo = ({ text = "", position = "absolute",className }) => {
   return position === "absolute" ? (

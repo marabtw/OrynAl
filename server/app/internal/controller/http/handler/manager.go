@@ -13,6 +13,7 @@ type Manager struct {
 	Restaurant IRestaurantHandler
 	Table      ITableHandler
 	Menu       IMenuHandler
+	Reviews    IReviewsHandler
 }
 
 func NewManager(srv *service.Manager, logger *zap.SugaredLogger) *Manager {
@@ -23,5 +24,6 @@ func NewManager(srv *service.Manager, logger *zap.SugaredLogger) *Manager {
 		Restaurant: handlers.NewRestaurantHandler(srv, logger),
 		Table:      handlers.NewTableHandler(srv, logger),
 		Menu:       handlers.NewMenuHandler(srv, logger),
+		Reviews:    handlers.NewReviewsHandler(srv, logger),
 	}
 }

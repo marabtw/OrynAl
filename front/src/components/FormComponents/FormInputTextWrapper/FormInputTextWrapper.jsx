@@ -1,4 +1,4 @@
-import FormInputText from "../../../ui/Field/FormInputText"
+import FormInputText from "@ui/Field/FormInputText"
 
 const FormInputTextWrapper = ({ placeholder = "...", label = "...", type="text",pattern,onChange }) => {
   return (

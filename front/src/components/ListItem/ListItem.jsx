@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react"
-import { UIContext } from "../../app/Context/UIContext"
-import { MoreVerticalIcon } from "../../ui/icons/icons"
+import { UIContext } from "@context/UIContext"
+import { MoreVerticalIcon } from "@ui/icons/icons"
 import ContextMenu from "../ContextMenu/ContextMenu"
 
 const ListItem = ({ elementData, menuActions, index }) => {
@@ -15,6 +15,7 @@ const ListItem = ({ elementData, menuActions, index }) => {
     }
   }
 
+
   const closeContextMenuFunction = () => {
     setOpenedContextMenuIndex(null)
   }
@@ -28,19 +29,19 @@ const ListItem = ({ elementData, menuActions, index }) => {
         closeContextMenuFunction()
       }
     }
-    document.addEventListener("click", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("click", handleClickOutside)
+      document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [openedContextMenuIndex])
 
   const renderValue = (key, value) => {
     if (key === "image") {
       return <img src={value} className="w-[38px] aspect-square rounded-full" />
+    } else if (key === "restaurantStatus") {
+      return statusMap[value]
     } else {
-      return (
-        <h4 className="flex">{key === "can_work" ? statusMap[value] : availableMap[key] || value}</h4>
-      )
+      return <h4 className="flex">{value}</h4>
     }
   }
 
@@ -76,7 +77,9 @@ const ListItem = ({ elementData, menuActions, index }) => {
           onClick={handleContextMenu}
         />
         {openedContextMenuIndex === index && (
-          <ContextMenu menuActions={menuActions} />
+          <ContextMenu
+            menuActions={menuActions}
+          />
         )}
       </div>
     )

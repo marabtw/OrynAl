@@ -165,7 +165,16 @@ func (h *OrderHandler) GetOrder(c echo.Context) error {
 }
 
 func (h *OrderHandler) GetAllOrders(c echo.Context) error {
-	orders, err := h.service.Order.GetAllOrders(c.Request().Context())
+	searchParams, err := h.service.Order.OrderSearchFormatting(model.NewParams(), c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed reading params",
+			Data:    err.Error(),
+		})
+	}
+
+	orders, err := h.service.Order.GetAllOrders(c.Request().Context(), searchParams)
 	if err != nil {
 		h.logger.Error("Failed to get all orders:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{

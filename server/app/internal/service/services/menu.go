@@ -20,8 +20,8 @@ type MenuService struct {
 	logger     *zap.SugaredLogger
 }
 
-func (s *MenuService) GetRestaurantMenu(ctx context.Context, restaurantID uint, foodType string) ([]model.Food, error) {
-	foods, err := s.repository.Food.GetRestaurantMenu(ctx, restaurantID, foodType)
+func (s *MenuService) GetRestaurantMenu(ctx context.Context, restaurantID uint) (map[string][]model.Food, error) {
+	foods, err := s.repository.Food.GetRestaurantMenu(ctx, restaurantID)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (s *MenuService) CreateRestaurantFood(ctx context.Context, restaurantID uin
 	if err := s.checkOwner(ctx, restaurantID); err != nil {
 		return nil, err
 	}
-
+	food.RestaurantID = restaurantID
 	createdFood, err := s.repository.Food.CreateRestaurantFood(ctx, food)
 	if err != nil {
 		return nil, err
@@ -55,6 +55,8 @@ func (s *MenuService) UpdateRestaurantFood(ctx context.Context, restaurantID uin
 	if err := s.checkOwner(ctx, restaurantID); err != nil {
 		return nil, err
 	}
+
+	food.RestaurantID = restaurantID
 
 	updatedFood, err := s.repository.Food.UpdateRestaurantFood(ctx, food)
 	if err != nil {
@@ -90,7 +92,7 @@ func (s *MenuService) checkOwner(ctx context.Context, restaurantID uint) error {
 		return fmt.Errorf("there is not user id from ctx")
 	}
 
-	if restaurant.OwnerID != userID {
+	if restaurant.Owner.ID != userID {
 		s.logger.Error(fmt.Errorf("the user id is not owner of restaurant"))
 		return fmt.Errorf("permission denied")
 	}

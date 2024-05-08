@@ -1,4 +1,4 @@
-import FormInputFile from "../../../ui/Field/FormInputFile"
+import FormInputFile from "@ui/Field/FormInputFile"
 
 const FormInputFileWrapper = ({ placeholder = "...", label = "..." }) => {
   return (

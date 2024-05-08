@@ -6,19 +6,21 @@ import (
 	"github.com/alibekabdrakhman1/orynal/config"
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/internal/repository"
+	"github.com/alibekabdrakhman1/orynal/internal/service/infrastructure"
 	"github.com/alibekabdrakhman1/orynal/pkg/enums"
 	"github.com/alibekabdrakhman1/orynal/pkg/utils"
 	"go.uber.org/zap"
 )
 
 func NewUserService(repository *repository.Manager, config *config.Config, logger *zap.SugaredLogger) *UserService {
-	return &UserService{repository: repository, config: config, logger: logger}
+	return &UserService{repository: repository, config: config, logger: logger, FormatParams: infrastructure.NewFormatParams()}
 }
 
 type UserService struct {
 	repository *repository.Manager
 	config     *config.Config
 	logger     *zap.SugaredLogger
+	FormatParams
 }
 
 func (s *UserService) Create(ctx context.Context, user *model.User) (*model.UserResponse, error) {
@@ -125,7 +127,7 @@ func (s *UserService) GetByID(ctx context.Context, id uint) (*model.UserResponse
 	return s.repository.User.GetByID(ctx, id)
 }
 
-func (s *UserService) GetAllClients(ctx context.Context) ([]model.UserResponse, error) {
+func (s *UserService) GetAllClients(ctx context.Context, params *model.Params) (*model.ListResponse, error) {
 	role, err := utils.GetRoleFromContext(ctx)
 	if err != nil {
 		s.logger.Error(err)
@@ -135,10 +137,10 @@ func (s *UserService) GetAllClients(ctx context.Context) ([]model.UserResponse, 
 	if role != enums.Admin {
 		return nil, errors.New("permission denied")
 	}
-	return s.repository.User.GetAllClients(ctx)
+	return s.repository.User.GetAllClients(ctx, params)
 }
 
-func (s *UserService) GetAllOwners(ctx context.Context) ([]model.UserResponse, error) {
+func (s *UserService) GetAllOwners(ctx context.Context, params *model.Params) (*model.ListResponse, error) {
 	role, err := utils.GetRoleFromContext(ctx)
 	if err != nil {
 		s.logger.Error(err)
@@ -148,5 +150,5 @@ func (s *UserService) GetAllOwners(ctx context.Context) ([]model.UserResponse, e
 	if role != enums.Admin {
 		return nil, errors.New("permission denied")
 	}
-	return s.repository.User.GetAllOwners(ctx)
+	return s.repository.User.GetAllOwners(ctx, params)
 }

@@ -6,6 +6,6 @@ type Table struct {
 	Type         string `gorm:"not null" json:"type"`
 	Description  string `json:"description"`
 	Capacity     int    `gorm:"not null" json:"capacity"`
-	Photo        []byte `gorm:"type:bytea" json:"photo,omitempty"`
+	Photo        string `gorm:"type:bytea" json:"photo,omitempty"`
 	RestaurantID uint   `gorm:"not null" json:"restaurant_id"`
 }

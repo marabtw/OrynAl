@@ -8,11 +8,12 @@ DROP TABLE IF EXISTS tables;
 
 DROP TABLE IF EXISTS restaurant_photos;
 
+DROP TABLE IF EXISTS restaurant_reviews;
+
 DROP TABLE IF EXISTS restaurants;
 
 DROP TABLE IF EXISTS user_tokens;
 
 DROP TABLE IF EXISTS users;
 
-DROP TABLE IF EXISTS restaurant_reviews;
 

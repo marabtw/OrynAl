@@ -8,12 +8,12 @@ import (
 )
 
 type Manager struct {
-	Auth       IAuthService
-	User       IUserService
-	Restaurant IRestaurantService
-	Table      ITableService
-	Menu       IMenuService
-	Order      IOrderService
+	Auth       services.IAuthService
+	User       services.IUserService
+	Restaurant services.IRestaurantService
+	Table      services.ITableService
+	Menu       services.IMenuService
+	Order      services.IOrderService
 }
 
 func NewManager(repository *repository.Manager, config *config.Config, logger *zap.SugaredLogger) *Manager {

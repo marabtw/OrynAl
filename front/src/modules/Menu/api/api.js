@@ -1,6 +1,6 @@
 import myApi from "@lib/axios"
 
-export const getByOwnerRestaurantMenuRequest = async (restaurantId) => {
+export const getRestaurantMenuRequest = async (restaurantId) => {
   try {
     const response = await myApi.get(`/api/restaurants/${restaurantId}/menu`)
     return response.data

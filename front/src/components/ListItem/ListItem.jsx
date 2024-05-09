@@ -15,7 +15,6 @@ const ListItem = ({ elementData, menuActions, index }) => {
     }
   }
 
-
   const closeContextMenuFunction = () => {
     setOpenedContextMenuIndex(null)
   }
@@ -37,7 +36,11 @@ const ListItem = ({ elementData, menuActions, index }) => {
 
   const renderValue = (key, value) => {
     if (key === "image") {
-      return <img src={value} className="w-[38px] aspect-square rounded-full" />
+      return value ? (
+        <img src={value} className="w-[38px] aspect-square rounded-full" />
+      ) : (
+        <div className="rounded-full h-[35px] aspect-square border-2"></div>
+      )
     } else if (key === "restaurantStatus") {
       return statusMap[value]
     } else {
@@ -60,9 +63,7 @@ const ListItem = ({ elementData, menuActions, index }) => {
           {key === "image" ? (
             <img src={value} className="w-[38px] aspect-square rounded-full" />
           ) : (
-            <h4 className="flex">
-              {statusMap[key] || availableMap[key] || value}
-            </h4>
+            <h4 className="flex">{value}</h4>
           )}
         </div>
       )
@@ -77,9 +78,7 @@ const ListItem = ({ elementData, menuActions, index }) => {
           onClick={handleContextMenu}
         />
         {openedContextMenuIndex === index && (
-          <ContextMenu
-            menuActions={menuActions}
-          />
+          <ContextMenu menuActions={menuActions} />
         )}
       </div>
     )
@@ -88,7 +87,7 @@ const ListItem = ({ elementData, menuActions, index }) => {
   return (
     <>
       <li
-        className={`grid px-[20px] py-[20px] rounded-[10px] bg-white max-md:hidden`}
+        className={`grid px-[20px] py-[15px] rounded-[10px] bg-white max-md:hidden`}
         style={{
           gridTemplateColumns: `.5fr repeat(${
             Object.keys(elementData).length - 1
@@ -139,10 +138,6 @@ const translations = {
 const statusMap = {
   true: "Активный",
   false: "Неактивный",
-}
-const availableMap = {
-  true: "Да",
-  false: "Нет",
 }
 
 export default ListItem

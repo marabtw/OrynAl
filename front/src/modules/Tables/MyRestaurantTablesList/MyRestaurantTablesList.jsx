@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 import {
-  getByOwnerAllTablesRequest,
+  getAllTablesRequest,
   deleteByOwnerTableRequest,
 } from "../api/api"
 
@@ -23,11 +23,11 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
   const [tables, setTables] = useState([])
 
   useEffect(() => {
-    getByOwnerAllTablesRequest(restaurantId)
+    getAllTablesRequest(restaurantId)
       .then((res) => {
         setTables(
-          res.data.items.map(({ id, name, type, capacity }) => {
-            return { id, name, type, capacity }
+          res.data.items.map(({ id, image, name, type, capacity }) => {
+            return { id, image, name, type, capacity }
           })
         )
       })

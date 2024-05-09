@@ -2,11 +2,7 @@ import { useState } from "react"
 import logo from "@assets/svg/orderLogo.svg"
 import { dataCart } from "@data/bookingData"
 import Button from "@ui/Button/Button"
-import {
-  CrossIcon,
-  MinusIcon,
-  PlusIcon,
-} from "@ui/icons/icons"
+import { CrossIcon, MinusIcon, PlusIcon } from "@ui/icons/icons"
 
 const Cart = ({ show }) => {
   const [cart, setCart] = useState(dataCart)
@@ -14,7 +10,7 @@ const Cart = ({ show }) => {
 
   return (
     <div
-      className={`fixed top-0 right-0 w-full h-full max-2xl:flex justify-end overflow-y-auto max-2xl:z-[9999] 2xl:relative ${
+      className={`fixed top-0 right-0 max-2xl:w-full h-full max-2xl:flex justify-end max-2xl:z-[9999] 2xl:relative ${
         show ? "max-2xl:bg-[rgba(0,0,0,.6)] backdrop-blur-[5px]" : ""
       }`}
     >

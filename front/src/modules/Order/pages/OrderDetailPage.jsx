@@ -3,10 +3,10 @@ import PageWrapper from "@components/PageWrapper/PageWrapper"
 import OrderDetail from "../OrderDetail/OrderDetail"
 
 const OrderDetailsPage = () => {
-  const { id } = useParams()
+  const { restaurantId } = useParams()
   return (
     <PageWrapper>
-      <OrderDetail id={id}/>
+      <OrderDetail id={restaurantId}/>
     </PageWrapper>
   )
 }

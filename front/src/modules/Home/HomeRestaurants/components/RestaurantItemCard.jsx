@@ -40,7 +40,7 @@ const RestaurantItemCard = ({ data }) => {
       </p>
       <LinkButton
         to={`${removeWildcard(ROUTERS.Orders.root)}${
-          ROUTERS.Orders.createOrder
+          ROUTERS.Orders.createOrder.replace(":restaurantId", data.id)
         }`}
         text={"забронировать столик"}
         uppercase={true}

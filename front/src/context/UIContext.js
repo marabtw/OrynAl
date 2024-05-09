@@ -4,7 +4,7 @@ const UIContext = createContext()
 
 const UIContextProvider = ({ children }) => {
   const [openedContextMenuIndex, setOpenedContextMenuIndex] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <UIContext.Provider

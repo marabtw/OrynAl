@@ -49,6 +49,7 @@ const Register = ({ changeAuth }) => {
             SameSite: "None",
             Secure: true,
           })
+					localStorage.setItem("isFirstVisit", "false")
           const decodedUser = jwtDecode(data.access_token)
           setUser(decodedUser)
           const role = decodedUser.role

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-const Pagination = ({ totalPage, getCurrentPage }) => {
+const Pagination = ({ totalPage = 0, getCurrentPage = () => {} }) => {
   const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {

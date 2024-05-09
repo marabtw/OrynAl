@@ -51,7 +51,7 @@ export const ROUTERS = {
   //orders
   Orders: {
     root: "/orders/*",
-    createOrder: "/create",
+    createOrder: "/:restaurantId/create",
     ordersHistory: "/history",
 		myOrdersHistory: "/:restaurantId/history",
     orderDetail: "/:orderId",

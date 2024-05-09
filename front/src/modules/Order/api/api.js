@@ -1,5 +1,11 @@
 import myApi from "@lib/axios"
 
+import { getRestaurantRequest } from "@modules/Restaurants/api/api"
+import { getAllTablesRequest } from "@modules/Tables/api/api"
+import { getRestaurantMenuRequest } from "@modules/Menu/api/api"
+
+export { getRestaurantRequest, getAllTablesRequest, getRestaurantMenuRequest }
+
 export const getByOwnerAllOrders = async (restaurantId) => {
   try {
     const response = await myApi.get(`/api/restaurants/${restaurantId}/orders`)

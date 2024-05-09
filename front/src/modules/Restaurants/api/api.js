@@ -7,9 +7,14 @@ import {
 
 export { deleteByAdminRestaurantRequest, getAllCities, getAllServices }
 
-export const getAllRestaurantsRequest = async () => {
+export const getAllRestaurantsRequest = async (param) => {
   try {
-    const response = await myApi.get(`/api/restaurants`)
+    const response = await myApi.get(`/api/restaurants`, {
+			params: {
+        page: param.pageIndex,
+        limit: param.limit,
+      },
+		})
     return response.data
   } catch (error) {
     if (error.response) {
@@ -33,7 +38,7 @@ export const getByAdminRestaurantRequest = async (restaurantId) => {
   }
 }
 
-export const getByOwnerRestaurantRequest = async (restaurantId) => {
+export const getRestaurantRequest = async (restaurantId) => {
   try {
     const response = await myApi.get(`/api/restaurants/${restaurantId}`)
     return response.data

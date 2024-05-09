@@ -20,10 +20,8 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
     type: "",
     description: "",
     price: 0,
-    available: true,
+    status: "Доступен",
   })
-
-	useEffect(() => {console.log(dataForCreate)}, [dataForCreate])
 
   const isFormValid = () => {
     return (
@@ -36,7 +34,6 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
 
   const createMenuFood = () => {
     if (isFormValid()) {
-      console.log(true)
       createByOwnerMenuItemRequest(restaurantId, dataForCreate)
         .then(() => {
           navigate(
@@ -95,7 +92,7 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
           onChange={(e) => {
             setDataForCreate((prevState) => ({
               ...prevState,
-              price: e.target.value,
+              price: +e.target.value,
             }))
           }}
         />
@@ -103,8 +100,8 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
           label={"Доступность"}
           placeholder={"Доступен"}
           options={[
-            { label: "Доступен", value: true },
-            { label: "Не доступен", value: false },
+            { label: "Доступен", value: "Доступен" },
+            { label: "Не доступен", value: "Не доступен" },
           ]}
           onChange={(e) => {
             setDataForCreate((prevState) => ({

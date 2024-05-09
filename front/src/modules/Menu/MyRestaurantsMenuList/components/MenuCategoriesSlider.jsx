@@ -26,7 +26,7 @@ const MenuCategoriesSlider = ({
         loop={false}
         className="h-[40px]"
       >
-        {menuTypes.length > 0 &&
+        {menuTypes?.length > 0 &&
           menuTypes?.map((category, index) => (
             <SwiperSlide
               key={category}

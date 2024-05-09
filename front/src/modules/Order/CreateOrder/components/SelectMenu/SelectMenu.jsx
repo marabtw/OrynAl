@@ -1,20 +1,53 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import FoodCategories from "./components/FoodCategories"
 import FoodCard from "./components/FoodCard"
 import Cart from "./components/Cart"
 import { CartIcon } from "@ui/icons/icons"
 
-import { dataSalads } from "@data/bookingData"
+import { getRestaurantMenuRequest } from "../../../api/api"
 
-const SelectMenu = () => {
+const SelectMenu = ({ restaurantId }) => {
   const [showCart, setShowCart] = useState(false)
+  const [menu, setMenu] = useState([])
+  const [currentTypeOfMenu, setCurrentTypeOfMenu] = useState("")
+  const [typesOfMenu, setTypesOfMenu] = useState([])
+  const [filteredMenu, setFilteredMenu] = useState([])
+
+  useEffect(() => {
+    getRestaurantMenuRequest(restaurantId)
+      .then((res) => {
+        setMenu(res.data)
+        setTypesOfMenu(Object.keys(res.data))
+        setCurrentTypeOfMenu(Object.keys(res.data)[0])
+      })
+      .catch((error) => console.log(error))
+  }, [restaurantId])
+
+  useEffect(() => {
+    setFilteredMenu(
+      menu[currentTypeOfMenu]?.map(
+        ({ id, image, name, type, description, price, status }) => {
+          return {
+            id,
+            image,
+            name,
+            type,
+            description,
+            price,
+            foodStatus: status,
+          }
+        }
+      )
+    )
+  }, [currentTypeOfMenu])
+
   return (
-    <div className="relative flex gap-[50px] w-full mx-[180px] mt-[200px] max-2xl:mx-[80px] max-lg:mx-[20px]">
-      <div className="max-w-full">
-        <FoodCategories />
-        <div className="grid grid-cols-3 gap-y-[100px] gap-x-[20px] max-w-full mt-[100px] max-xl:grid-cols-2 max-md:grid-cols-1">
-          {dataSalads.map((salad) => (
-            <FoodCard key={salad.id} salad={salad} />
+    <div className="relative flex justify-between gap-[50px] mx-[180px] mt-[200px] max-2xl:mx-[80px] max-lg:mx-[20px]">
+      <div className="">
+        <FoodCategories categories={typesOfMenu} selectCategory={setCurrentTypeOfMenu}/>
+        <div className="grid grid-cols-3 gap-y-[100px] gap-x-[20px] mt-[100px] max-xl:grid-cols-2 max-md:grid-cols-1">
+          {filteredMenu?.map((food) => (
+            <FoodCard key={food.id} foodData={food} />
           ))}
         </div>
       </div>

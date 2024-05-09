@@ -1,22 +1,37 @@
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import CreateOrder from "../CreateOrder/CreateOrder"
 import RestaurantDetails from "@components/RestaurantDetails/RestaurantDetails"
 import LocationInfo from "@components/LocationInfo/LocationInfo"
+import Loading from "@components/Loading/Loading"
 
-import { dataRestaurant } from "@data/restaurantData"
+import { UIContext } from "@context/UIContext"
+import { getRestaurantRequest } from "../api/api"
 
 const CreateOrderPage = () => {
-  const { id } = useParams()
-  const [data, setData] = useState(dataRestaurant)
+  const { isLoading } = useContext(UIContext)
+  const { restaurantId } = useParams()
+  const [restaurant, setRestaurant] = useState({})
+
+  useEffect(() => {
+    getRestaurantRequest(restaurantId)
+      .then((res) => {
+        setRestaurant(res.data)
+      })
+      .catch((err) => console.log(err))
+      .finally()
+  }, [restaurantId])
 
   return (
-    <div className="mx-[50px] bg-white max-lg:mx-[10px]">
-			<LocationInfo text="Алматы, ​проспект Абылай хана, 55"/>
-			<RestaurantDetails data={data}/>
-			<CreateOrder/>
-    </div>
+    <>
+      {isLoading && <Loading />}
+      <div className="mx-[50px] bg-white max-lg:mx-[10px]">
+        <LocationInfo text={restaurant.address} />
+        <RestaurantDetails restaurantData={restaurant} />
+        <CreateOrder restaurantId={restaurantId}/>
+      </div>
+    </>
   )
 }
 

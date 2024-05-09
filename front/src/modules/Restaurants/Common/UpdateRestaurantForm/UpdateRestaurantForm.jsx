@@ -8,7 +8,7 @@ import {
   updateByAdminRestaurantRequest,
   updateByOwnerRestaurantRequest,
   deleteByAdminRestaurantRequest,
-  getByOwnerRestaurantRequest,
+  getRestaurantRequest,
 } from "../../api/api"
 
 import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
@@ -47,7 +47,7 @@ const UpdateRestaurantForm = () => {
     const updateRequest =
       userRole === "admin"
         ? getByAdminRestaurantRequest
-        : getByOwnerRestaurantRequest
+        : getRestaurantRequest
 
     updateRequest(restaurantId)
       .then((response) => {

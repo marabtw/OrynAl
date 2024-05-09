@@ -1,8 +1,16 @@
 import myApi from "@lib/axios"
 
-export const getByOwnerAllTablesRequest = async (restaurantId) => {
+export const getAllTablesRequest = async (restaurantId, param) => {
   try {
-    const response = await myApi.get(`/api/restaurants/${restaurantId}/tables`)
+    const response = await myApi.get(
+      `/api/restaurants/${restaurantId}/tables`,
+      {
+        params: {
+          page: param.pageIndex,
+          limit: param.limit,
+        },
+      }
+    )
     return response.data
   } catch (error) {
     if (error.response) {

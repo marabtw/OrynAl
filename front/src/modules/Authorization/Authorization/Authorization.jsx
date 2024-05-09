@@ -1,5 +1,6 @@
 import { useState, useContext, useMemo } from "react"
 import { Link } from "react-router-dom"
+import { jwtDecode } from "jwt-decode"
 
 import { AuthContext } from "@context/AuthContext"
 
@@ -29,13 +30,16 @@ const Authorization = () => {
     }
   }, [userRole])
 
-  window.addEventListener("beforeunload", function () {
+  window.addEventListener("beforeunload", () => {
+    localStorage.removeItem("isFirstVisit")
+  })
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const isFirstVisit = localStorage.getItem("isFirstVisit")
     const accessCode = document.cookie
       .split(";")
       .some((cookie) => cookie.trim().startsWith("accessCode="))
-    if (!accessCode) {
-      // console.log("object")
-      localStorage.removeItem("user")
+    if (isFirstVisit) {
     }
   })
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 
 import {
-  getByOwnerRestaurantMenuRequest,
+  getRestaurantMenuRequest,
   deleteByOwnerMenuItemRequest,
 } from "../api/api"
 
@@ -29,7 +29,7 @@ const MyRestaurantsMenuList = ({ restaurantId }) => {
   const [filteredMenu, setFilteredMenu] = useState([])
 
   useEffect(() => {
-    getByOwnerRestaurantMenuRequest(restaurantId)
+    getRestaurantMenuRequest(restaurantId)
       .then((res) => {
         setMenu(res.data)
         setTypesOfMenu(Object.keys(res.data))
@@ -40,23 +40,25 @@ const MyRestaurantsMenuList = ({ restaurantId }) => {
 
   useEffect(() => {
     setFilteredMenu(
-      menu[currentTypeOfMenu]?.map(({ id, name, type, description, price, available }) => {
-        return {
-          id,
-          e1: "no image",
-          name,
-          type,
-          description,
-          price,
-          available,
+      menu[currentTypeOfMenu]?.map(
+        ({ id, image, name, type, description, price, status }) => {
+          return {
+            id,
+            image,
+            name,
+            type,
+            description,
+            price,
+            foodStatus: status,
+          }
         }
-      })
+      )
     )
   }, [currentTypeOfMenu])
 
   const deleteFoodById = async (foodId) => {
     await deleteByOwnerMenuItemRequest(restaurantId, foodId)
-    getByOwnerRestaurantMenuRequest(restaurantId)
+    getRestaurantMenuRequest(restaurantId)
       .then((res) => {
         setMenu(res.data)
         setTypesOfMenu(Object.keys(res.data))
@@ -83,12 +85,14 @@ const MyRestaurantsMenuList = ({ restaurantId }) => {
   return (
     <ul className="flex flex-col gap-[20px]">
       <ListCategories categories={categories} />
-      <MenuCategoriesSlider
-        menuTypes={typesOfMenu}
-        getCategory={(type) => {
-          setCurrentTypeOfMenu(type)
-        }}
-      />
+      {filteredMenu && (
+        <MenuCategoriesSlider
+          menuTypes={typesOfMenu}
+          getCategory={(type) => {
+            setCurrentTypeOfMenu(type)
+          }}
+        />
+      )}
       {filteredMenu?.length > 0 ? (
         filteredMenu.map((itemData, index) => (
           <ListItem

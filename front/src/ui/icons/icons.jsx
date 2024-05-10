@@ -14,7 +14,12 @@ import {
 } from "react-icons/fa6"
 import { GoClock } from "react-icons/go"
 import { IoCallOutline, IoMenu } from "react-icons/io5"
-import { BsPlusCircle, BsThreeDotsVertical, BsThreeDots } from "react-icons/bs"
+import {
+  BsPlusCircle,
+  BsThreeDotsVertical,
+  BsThreeDots,
+  BsTrash,
+} from "react-icons/bs"
 import { CiGrid2H, CiGrid41 } from "react-icons/ci"
 import { VscAccount } from "react-icons/vsc"
 import { FiUser } from "react-icons/fi"
@@ -52,4 +57,5 @@ export {
   FaCartPlus as CartIcon,
   AiOutlineEye as ShowIcon,
   AiOutlineEyeInvisible as HideIcon,
+	BsTrash as TrashIcon,
 }

@@ -40,14 +40,13 @@ const UpdateRestaurantForm = () => {
     rainy_rhythm: false,
     kids_playroom: false,
     own_confectioner: false,
-    status: "",
+    status: true,
   })
+
 
   useEffect(() => {
     const updateRequest =
-      userRole === "admin"
-        ? getByAdminRestaurantRequest
-        : getRestaurantRequest
+      userRole === "admin" ? getByAdminRestaurantRequest : getRestaurantRequest
 
     updateRequest(restaurantId)
       .then((response) => {
@@ -81,8 +80,6 @@ const UpdateRestaurantForm = () => {
       }, {}),
     }
 
-    // console.log(updatedData)
-    // return
     const updateRequest =
       userRole === "admin"
         ? updateByAdminRestaurantRequest

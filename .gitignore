@@ -17,6 +17,7 @@
 /front/.env.development.local
 /front/.env.test.local
 /front/.env.production.local
+/front/package-lock.json
 
 /front/npm-debug.log*
 /front/yarn-debug.log*

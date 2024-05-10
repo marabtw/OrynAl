@@ -10,6 +10,8 @@ import ListItem from "@components/ListItem/ListItem"
 import { removeWildcard } from "@helpers/helpers"
 import { ROUTERS } from "@router/Router.config"
 
+import Pagination from "@components/Pagination/Pagination"
+
 const categories = [
   "ID",
   "Фото",
@@ -22,8 +24,16 @@ const categories = [
 const MyRestaurantTablesList = ({ restaurantId }) => {
   const [tables, setTables] = useState([])
 
+	const [totalItems, setTotalItems] = useState(0)
+
+	const [params, setParams] = useState({
+    pageIndex: 1,
+    limit: 10,
+  })
+
+
   useEffect(() => {
-    getAllTablesRequest(restaurantId)
+    getAllTablesRequest(restaurantId, params)
       .then((res) => {
         setTables(
           res.data.items.map(({ id, image, name, type, capacity }) => {
@@ -70,6 +80,14 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
           Tables not found
         </div>
       )}
+			<Pagination
+          totalPage={Math.ceil(totalItems / params.limit)}
+          getCurrentPage={(index) => {
+            setParams((prev) => {
+              return { ...prev, pageIndex: index }
+            })
+          }}
+        />
     </ul>
   )
 }

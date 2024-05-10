@@ -56,28 +56,11 @@ const RestaurantsList = () => {
         }
       })
       .catch((error) => {
+        setRestaurantsData([])
         console.log(error)
       })
       .finally(setIsLoading(false))
   }, [param])
-
-  const getMenuActions = (restaurantId) => {
-    return [
-      {
-        action: "Удалить",
-        onClick: () => deleteRestaurant(restaurantId),
-      },
-      {
-        action: "Посмотреть",
-        to: `${removeWildcard(
-          ROUTERS.Restaurant.root
-        )}${ROUTERS.Restaurant.updateRestaurant.replace(
-          ":restaurantId",
-          restaurantId
-        )}`,
-      },
-    ]
-  }
 
   const deleteRestaurant = async (ownerId) => {
     setIsLoading(true)
@@ -102,9 +85,28 @@ const RestaurantsList = () => {
         }
       })
       .catch((error) => {
+        setRestaurantsData([])
         console.log(error)
       })
       .finally(setIsLoading(false))
+  }
+
+  const getMenuActions = (restaurantId) => {
+    return [
+      {
+        action: "Удалить",
+        onClick: () => deleteRestaurant(restaurantId),
+      },
+      {
+        action: "Посмотреть",
+        to: `${removeWildcard(
+          ROUTERS.Restaurant.root
+        )}${ROUTERS.Restaurant.updateRestaurant.replace(
+          ":restaurantId",
+          restaurantId
+        )}`,
+      },
+    ]
   }
 
   return (

@@ -7,13 +7,17 @@ import { useContext } from "react"
 import { UIContext } from "@context/UIContext"
 import Loading from "@components/Loading/Loading"
 
+import { ToastContainer, toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+
 function App() {
   const currentPath = useLocation().pathname
   const { isLoading } = useContext(UIContext)
 
   return (
     <>
-      {/* {isLoading && <Loading />} */}
+      {isLoading && <Loading />}
+      <ToastContainer />
       <div className="relative font-poppins">
         {currentPath !==
           `${removeWildcard(ROUTERS.Authorization.root)}${

@@ -3,7 +3,11 @@ import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrappe
 import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
 import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/FormSelectWrapper"
 import FormSelect from "@ui/Select/FormSelect"
-import { getAllCities, getAllServices } from "@modules/Management/api/api"
+import {
+  getAllCities,
+  getAllServices,
+  getTimes,
+} from "@modules/Management/api/api"
 
 const Form = ({ dataForUpdate, setDataForUpdate }) => {
   const checkService = (service) => {
@@ -97,7 +101,7 @@ const Form = ({ dataForUpdate, setDataForUpdate }) => {
             <div className="w-1/2">
               <FormSelect
                 placeholder={"10:00"}
-                options={[{ value: "2006-01-02T15:04:05Z", label: "22.00" }]}
+                options={getTimes()}
                 onChange={(e) => {
                   setDataForUpdate((prevState) => ({
                     ...prevState,
@@ -110,7 +114,7 @@ const Form = ({ dataForUpdate, setDataForUpdate }) => {
             <div className="w-1/2">
               <FormSelect
                 placeholder={"22:00"}
-                options={[{ value: "2006-01-02T15:04:05Z", label: "22.00" }]}
+                options={getTimes()}
                 onChange={(e) => {
                   setDataForUpdate((prevState) => ({
                     ...prevState,
@@ -136,7 +140,10 @@ const Form = ({ dataForUpdate, setDataForUpdate }) => {
       <FormSelectWrapper
         label={"Статус русторана"}
         placeholder={"Активный"}
-        options={[{label: "Активный",value: true}, {label: "Не активный",value: false}]}
+        options={[
+          { label: "Активный", value: true },
+          { label: "Не активный", value: false },
+        ]}
         onChange={(e) => {
           setDataForUpdate((prevState) => ({
             ...prevState,

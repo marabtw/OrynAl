@@ -1,10 +1,14 @@
 import { useEffect, useState, useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   getByAdminAllOwnersRequest,
   сreateByAdminRestaurantRequest,
   getAllServices,
   getAllCities,
+	getTimes,
 } from "../../api/api"
+import { removeWildcard } from "@helpers/helpers"
+import { ROUTERS } from "@router/Router.config"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
 import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
@@ -13,9 +17,6 @@ import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/Form
 import Button from "@ui/Button/Button"
 import FormSelect from "@ui/Select/FormSelect"
 import FormCheckbox from "@ui/Field/FormCheckbox"
-import { useNavigate } from "react-router-dom"
-import { removeWildcard } from "@helpers/helpers"
-import { ROUTERS } from "@router/Router.config"
 
 const CreateRestaurantForm = () => {
   const navigate = useNavigate()
@@ -83,32 +84,6 @@ const CreateRestaurantForm = () => {
         own_confectioner: !dataForCreate.own_confectioner,
       }))
     }
-  }
-
-  const getTimes = () => {
-    const currentDate = new Date()
-
-    // Устанавливаем минуты на 0, чтобы начать с часа
-    currentDate.setMinutes(0)
-
-    // Создаем список часов с интервалом в 30 минут
-    const options = []
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minute of [0, 30]) {
-        const dateCopy = new Date(currentDate.getTime())
-        dateCopy.setHours(hour)
-        dateCopy.setMinutes(minute)
-        const isoString = dateCopy.toISOString()
-        options.push({
-          value: isoString,
-          label: `${String(hour).padStart(2, "0")}:${String(minute).padStart(
-            2,
-            "0"
-          )}`,
-        })
-      }
-    }
-    return options
   }
 
   const isFormValid = () => {

@@ -18,21 +18,22 @@ const sortLists = [
   "Терраса",
 ]
 
-const TableReservation = ({ restaurantId }) => {
+const TableReservation = ({ restaurantId, getTableId }) => {
   const { setIsLoading } = useContext(UIContext)
   const [timeFilter, setTimeFilter] = useState({ from: "", to: "" })
   const [tables, setTables] = useState([])
+  const [selectedTableId, setSelectedTableId] = useState("")
 
   const [totalItems, setTotalItems] = useState(0)
 
-  const [param, setParam] = useState({
+  const [params, setParams] = useState({
     pageIndex: 1,
-    limit: 10,
+    limit: 8,
   })
 
   useEffect(() => {
     setIsLoading(true)
-    getAllTablesRequest(restaurantId, param)
+    getAllTablesRequest(restaurantId, params)
       .then((res) => {
         if (res.data === null) setTables([])
         else {
@@ -47,9 +48,7 @@ const TableReservation = ({ restaurantId }) => {
       })
       .catch((error) => console.log(error))
       .finally(setIsLoading(false))
-  }, [param])
-
-	
+  }, [params])
 
   return (
     <>
@@ -62,16 +61,20 @@ const TableReservation = ({ restaurantId }) => {
         <div className="grid grid-cols-4 justify-between gap-[30px] mt-[50px] max-2xl:grid-cols-3 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1">
           {tables.map((table) => (
             <TableCard
-              key={table.type + `${Math.random() * 99999}`}
+              key={table.id}
               tableData={table}
-
+              getTableId={(id) => {
+								setSelectedTableId(id)
+                getTableId(id)
+              }}
+							selectedTableId={selectedTableId}
             />
           ))}
         </div>
         <Pagination
-          totalPage={Math.ceil(totalItems / param.limit)}
+          totalPage={Math.ceil(totalItems / params.limit)}
           getCurrentPage={(index) => {
-            setParam((prev) => {
+            setParams((prev) => {
               return { ...prev, pageIndex: index }
             })
           }}

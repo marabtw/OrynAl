@@ -1,5 +1,5 @@
 import Button from "@ui/Button/Button"
-const TableCard = ({ tableData,  }) => {
+const TableCard = ({ tableData, getTableId, selectedTableId }) => {
   return (
     <div className="relative min-h-[362px] w-full flex flex-col items-center justify-between px-[20px] py-[20px] font-poppins border-4 border-[#8AB8FF] rounded-[31px]">
       <div
@@ -22,14 +22,29 @@ const TableCard = ({ tableData,  }) => {
         <div className="absolute left-1/2 translate-x-[-50%] w-[10px] aspect-square bg-[#C4C4C4] rounded-full"></div>
         <h3>Вместимость: {tableData.capacity}</h3>
       </div>
-      <Button
-        text="Выбрать"
-        gradient={true}
-        className={
-          "text-[20px] font-[600] leading-[30px] px-[10px] py-[10px] rounded-[10px]"
-        }
-				onClick={() => {}}
-      />
+      {selectedTableId === tableData.id ? (
+        <Button
+          text="Выбрано"
+          backgroundColor={"#4ade80"}
+          spacingClass={"px-[10px] py-[10px]"}
+          textStyles={"text-[18px] font-[600] leading-[26px] "}
+          rounded={"rounded-[10px]"}
+          onClick={() => {
+            getTableId(-1)
+          }}
+        />
+      ) : (
+        <Button
+          text="Выбрать"
+          gradient={true}
+          spacingClass={"px-[10px] py-[10px]"}
+          textStyles={"text-[18px] font-[600] leading-[26px] "}
+          rounded={"rounded-[10px]"}
+          onClick={() => {
+            if (selectedTableId !== tableData.id) getTableId(tableData.id)
+          }}
+        />
+      )}
     </div>
   )
 }

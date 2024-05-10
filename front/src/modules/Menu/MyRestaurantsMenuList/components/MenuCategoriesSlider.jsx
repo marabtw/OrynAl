@@ -36,8 +36,8 @@ const MenuCategoriesSlider = ({
               }}
             >
               <div
-                className={`flex justify-center items-center w-full h-full text-center rounded-xl ${
-                  index === activeIndex ? "bg-[#6aa7fc] text-white" : "bg-white hover:bg-gray-200"
+                className={`flex justify-center items-center w-full h-full text-center text-[16px] font-semibold rounded-xl ${
+                  index === activeIndex ? "bg-[#6aa7fc] text-white" : ""
                 }`}
               >
                 {category}

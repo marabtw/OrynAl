@@ -1,5 +1,8 @@
 import { useEffect, useState, useContext } from "react"
-import { getByAdminAllClientsRequest, deleteByAdminClientRequest } from "../../api/api"
+import {
+  getByAdminAllClientsRequest,
+  deleteByAdminClientRequest,
+} from "../../api/api"
 import ListCategories from "@components/ListCategories/ListCategories"
 import ListItem from "@components/ListItem/ListItem"
 import Pagination from "@components/Pagination/Pagination"
@@ -14,14 +17,14 @@ const ClientsList = () => {
 
   const [totalItems, setTotalItems] = useState(0)
 
-  const [param, setParam] = useState({
+  const [params, setParams] = useState({
     pageIndex: 1,
     limit: 10,
   })
 
   useEffect(() => {
     setIsLoading(true)
-    getByAdminAllClientsRequest(param.pageIndex, param.limit)
+    getByAdminAllClientsRequest(params)
       .then((res) => {
         if (!res.data) setClients([])
         else {
@@ -34,14 +37,17 @@ const ClientsList = () => {
           setTotalItems(res.data.totalItems)
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        setClients([])
+        console.log(error)
+      })
       .finally(() => setIsLoading(false))
-  }, [param])
+  }, [params])
 
   const deleteClientData = async (clientId) => {
-		setIsLoading(true)
+    setIsLoading(true)
     await deleteByAdminClientRequest(clientId)
-    getByAdminAllClientsRequest(param.pageIndex, param.limit)
+    getByAdminAllClientsRequest(params)
       .then((res) => {
         if (!res.data) setClients([])
         else {
@@ -54,7 +60,10 @@ const ClientsList = () => {
           setTotalItems(res.data.totalItems)
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        setClients([])
+        console.log(error)
+      })
       .finally(() => setIsLoading(false))
   }
 
@@ -81,9 +90,9 @@ const ClientsList = () => {
           />
         ))}
         <Pagination
-          totalPage={Math.ceil(totalItems / param.limit)}
+          totalPage={Math.ceil(totalItems / params.limit)}
           getCurrentPage={(index) => {
-            setParam((prev) => {
+            setParams((prev) => {
               return { ...prev, pageIndex: index }
             })
           }}

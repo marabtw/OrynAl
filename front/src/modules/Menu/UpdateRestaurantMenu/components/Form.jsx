@@ -24,7 +24,7 @@ const Form = ({ update, setDataForUpdate }) => {
       <FormSelectWrapper
         label={"Тип меню"}
         placeholder={"Фаст-фуд"}
-				options={getMenuTypes()}
+        options={getMenuTypes()}
         onChange={(e) => {
           setDataForUpdate((prevState) => ({
             ...prevState,
@@ -43,23 +43,28 @@ const Form = ({ update, setDataForUpdate }) => {
         }}
       />
       <div className="grid grid-cols-2 gap-[20px] max-md:grid-cols-1">
-        <FormSelectWrapper
-          label={"Цена"}
-          placeholder={`1200 тенге`}
+        <FormInputTextWrapper
+          label={"Цена:"}
+          placeholder={"1200 тенге"}
+          type="number"
           onChange={(e) => {
             setDataForUpdate((prevState) => ({
               ...prevState,
-              price: e.value,
+              price: +e.target.value,
             }))
           }}
         />
-        <FormInputTextWrapper
-          label="Статус"
-          placeholder={"Забронирован"}
+        <FormSelectWrapper
+          label={"Доступность"}
+          placeholder={"Доступен"}
+          options={[
+            { label: "Доступен", value: "Доступен" },
+            { label: "Не доступен", value: "Не доступен" },
+          ]}
           onChange={(e) => {
             setDataForUpdate((prevState) => ({
               ...prevState,
-              status: e.target.value,
+              status: e.value,
             }))
           }}
         />
@@ -68,7 +73,7 @@ const Form = ({ update, setDataForUpdate }) => {
         text="Изменить"
         gradient={true}
         spacingClass={"mx-auto px-[110px] py-[20px]"}
-				onClick={update}
+        onClick={update}
       />
     </form>
   )

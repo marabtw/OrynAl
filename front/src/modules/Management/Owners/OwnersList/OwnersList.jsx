@@ -14,14 +14,14 @@ const OwnersList = () => {
 
   const [totalItems, setTotalItems] = useState(0)
 
-  const [param, setParam] = useState({
+  const [params, setParams] = useState({
     pageIndex: 1,
     limit: 10,
   })
 
   useEffect(() => {
     setIsLoading(true)
-    getByAdminAllOwnersRequest(param.pageIndex, param.limit)
+    getByAdminAllOwnersRequest(params.pageIndex, params.limit)
       .then((res) => {
         if (res.data === null) setOwnerData([])
         else {
@@ -34,14 +34,17 @@ const OwnersList = () => {
           setTotalItems(res.data.totalItems)
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+				setOwnerData([])
+				console.log(error)
+			})
       .finally(setIsLoading(false))
-  }, [param])
+  }, [params])
 
   const deleteOwnerData = async (ownerId) => {
     setIsLoading(true)
     await deleteByAdminOwnerRequest(ownerId)
-    getByAdminAllOwnersRequest(param.pageIndex, param.limit)
+    getByAdminAllOwnersRequest(params.pageIndex, params.limit)
       .then((res) => {
         if (!res.data) setOwnerData([])
         else {
@@ -54,7 +57,10 @@ const OwnersList = () => {
           setTotalItems(res.data.totalItems)
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+				setOwnerData([])
+				console.log(error)
+			})
       .finally(setIsLoading(false))
   }
 
@@ -83,9 +89,9 @@ const OwnersList = () => {
             ))
           : ""}
         <Pagination
-          totalPage={Math.ceil(totalItems / param.limit)}
+          totalPage={Math.ceil(totalItems / params.limit)}
           getCurrentPage={(index) => {
-            setParam((prev) => {
+            setParams((prev) => {
               return { ...prev, pageIndex: index }
             })
           }}

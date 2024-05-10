@@ -89,12 +89,12 @@ export const deleteByAdminRestaurantRequest = async (restaurantId) => {
   }
 }
 
-export const getByAdminAllClientsRequest = async (page = 1, limit = 15) => {
+export const getByAdminAllClientsRequest = async (params) => {
   try {
     const response = await myApi.get("/api/admin/clients", {
       params: {
-        page: page,
-        limit: limit,
+        page: params.pageIndex,
+        limit: params.limit,
       },
     })
     return response.data
@@ -119,7 +119,6 @@ export const deleteByAdminClientRequest = async (clientId) => {
     }
   }
 }
-
 
 export const getAllServices = () => {
   return [
@@ -149,4 +148,28 @@ export const getAllCities = () => {
       value: "Aktau",
     },
   ]
+}
+
+export const getTimes = () => {
+  const currentDate = new Date()
+
+  currentDate.setMinutes(0)
+
+  const options = []
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute of [0, 30]) {
+      const dateCopy = new Date(currentDate.getTime())
+      dateCopy.setHours(hour)
+      dateCopy.setMinutes(minute)
+      const isoString = dateCopy.toISOString()
+      options.push({
+        value: isoString,
+        label: `${String(hour).padStart(2, "0")}:${String(minute).padStart(
+          2,
+          "0"
+        )}`,
+      })
+    }
+  }
+  return options
 }

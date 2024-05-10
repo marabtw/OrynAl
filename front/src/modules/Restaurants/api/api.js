@@ -7,12 +7,12 @@ import {
 
 export { deleteByAdminRestaurantRequest, getAllCities, getAllServices }
 
-export const getAllRestaurantsRequest = async (param) => {
+export const getAllRestaurantsRequest = async (params) => {
   try {
     const response = await myApi.get(`/api/restaurants`, {
 			params: {
-        page: param.pageIndex,
-        limit: param.limit,
+        page: params.pageIndex,
+        limit: params.limit,
       },
 		})
     return response.data

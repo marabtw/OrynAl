@@ -16,9 +16,9 @@ root.render(
     <BrowserRouter>
       <AuthContextProvider>
         <UIContextProvider>
-          {/* <Provider store={store}> */}
+          <Provider store={store}>
             <App />
-          {/* </Provider> */}
+          </Provider>
         </UIContextProvider>
       </AuthContextProvider>
     </BrowserRouter>

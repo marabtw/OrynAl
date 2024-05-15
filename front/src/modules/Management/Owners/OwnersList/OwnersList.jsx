@@ -1,99 +1,119 @@
-import { useContext, useEffect, useState } from "react"
-import { getByAdminAllOwnersRequest, deleteByAdminOwnerRequest } from "../../api/api"
-import ListCategories from "@components/ListCategories/ListCategories"
-import ListItem from "@components/ListItem/ListItem"
-import Pagination from "@components/Pagination/Pagination"
-import { UIContext } from "@context/UIContext"
-import Loading from "@components/Loading/Loading"
+import { useEffect, useState } from "react"
+import { axios } from "@lib/axios"
+
+import {
+  getByAdminAllOwnersRequest,
+  deleteByAdminOwnerRequest,
+} from "../../api"
+import { useLoading, useToast } from "@hooks"
+import { isArraysEqualByIdWithSet } from "@utils"
+
+import ListCategories from "@components/ListCategories"
+import ListItem from "@components/ListItem"
+import Pagination from "@components/Pagination"
 
 const categories = ["id", "Имя", "Фамилия", "Почта", "Телефон", "Действие"]
 
 const OwnersList = () => {
-  const [ownersData, setOwnerData] = useState([])
-  const { isLoading, setIsLoading } = useContext(UIContext)
+  const setLoading = useLoading()
+  const showNotification = useToast()
 
-  const [totalItems, setTotalItems] = useState(0)
-
+  const [owners, setOwners] = useState([])
+  const [totalPage, setTotalPage] = useState(0)
   const [params, setParams] = useState({
     pageIndex: 1,
     limit: 10,
   })
 
+  let cancelTokenSource = null
+
   useEffect(() => {
-    setIsLoading(true)
-    getByAdminAllOwnersRequest(params.pageIndex, params.limit)
-      .then((res) => {
-        if (res.data === null) setOwnerData([])
-        else {
-          setOwnerData(
-            res.data.items.map((owner) => {
-              const { role, ...rest } = owner
-              return rest
-            })
-          )
-          setTotalItems(res.data.totalItems)
+    setLoading(true)
+    const cancelToken = axios.CancelToken.source()
+    getByAdminAllOwnersRequest({ params, cancelToken })
+      .then(({ data }) => {
+        updateOwnersList(data)
+        showNotification("Данные успешно загружены", "success")
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err.toString(), "error")
         }
       })
-      .catch((error) => {
-				setOwnerData([])
-				console.log(error)
-			})
-      .finally(setIsLoading(false))
+      .finally(() => setLoading(false))
+
+    return () => {
+      cancelToken.cancel()
+    }
   }, [params])
 
   const deleteOwnerData = async (ownerId) => {
-    setIsLoading(true)
-    await deleteByAdminOwnerRequest(ownerId)
-    getByAdminAllOwnersRequest(params.pageIndex, params.limit)
-      .then((res) => {
-        if (!res.data) setOwnerData([])
-        else {
-          setOwnerData(
-            res.data.items.map((owner) => {
-              const { role, ...rest } = owner
-              return rest
-            })
-          )
-          setTotalItems(res.data.totalItems)
-        }
+    setLoading(true)
+    if (cancelTokenSource) {
+      cancelTokenSource.cancel("Previous request cancelled")
+    }
+    cancelTokenSource = axios.CancelToken.source()
+    try {
+      await deleteByAdminOwnerRequest(ownerId)
+      showNotification("deleted", "success")
+      const { data } = await getByAdminAllOwnersRequest({
+        params,
+        cancelTokenSource,
       })
-      .catch((error) => {
-				setOwnerData([])
-				console.log(error)
-			})
-      .finally(setIsLoading(false))
+      updateOwnersList(data)
+    } catch (err) {
+      showNotification(err.toString(), "error")
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const getMenuActions = (id) => {
+  const updateOwnersList = (data) => {
+    if (data.items.length === 0) {
+      if (owners.length > 0) setOwners([])
+    } else {
+      const filteredItems = data.items.map(({ role, ...rest }) => rest)
+      if (isArraysEqualByIdWithSet(owners, filteredItems)) return
+      setOwners(filteredItems)
+    }
+    const newTotalPage = Math.ceil(data?.totalItems / params.limit) || 0
+    if (totalPage !== newTotalPage) setTotalPage(newTotalPage)
+  }
+
+  const getMenuActions = (ownerId) => {
     return [
       {
         action: "Удалить",
-        onClick: () => deleteOwnerData(id),
+        onClick: () => deleteOwnerData(ownerId),
       },
     ]
   }
 
   return (
     <>
-      {isLoading && <Loading />}
-      <ul className="flex flex-col gap-[20px]">
+      <ul className="flex flex-col gap-[20px] max-md:px-[20px] max-sm:px-0">
         <ListCategories categories={categories} />
-        {ownersData?.length > 0
-          ? ownersData?.map((element, index) => (
-              <ListItem
-                key={element.id}
-                elementData={element}
-                menuActions={getMenuActions(element.id)}
-                index={index}
-              />
-            ))
-          : ""}
+        {owners?.length > 0 ? (
+          owners.map((owner, index) => (
+            <ListItem
+              key={owner.id}
+              elementData={owner}
+              menuActions={getMenuActions(owner.id)}
+              index={index}
+            />
+          ))
+        ) : (
+          <p className="flex justify-center items-center text-[#b0b0b0]">
+            No items
+          </p>
+        )}
         <Pagination
-          totalPage={Math.ceil(totalItems / params.limit)}
+          totalPage={totalPage}
           getCurrentPage={(index) => {
-            setParams((prev) => {
-              return { ...prev, pageIndex: index }
-            })
+            if (params.pageIndex === index) return
+            setParams((prev) => ({ ...prev, pageIndex: index }))
           }}
         />
       </ul>

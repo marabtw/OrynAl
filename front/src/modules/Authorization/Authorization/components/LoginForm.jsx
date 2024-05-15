@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
 
 import { jwtDecode } from "jwt-decode"
-import { signinRequest } from "../../api/api"
+import { signinRequest } from "../../api"
 import { AuthContext } from "@context/AuthContext"
 
-import { isValidEmail, removeWildcard } from "@helpers/helpers"
+import { isValidEmail, removeWildcard } from "@helpers"
 import { ROUTERS } from "@router/Router.config"
 
 import AuthorizationFormsInput from "./AuthorizationFormsInput"

@@ -1,5 +1,5 @@
 import MyRestaurantsList from "../Owner/MyRestaurantsList/MyRestaurantsList"
-import PageWrapper from "@components/PageWrapper/PageWrapper"
+import PageWrapper from "@components/PageWrapper"
 import PageHeading from "@ui/Heading/PageHeading"
 
 const MyRestaurantsPage = () => {

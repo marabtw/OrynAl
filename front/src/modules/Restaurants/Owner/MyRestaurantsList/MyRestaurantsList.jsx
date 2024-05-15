@@ -1,46 +1,63 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import { axios } from "@lib/axios"
 
-import { getAllRestaurantsRequest } from "@modules/Restaurants/api/api"
-import { UIContext } from "@context/UIContext"
+import { getAllRestaurantsRequest } from "../../api"
 
+import { useToast, useLoading } from "@hooks"
+import { isArraysEqualByIdWithSet } from "@utils/index"
+
+import Pagination from "@components/Pagination"
 import RestaurantCard from "./components/MyRestaurantCard"
 import { Grid1x2Icon, Grid2x2Icon } from "@ui/icons/icons"
-import Pagination from "@components/Pagination/Pagination"
-
-import Loading from "@components/Loading/Loading"
 
 const MyRestaurantsList = () => {
-  const { isLoading, setIsLoading } = useContext(UIContext)
+  const setLoading = useLoading()
+  const showNotification = useToast()
+
   const [displayType, setDisplayType] = useState("grid")
   const [myRestaurants, setMyRestaurants] = useState([])
 
-  const [totalItems, setTotalItems] = useState(0)
-
+  const [totalPage, setTotalPage] = useState(0)
   const [params, setParams] = useState({
     pageIndex: 1,
-    limit: 8,
+    limit: 10,
   })
 
   useEffect(() => {
-    setIsLoading(true)
-    getAllRestaurantsRequest(params)
-      .then((res) => {
-        setMyRestaurants(
-          res.data.items.map((item) => {
-            return {
-              ...item,
-              restaurantStatus: item.status,
-            }
-          })
-        )
+    setLoading(true)
+    const cancelToken = axios.CancelToken.source()
+
+    getAllRestaurantsRequest({ params, cancelToken })
+      .then(({ data }) => {
+        if (data.items.length === 0) {
+          if (myRestaurants?.length > 0) setMyRestaurants([])
+        } else {
+          const filteredItems = data.items.map(({ status, ...rest }) => ({
+            ...rest,
+            restaurantStatus: status,
+          }))
+          if (isArraysEqualByIdWithSet(filteredItems, myRestaurants)) return
+          setMyRestaurants(filteredItems)
+        }
+        const newTotalPage = Math.ceil(data?.totalItems / params.limit) || 0
+        if (totalPage !== newTotalPage) setTotalPage(newTotalPage)
       })
-      .catch((error) => console.log(error))
-      .finally(() => setIsLoading(false))
-  }, [])
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err.toString(), "error")
+        }
+      })
+      .finally(() => setLoading(false))
+
+    return () => {
+      cancelToken.cancel()
+    }
+  }, [params])
 
   return (
     <>
-      {isLoading && <Loading />}
       <div className="flex flex-col gap-[30px] max-lg:gap-[10px]">
         <div className="flex justify-between">
           <h3 className="text-[16px] font-[700] leading-[24px]">
@@ -76,18 +93,25 @@ const MyRestaurantsList = () => {
               : "flex flex-col gap-[30px]"
           }`}
         >
-          {myRestaurants?.map((restaurant, index) => (
-            <RestaurantCard
-              key={restaurant.id}
-              data={restaurant}
-              displayType={displayType}
-              index={index}
-            />
-          ))}
+          {myRestaurants?.length > 0 ? (
+            myRestaurants.map((restaurant, index) => (
+              <RestaurantCard
+                key={restaurant.id}
+                data={restaurant}
+                displayType={displayType}
+                index={index}
+              />
+            ))
+          ) : (
+            <p className="flex justify-center items-center text-[#b0b0b0]">
+              No items
+            </p>
+          )}
         </div>
         <Pagination
-          totalPage={Math.ceil(totalItems / params.limit)}
+          totalPage={totalPage}
           getCurrentPage={(index) => {
+            if (params.pageIndex === index) return
             setParams((prev) => {
               return { ...prev, pageIndex: index }
             })

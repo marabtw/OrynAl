@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { axios } from "@lib/axios"
 
 import { AuthContext } from "@context/AuthContext"
 import { ROUTERS } from "@router/Router.config"
@@ -9,19 +10,24 @@ import {
   updateByOwnerRestaurantRequest,
   deleteByAdminRestaurantRequest,
   getRestaurantRequest,
-} from "../../api/api"
+} from "../../api"
 
-import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
-import UpdateFormsContainer from "@components/UpdateFormsContainer/UpdateFormsContainer"
+import { useLoading, useToast } from "@hooks"
+import { removeWildcard } from "@helpers"
+import { isObjectEqual, formatTimeString } from "@utils"
+
+import PreviousDataDisplay from "@components/PreviousDataDisplay"
+import UpdateFormsContainer from "@components/UpdateFormsContainer"
+import Form from "./components/Form"
+import RestaurantImagesSlider from "./components/RestaurantImagesSlider"
 import Button from "@ui/Button/Button"
 
-import Form from "./components/Form"
-import { formatTimeString, removeWildcard } from "@helpers/helpers"
-import RestaurantImagesSlider from "./components/RestaurantImagesSlider/RestaurantImagesSlider"
-
 const UpdateRestaurantForm = () => {
-  const navigate = useNavigate()
   const { restaurantId } = useParams()
+  const navigate = useNavigate()
+  const setLoading = useLoading()
+  const showNotification = useToast()
+
   const { userRole } = useContext(AuthContext)
   const [restaurantData, setRestaurantData] = useState([])
 
@@ -43,31 +49,32 @@ const UpdateRestaurantForm = () => {
     status: true,
   })
 
-
   useEffect(() => {
-    const updateRequest =
+    setLoading(true)
+    const cancelToken = axios.CancelToken.source()
+
+    const getData =
       userRole === "admin" ? getByAdminRestaurantRequest : getRestaurantRequest
+    getData({ restaurantId, cancelToken })
+      .then(({ data }) => {
+        setRestaurantData(data)
+        showNotification("getted", "success")
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err.toString(), "error")
+        }
+      })
+      .finally(() => {
+        setLoading(false)
+      })
 
-    updateRequest(restaurantId)
-      .then((response) => {
-        setRestaurantData(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    return () => {
+      cancelToken.cancel()
+    }
   }, [])
-
-  const deleteRestaurantData = () => {
-    deleteByAdminRestaurantRequest(restaurantId)
-      .then(() => {
-        navigate(
-          `${removeWildcard(ROUTERS.Management.root)}${
-            ROUTERS.Management.allRestaurants
-          }`
-        )
-      })
-      .catch((error) => console.log(error))
-  }
 
   const UpdateRestaurantData = () => {
     const updatedData = {
@@ -79,6 +86,13 @@ const UpdateRestaurantForm = () => {
         return acc
       }, {}),
     }
+
+    if (isObjectEqual(updatedData, restaurantData)) {
+      showNotification("Данные не изменились", "info")
+      return
+    }
+
+    setLoading(true)
 
     const updateRequest =
       userRole === "admin"
@@ -96,9 +110,34 @@ const UpdateRestaurantForm = () => {
 
     updateRequest(restaurantId, updatedData)
       .then(() => {
+        showNotification("Успешно обновлено", "success")
         navigate(navigateAfter)
       })
-      .catch((error) => console.log(error))
+      .catch((err) => {
+        showNotification(err.toString(), "error")
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
+  const deleteRestaurantData = () => {
+    setLoading(true)
+    deleteByAdminRestaurantRequest(restaurantId)
+      .then(() => {
+        showNotification("deleted", "success")
+        navigate(
+          `${removeWildcard(ROUTERS.Management.root)}${
+            ROUTERS.Management.allRestaurants
+          }`
+        )
+      })
+      .catch((err) => {
+        showNotification(err.toString(), "error")
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const renameServices = () => {
@@ -119,13 +158,8 @@ const UpdateRestaurantForm = () => {
   return (
     <UpdateFormsContainer>
       <div className="flex flex-col justify-between gap-[30px] w-full max-md:gap-[15px]">
-        <h3 className="text-[20px] font-[600] leading-[30px] max-md:relative max-md:flex">
+        <h3 className="text-[20px] font-[600] max-md:text-center">
           Изменить ресторан
-          <img
-            src={restaurantData?.image}
-            alt=""
-            className="absolute right-0 top-0 w-[40px] rounded-full md:hidden"
-          />
         </h3>
         <div className="flex justify-between gap-[20px]">
           <div className="flex flex-col justify-between gap-[10px] w-full ">
@@ -139,7 +173,7 @@ const UpdateRestaurantForm = () => {
               value={restaurantData?.address}
             />
           </div>
-          <div className="max-w-[50%] w-[350px] rounded-[20px] border overflow-hidden max-md:hidden">
+          <div className="max-w-[50%] w-[350px] rounded-[20px] border overflow-hidden">
             {restaurantData.image && (
               <img
                 src={restaurantData?.image}
@@ -172,7 +206,7 @@ const UpdateRestaurantForm = () => {
           }
         />
       </div>
-      <Form dataForUpdate={dataForUpdate} setDataForUpdate={setDataForUpdate} />
+      <Form restaurantData={restaurantData} setDataForUpdate={setDataForUpdate} />
       {userRole === "admin" ? (
         <Button
           text="Удалить"

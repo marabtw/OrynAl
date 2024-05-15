@@ -1,4 +1,6 @@
 /server/.dev/
+/server/app/vendor
+/server/.idea
 
 # dependencies
 /front/node_modules

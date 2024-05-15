@@ -25,6 +25,24 @@ type RestaurantHandler struct {
 	*infrastructure.FormatParams
 }
 
+func (h *RestaurantHandler) GetServices(c echo.Context) error {
+	services, err := h.service.Restaurant.GetServices(c.Request().Context())
+	if err != nil {
+		h.logger.Error("Failed to get services:", err)
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed to get services",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, response.CustomResponse{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    services,
+	})
+}
+
 func (h *RestaurantHandler) DeleteRestaurant(c echo.Context) error {
 	restaurantID := c.Param("id")
 	if restaurantID == "" {

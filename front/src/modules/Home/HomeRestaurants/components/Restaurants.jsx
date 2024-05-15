@@ -1,13 +1,13 @@
 import RestaurantItemCard from "./RestaurantItemCard"
 import Search from "./Search"
-import SortByCategoryContainer from "@components/SortByCategoryContainer/SortByCategoryContainer"
+import SortByCategoryContainer from "@components/SortByCategoryContainer"
 
-import { getAllRestaurantsRequest } from "../../api/api"
+import { getAllRestaurantsRequest } from "../../api/index"
 import { useContext, useEffect, useState } from "react"
 import { UIContext } from "@context/UIContext"
 
-import Loading from "@components/Loading/Loading"
-import Pagination from "@components/Pagination/Pagination"
+import Loading from "@components/Loading"
+import Pagination from "@components/Pagination"
 
 const sortList = [
   "Сортировать в этом разделе",
@@ -24,21 +24,21 @@ const Restaurants = () => {
 
   const [totalItems, setTotalItems] = useState(0)
 
-  const [param, setParam] = useState({
+  const [params, setParams] = useState({
     pageIndex: 1,
     limit: 6,
   })
 
   useEffect(() => {
     setIsLoading(true)
-    getAllRestaurantsRequest(param)
+    getAllRestaurantsRequest({params})
       .then((res) => {
         setRestaurants(res.data.items)
 				setTotalItems(res.data.totalItems)
       })
       .catch((error) => console.log(error))
       .finally(setIsLoading(false))
-  }, [param])
+  }, [params])
 
   return (
     <>
@@ -55,9 +55,9 @@ const Restaurants = () => {
             ))}
         </div>
         <Pagination
-          totalPage={Math.ceil(totalItems / param.limit)}
+          totalPage={Math.ceil(totalItems / params.limit)}
           getCurrentPage={(index) => {
-            setParam((prev) => {
+            setParams((prev) => {
               return { ...prev, pageIndex: index }
             })
           }}

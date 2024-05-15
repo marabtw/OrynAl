@@ -1,37 +1,45 @@
 import { useEffect, useState } from "react"
+
 import {
-	getProfileRequest,
+  getProfileRequest,
   updateProfileRequest,
   deleteProfileRequest,
-} from "../api/api"
+} from "../api"
+import { useToast, useLoading } from "@hooks"
+import { isArraysEqualByIdWithSet } from "@utils/index"
 
 import UserDetails from "./components/UserDetails"
 import UserUpdateForm from "./components/UserUpdateForm"
 
 const MyProfile = () => {
-  const [profileData, setProfileData] = useState({})
+  const showNotification = useToast()
+  const setLoading = useLoading()
+  const [userData, setUserdata] = useState({})
 
   useEffect(() => {
+    setLoading(true)
     getProfileRequest()
-      .then((response) => {
-        setProfileData(() => {
-          return response.data
-        })
+      .then(({ data }) => {
+        setUserdata({ data })
       })
       .catch((error) => {
-        console.log(error)
+        showNotification(error.toString(), "error")
       })
+      .finally(() => setLoading(false))
   }, [])
 
   const updateUserData = (data) => {
+    setLoading(true)
     updateProfileRequest(data)
-      .then((res) => {
-        console.log("success: ", res)
+      .then(() => {
+        showNotification("Успешно update", "success")
       })
       .catch((error) => {
-        console.log("error: ", error)
+        showNotification(error.toString(), "error")
       })
+      .finally(() => setLoading(false))
   }
+
   const deleteUser = () => {
     deleteProfileRequest()
       .then((res) => {
@@ -44,9 +52,9 @@ const MyProfile = () => {
 
   return (
     <div className="flex justify-between gap-[30px] px-[40px] py-[60px] bg-white rounded-[10px] max-md:flex-col max-lg:py-[30px] max-lg:px-[10px]">
-      <UserDetails currentUserData={profileData} deleteUser={deleteUser} />
+      <UserDetails currentUserData={userData} deleteUser={deleteUser} />
       <UserUpdateForm
-        currentUserData={profileData}
+        currentUserData={userData}
         updateUserData={updateUserData}
       />
     </div>

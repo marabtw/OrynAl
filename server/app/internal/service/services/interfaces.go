@@ -19,6 +19,7 @@ type IUserService interface {
 	Create(ctx context.Context, user *model.User) (*model.UserResponse, error)
 	CreateOwner(ctx context.Context, user *model.User) (*model.UserResponse, error)
 	Update(ctx context.Context, user *model.User) (*model.UserResponse, error)
+	ChangePassword(ctx context.Context, user *model.ChangePasswordRequest) error
 	Delete(ctx context.Context, id uint) error
 	Profile(ctx context.Context) (*model.UserResponse, error)
 	GetByID(ctx context.Context, id uint) (*model.UserResponse, error)
@@ -29,12 +30,16 @@ type IUserService interface {
 
 type IRestaurantService interface {
 	GetRestaurants(ctx context.Context, params *model.Params) (*model.ListResponse, error)
-	GetRestaurantByID(ctx context.Context, id uint) (*model.RestaurantResponse, error)
-	CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.RestaurantResponse, error)
-	UpdateRestaurant(ctx context.Context, restaurant *model.Restaurant, id uint) (*model.RestaurantResponse, error)
+	GetRestaurantByID(ctx context.Context, id uint) (*model.Restaurant, error)
+	CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.Restaurant, error)
+	UpdateRestaurant(ctx context.Context, restaurant *model.Restaurant, id uint) (*model.Restaurant, error)
 	DeleteRestaurant(ctx context.Context, id uint) error
 	FavoriteRestaurants(ctx context.Context, id uint, params *model.Params) (*model.ListResponse, error)
 	GetRestaurantOrders(ctx context.Context, id uint, params *model.Params) (*model.ListResponse, error)
+	CreateService(ctx context.Context, service *model.Services) ([]model.Services, error)
+	DeleteService(ctx context.Context, id uint) error
+	GetServices(ctx context.Context) ([]model.Services, error)
+	UpdateService(ctx context.Context, service *model.Services) ([]model.Services, error)
 	FormatParams
 }
 
@@ -46,7 +51,7 @@ type FormatParams interface {
 }
 
 type IOrderService interface {
-	Create(ctx context.Context, order *model.Order) (*model.OrderResponse, error)
+	Create(ctx context.Context, order *model.OrderRequest) (*model.OrderResponse, error)
 	Update(ctx context.Context, id uint, order *model.Order) (*model.OrderResponse, error)
 	Delete(ctx context.Context, id uint) error
 	GetByID(ctx context.Context, id uint) (*model.OrderResponse, error)

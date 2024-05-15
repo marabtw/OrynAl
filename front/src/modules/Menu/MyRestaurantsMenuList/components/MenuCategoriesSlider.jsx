@@ -7,8 +7,6 @@ import "swiper/css/navigation"
 
 import "@styles/swiperSlider.css"
 
-import { Navigation } from "swiper/modules"
-
 const MenuCategoriesSlider = ({
   menuTypes = [],
   getCategory = () => {},
@@ -36,7 +34,7 @@ const MenuCategoriesSlider = ({
               }}
             >
               <div
-                className={`flex justify-center items-center w-full h-full text-center text-[16px] font-semibold rounded-xl ${
+                className={`flex justify-center items-center w-full h-full px-[20px] text-center text-[16px] font-semibold rounded-xl ${
                   index === activeIndex ? "bg-[#6aa7fc] text-white" : ""
                 }`}
               >

@@ -4,7 +4,7 @@ import Cookies from "js-cookie"
 
 import { AuthContext } from "@context/AuthContext"
 import { ROUTERS } from "@router/Router.config"
-import { removeWildcard } from "@helpers/helpers"
+import { removeWildcard } from "@helpers"
 
 import { SettingsIcon, ExitIcon } from "@ui/icons/icons"
 

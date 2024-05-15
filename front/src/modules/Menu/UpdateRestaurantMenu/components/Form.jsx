@@ -1,9 +1,9 @@
-import Button from "@ui/Button/Button"
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
-import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
-import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/FormSelectWrapper"
+import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
+import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
+import Button from "@ui/Button/Button"
 
-import { getMenuTypes } from "../../api/api"
+import { getMenuTypes } from "../../api"
 
 const Form = ({ update, setDataForUpdate }) => {
   return (

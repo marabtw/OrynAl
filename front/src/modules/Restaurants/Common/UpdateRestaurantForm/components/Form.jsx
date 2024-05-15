@@ -1,55 +1,53 @@
-import FormCheckbox from "@ui/Field/FormCheckbox"
-import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
-import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
-import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/FormSelectWrapper"
-import FormSelect from "@ui/Select/FormSelect"
-import {
-  getAllCities,
-  getAllServices,
-  getTimes,
-} from "@modules/Management/api/api"
+import { getAllCities, getAllServicesRequest, getTimes } from "../../../api"
 
-const Form = ({ dataForUpdate, setDataForUpdate }) => {
+import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
+import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
+import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
+
+import FormCheckbox from "@ui/Field/FormCheckbox"
+import FormSelect from "@ui/Select/FormSelect"
+
+const Form = ({ restaurantData, setDataForUpdate }) => {
   const checkService = (service) => {
     if (service === "Место, где можно поработать") {
       setDataForUpdate((prevState) => ({
         ...prevState,
-        can_work: !dataForUpdate.can_work,
+        can_work: !restaurantData.can_work,
       }))
     } else if (service === "Под ритмом диджея") {
       setDataForUpdate((prevState) => ({
         ...prevState,
-        rainy_rhythm: !dataForUpdate.rainy_rhythm,
+        rainy_rhythm: !restaurantData.rainy_rhythm,
       }))
     } else if (service === "Живая музыка") {
       setDataForUpdate((prevState) => ({
         ...prevState,
-        live_music: !dataForUpdate.live_music,
+        live_music: !restaurantData.live_music,
       }))
     } else if (service === "Бар, где пиво без границ") {
       setDataForUpdate((prevState) => ({
         ...prevState,
-        unlimited_beer: !dataForUpdate.unlimited_beer,
+        unlimited_beer: !restaurantData.unlimited_beer,
       }))
     } else if (service === "Банкетный зал") {
       setDataForUpdate((prevState) => ({
         ...prevState,
-        banquet_hall: !dataForUpdate.banquet_hall,
+        banquet_hall: !restaurantData.banquet_hall,
       }))
     } else if (service === "С детской игровой комнатой") {
       setDataForUpdate((prevState) => ({
         ...prevState,
-        kids_playroom: !dataForUpdate.kids_playroom,
+        kids_playroom: !restaurantData.kids_playroom,
       }))
     } else if (service === "Кальянная") {
       setDataForUpdate((prevState) => ({
         ...prevState,
-        hookah: !dataForUpdate.hookah,
+        hookah: !restaurantData.hookah,
       }))
     } else if (service === "Своя кондитерская") {
       setDataForUpdate((prevState) => ({
         ...prevState,
-        own_confectioner: !dataForUpdate.own_confectioner,
+        own_confectioner: !restaurantData.own_confectioner,
       }))
     }
   }
@@ -60,10 +58,10 @@ const Form = ({ dataForUpdate, setDataForUpdate }) => {
         <FormInputTextWrapper
           placeholder="Sandyq"
           label="Название:"
-          onChange={(e) => {
+          onChange={(value) => {
             setDataForUpdate((prevState) => ({
               ...prevState,
-              name: e.target.value,
+              name: value ? value : restaurantData.name,
             }))
           }}
         />
@@ -73,10 +71,10 @@ const Form = ({ dataForUpdate, setDataForUpdate }) => {
         <FormInputTextWrapper
           placeholder="Абай, 101"
           label="Адрес"
-          onChange={(e) => {
+          onChange={(value) => {
             setDataForUpdate((prevState) => ({
               ...prevState,
-              address: e.target.value,
+              address: value ? value : restaurantData.address,
             }))
           }}
         />
@@ -85,10 +83,10 @@ const Form = ({ dataForUpdate, setDataForUpdate }) => {
       <FormInputTextWrapper
         placeholder="Напишите краткое описание меню...."
         label="Описание"
-        onChange={(e) => {
+        onChange={(value) => {
           setDataForUpdate((prevState) => ({
             ...prevState,
-            description: e.target.value,
+            description: value ? value : restaurantData.description,
           }))
         }}
       />
@@ -102,10 +100,10 @@ const Form = ({ dataForUpdate, setDataForUpdate }) => {
               <FormSelect
                 placeholder={"10:00"}
                 options={getTimes()}
-                onChange={(e) => {
+                onChange={(value) => {
                   setDataForUpdate((prevState) => ({
                     ...prevState,
-                    modeFrom: e.value,
+                    modeFrom: value ? value : restaurantData.modeFrom,
                   }))
                 }}
               />
@@ -115,10 +113,10 @@ const Form = ({ dataForUpdate, setDataForUpdate }) => {
               <FormSelect
                 placeholder={"22:00"}
                 options={getTimes()}
-                onChange={(e) => {
+                onChange={(value) => {
                   setDataForUpdate((prevState) => ({
                     ...prevState,
-                    modeTo: e.value,
+                    modeTo: value ? value : restaurantData.modeTo,
                   }))
                 }}
               />
@@ -129,33 +127,34 @@ const Form = ({ dataForUpdate, setDataForUpdate }) => {
           label={"Город"}
           placeholder={"Алматы"}
           options={getAllCities()}
-          onChange={(e) => {
+          onChange={(value) => {
             setDataForUpdate((prevState) => ({
               ...prevState,
-              city: e.value,
+              city: value ? value : restaurantData.city,
             }))
           }}
         />
       </div>
       <FormSelectWrapper
         label={"Статус русторана"}
-        placeholder={"Активный"}
         options={[
           { label: "Активный", value: true },
           { label: "Не активный", value: false },
         ]}
-        onChange={(e) => {
+        onChange={(value) => {
           setDataForUpdate((prevState) => ({
             ...prevState,
-            status: e.value,
+            status: value ? value : restaurantData.status,
           }))
         }}
+        defaultValueIndex={restaurantData.status ? 0 : 1}
       />
       <div className="grid grid-cols-2 gap-[10px] max-md:grid-cols-1">
-        {getAllServices().map((service) => (
+        {getAllServicesRequest().map((service) => (
           <FormCheckbox
             keyFor={service.id}
             label={service.name}
+            initialChecked={false}
             onChange={() => checkService(service.name)}
           />
         ))}

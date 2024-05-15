@@ -22,15 +22,87 @@ type AdminHandler struct {
 	logger  *zap.SugaredLogger
 }
 
-// GetClients godoc
-// @Summary Get a list of all clients
-// @Description Get all clients from the database
-// @Tags Admin
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} CustomResponse "Successfully retrieved clients"
-// @Failure 500 {object} CustomResponse "Internal server error"
-// @Router /admin/clients [get]
+func (h *AdminHandler) CreateService(c echo.Context) error {
+	var createService model.Services
+	if err := c.Bind(&createService); err != nil {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid request body",
+			Data:    err.Error(),
+		})
+	}
+
+	services, err := h.service.Restaurant.CreateService(c.Request().Context(), &createService)
+	if err != nil {
+		h.logger.Error("Failed to create owner:", err)
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed to create owner",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusCreated, response.CustomResponse{
+		Status:  http.StatusCreated,
+		Message: "Success",
+		Data:    services,
+	})
+}
+
+func (h *AdminHandler) DeleteService(c echo.Context) error {
+	serviceID, err := utils.ConvertIdToUint(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid service ID",
+			Data:    err.Error(),
+		})
+	}
+
+	err = h.service.Restaurant.DeleteService(c.Request().Context(), serviceID)
+	if err != nil {
+		h.logger.Error("Failed to delete service:", err)
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed to delete service",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, response.CustomResponse{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    nil,
+	})
+}
+
+func (h *AdminHandler) UpdateService(c echo.Context) error {
+	var updateService model.Services
+	if err := c.Bind(&updateService); err != nil {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid request body",
+			Data:    err.Error(),
+		})
+	}
+
+	services, err := h.service.Restaurant.UpdateService(c.Request().Context(), &updateService)
+	if err != nil {
+		h.logger.Error("Failed to create owner:", err)
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed to create owner",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, response.CustomResponse{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    services,
+	})
+}
+
 func (h *AdminHandler) GetClients(c echo.Context) error {
 	searchParams, err := h.service.User.UserSearchFormatting(model.NewParams(), c)
 	if err != nil {

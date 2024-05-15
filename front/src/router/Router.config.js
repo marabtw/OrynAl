@@ -23,9 +23,14 @@ export const ROUTERS = {
     createRestaurant: "/all-restaurants/create",
   },
 
+  RestaurantServices: {
+    root: "/services/*",
+    services: "/all-services",
+  },
+
   //restaurants
   Restaurant: {
-    root: "/restaurant/*",	
+    root: "/restaurant/*",
     myRestaurants: "/my-restaurants",
     updateRestaurant: "/:restaurantId",
   },
@@ -53,7 +58,7 @@ export const ROUTERS = {
     root: "/orders/*",
     createOrder: "/:restaurantId/create",
     ordersHistory: "/history",
-		myOrdersHistory: "/:restaurantId/history",
+    restaurantOrdersHistory: "/:restaurantId/history",
     orderDetail: "/:orderId",
   },
 }

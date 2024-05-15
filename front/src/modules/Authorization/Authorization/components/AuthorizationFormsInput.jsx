@@ -1,20 +1,20 @@
-import { useState, useCallback } from "react"
+import { useState } from "react"
 import { ShowIcon, HideIcon } from "@ui/icons/icons"
 
 const LoginInput = ({
-  label = "...",
-  placeholder = "...",
+  label = "no label",
+  placeholder = "no placeholder",
   type = "text",
   required = false,
-  onChange = (value) => {
+  onChange = () => {
     console.log("function not found")
   },
 }) => {
   const [inputType, setInputType] = useState(type)
 
-  const togglePasswordVisibility = useCallback(() => {
+  const togglePasswordVisibility = () => {
     setInputType((prevType) => (prevType === "password" ? "text" : "password"))
-  }, [])
+  }
 
   const handleChange = (e) => {
     onChange(e.target.value)

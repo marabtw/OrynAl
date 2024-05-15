@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 
 import { ROUTERS } from "@router/Router.config"
-import { removeWildcard } from "@helpers/helpers"
+import { removeWildcard } from "@helpers"
 
 import Logo from "@assets/images/logo.png"
 import {
@@ -87,6 +87,14 @@ const AdminHeader = ({ user }) => {
           className="max-md:hidden"
         >
           Клиенты
+        </Link>
+        <Link
+          to={`${removeWildcard(ROUTERS.RestaurantServices.root)}${
+            ROUTERS.RestaurantServices.services
+          }`}
+          className="max-md:hidden"
+        >
+          Сервисы
         </Link>
       </div>
       {user ? (

@@ -19,6 +19,11 @@ type UserResponse struct {
 	Role    string `gorm:"not null" json:"role"`
 }
 
+type ChangePasswordRequest struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
 func (UserResponse) TableName() string {
 	return "users"
 }

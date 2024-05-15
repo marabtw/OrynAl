@@ -1,5 +1,10 @@
+import { useContext, useEffect } from "react"
 import { Route, Routes, useNavigate } from "react-router-dom"
+
+import { AuthContext } from "@context/AuthContext"
 import { ROUTERS } from "./Router.config"
+
+import { removeWildcard } from "@helpers"
 
 import Home from "@modules/Home"
 import Profile from "@modules/Profile"
@@ -9,9 +14,7 @@ import Restaurants from "@modules/Restaurants"
 import RestaurantTable from "@modules/Tables"
 import RestaurantMenu from "@modules/Menu"
 import Order from "@modules/Order"
-import { useContext, useEffect } from "react"
-import { AuthContext } from "@context/AuthContext"
-import { removeWildcard } from "@helpers/helpers"
+import Services from "@modules/Services"
 
 const Router = () => {
   const { user } = useContext(AuthContext)
@@ -46,6 +49,7 @@ const Router = () => {
       <Route path={ROUTERS.Profile.root} element={<Profile />} />
       <Route path={ROUTERS.Authorization.root} element={<Authorization />} />
       <Route path={ROUTERS.Management.root} element={<Management />} />
+      <Route path={ROUTERS.RestaurantServices.root} element={<Services />} />
       <Route path={ROUTERS.Restaurant.root} element={<Restaurants />} />
       <Route
         path={ROUTERS.RestaurantTable.root}

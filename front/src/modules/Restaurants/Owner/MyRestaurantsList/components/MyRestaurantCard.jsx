@@ -1,11 +1,12 @@
-import { useContext, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
-import ContextMenu from "@components/ContextMenu/ContextMenu"
-import { MoreHorizontalIcon } from "@ui/icons/icons"
-import { removeWildcard } from "@helpers/helpers"
 import { ROUTERS } from "@router/Router.config"
-import { UIContext } from "@context/UIContext"
+
+import { useContextMenu } from "@hooks"
+import { removeWildcard } from "@helpers"
+
+import ContextMenu from "@components/ContextMenu"
+import { MoreHorizontalIcon } from "@ui/icons/icons"
 
 const getContextMenuItems = (id) => {
   return [
@@ -19,40 +20,17 @@ const getContextMenuItems = (id) => {
         ROUTERS.Restaurant.root
       )}${ROUTERS.Restaurant.updateRestaurant.replace(":restaurantId", id)}`,
     },
+    {
+      action: "История заказов",
+      to: `${removeWildcard(
+        ROUTERS.Orders.root
+      )}${ROUTERS.Orders.restaurantOrdersHistory.replace(":restaurantId", id)}`,
+    },
   ]
 }
 
 const MyRestaurantCard = ({ data = [], displayType, index }) => {
-  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false)
-  const { openedContextMenuIndex, setOpenedContextMenuIndex } =
-    useContext(UIContext)
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        openedContextMenuIndex === index &&
-        !event.target.closest(".context-menu-wrapper")
-      ) {
-        closeContextMenuFunction()
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [openedContextMenuIndex])
-
-  const closeContextMenuFunction = () => {
-    setOpenedContextMenuIndex(null)
-  }
-
-  const handleContextMenu = () => {
-    if (openedContextMenuIndex === index) {
-      setOpenedContextMenuIndex(null)
-    } else {
-      setOpenedContextMenuIndex(index)
-    }
-  }
+  const { openedContextMenuIndex, handleContextMenu } = useContextMenu(index)
 
   return (
     <div
@@ -68,7 +46,7 @@ const MyRestaurantCard = ({ data = [], displayType, index }) => {
         {openedContextMenuIndex === index && (
           <ContextMenu
             menuActions={getContextMenuItems(data.id)}
-            position={"top-full left-1/2 max-xl:translate-x-[-100%]"}
+            position={"top-full right-1/2"}
           />
         )}
       </div>

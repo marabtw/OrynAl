@@ -1,26 +1,28 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { removeWildcard } from "@helpers/helpers"
 import { ROUTERS } from "@router/Router.config"
-import {
-  createByOwnerMenuItemRequest,
-  getMenuTypes,
-} from "../api/api"
+import { createByOwnerMenuItemRequest, getMenuTypes } from "../api"
+
+import { useLoading, useToast } from "@hooks"
+import { removeWildcard } from "@helpers"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
-import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
-import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/FormSelectWrapper"
+import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
+import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
 import Button from "@ui/Button/Button"
 
 const CreateRestaurantMenu = ({ restaurantId }) => {
   const navigate = useNavigate()
+  const setLoading = useLoading()
+  const showNotification = useToast()
+
   const [dataForCreate, setDataForCreate] = useState({
     name: "",
     type: "",
     description: "",
     price: 0,
-    status: "Доступен",
+    available: true,
   })
 
   const isFormValid = () => {
@@ -28,24 +30,28 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
       dataForCreate.name &&
       dataForCreate.type &&
       dataForCreate.description &&
-      dataForCreate.price
+      dataForCreate.price > 0
     )
   }
 
   const createMenuFood = () => {
-    if (isFormValid()) {
-      createByOwnerMenuItemRequest(restaurantId, dataForCreate)
-        .then(() => {
-          navigate(
-            `${removeWildcard(
-              ROUTERS.RestaurantMenu.root.replace(":restaurantId", restaurantId)
-            )}${ROUTERS.RestaurantMenu.myRestaurantMenu}`
-          )
-        })
-        .catch((error) => console.log(error))
-    } else {
-      alert("")
+    if (!isFormValid()) {
+      showNotification("Форма невалидна", "warning")
+      return
     }
+		
+    setLoading(true)
+    createByOwnerMenuItemRequest(restaurantId, dataForCreate)
+      .then(() => {
+        showNotification("Успешно создан", "success")
+        navigate(
+          `${removeWildcard(
+            ROUTERS.RestaurantMenu.root.replace(":restaurantId", restaurantId)
+          )}${ROUTERS.RestaurantMenu.myRestaurantMenu}`
+        )
+      })
+      .catch((err) => showNotification(err.toString(), "error"))
+      .finally(() => setLoading(false))
   }
 
   return (
@@ -54,10 +60,10 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
         <FormInputTextWrapper
           label="Название меню:"
           placeholder="Чизбургер"
-          onChange={(e) => {
+          onChange={(value) => {
             setDataForCreate((prevState) => ({
               ...prevState,
-              name: e.target.value,
+              name: value,
             }))
           }}
         />
@@ -67,20 +73,20 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
         label={"Тип меню:"}
         placeholder={"Фаст-фуд"}
         options={getMenuTypes()}
-        onChange={(e) => {
+        onChange={(value) => {
           setDataForCreate((prevState) => ({
             ...prevState,
-            type: e.value,
+            type: value,
           }))
         }}
       />
       <FormInputTextWrapper
         label="Описание:"
         placeholder="Напишите краткое описание меню...."
-        onChange={(e) => {
+        onChange={(value) => {
           setDataForCreate((prevState) => ({
             ...prevState,
-            description: e.target.value,
+            description: value,
           }))
         }}
       />
@@ -88,11 +94,11 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
         <FormInputTextWrapper
           label={"Цена:"}
           placeholder={"1200 тенге"}
-					type="number"
-          onChange={(e) => {
+          type="number"
+          onChange={(value) => {
             setDataForCreate((prevState) => ({
               ...prevState,
-              price: +e.target.value,
+              price: value ? +value : 0,
             }))
           }}
         />
@@ -100,15 +106,16 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
           label={"Доступность"}
           placeholder={"Доступен"}
           options={[
-            { label: "Доступен", value: "Доступен" },
-            { label: "Не доступен", value: "Не доступен" },
+            { label: "Доступен", value: "true" },
+            { label: "Не доступен", value: "false" },
           ]}
-          onChange={(e) => {
+          onChange={(value) => {
             setDataForCreate((prevState) => ({
               ...prevState,
-              status: e.value,
+              available: value,
             }))
           }}
+          defaultValueIndex={0}
         />
       </div>
       <Button

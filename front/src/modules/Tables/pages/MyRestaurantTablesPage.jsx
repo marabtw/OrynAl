@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom"
 
-import PageWrapper from "@components/PageWrapper/PageWrapper"
-import PageHeading from "@ui/Heading/PageHeading"
-import { removeWildcard } from "@helpers/helpers"
+import { removeWildcard } from "@helpers"
 import { ROUTERS } from "@router/Router.config"
 
 import MyRestaurantTablesList from "../MyRestaurantTablesList/MyRestaurantTablesList"
+import PageWrapper from "@components/PageWrapper"
+import PageHeading from "@ui/Heading/PageHeading"
 
 const MyRestaurantTablesPage = () => {
   const { restaurantId } = useParams()
@@ -19,7 +19,7 @@ const MyRestaurantTablesPage = () => {
           ROUTERS.RestaurantTable.root.replace(":restaurantId", restaurantId)
         )}${ROUTERS.RestaurantTable.createTable}`}
       />
-      <MyRestaurantTablesList restaurantId={restaurantId}/>
+      <MyRestaurantTablesList restaurantId={restaurantId} />
     </PageWrapper>
   )
 }

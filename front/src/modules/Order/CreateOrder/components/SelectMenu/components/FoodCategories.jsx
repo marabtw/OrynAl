@@ -1,4 +1,3 @@
-// import { dataFoodCategories } from "@data/bookingData"
 
 const FoodCategories = ({ categories, selectCategory }) => {
   const getImageByCategory = () => {

@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react"
+import { axios } from "@lib/axios"
 
-import {
-  getAllTablesRequest,
-  deleteByOwnerTableRequest,
-} from "../api/api"
-
-import ListCategories from "@components/ListCategories/ListCategories"
-import ListItem from "@components/ListItem/ListItem"
-import { removeWildcard } from "@helpers/helpers"
+import { getAllTablesRequest, deleteByOwnerTableRequest } from "../api"
 import { ROUTERS } from "@router/Router.config"
 
-import Pagination from "@components/Pagination/Pagination"
+import { useLoading, useToast } from "@hooks"
+import { isArraysEqualByIdWithSet } from "@utils/index"
+import { removeWildcard } from "@helpers"
+
+import ListCategories from "@components/ListCategories"
+import ListItem from "@components/ListItem"
+import Pagination from "@components/Pagination"
 
 const categories = [
   "ID",
@@ -22,30 +22,73 @@ const categories = [
 ]
 
 const MyRestaurantTablesList = ({ restaurantId }) => {
+  const setLoading = useLoading()
+  const showNotification = useToast()
+
   const [tables, setTables] = useState([])
 
-	const [totalItems, setTotalItems] = useState(0)
-
-	const [params, setParams] = useState({
+  const [totalPage, setTotalPage] = useState(0)
+  const [params, setParams] = useState({
     pageIndex: 1,
     limit: 10,
   })
 
-
   useEffect(() => {
-    getAllTablesRequest(restaurantId, params)
-      .then((res) => {
-        setTables(
-          res.data.items.map(({ id, image, name, type, capacity }) => {
-            return { id, image, name, type, capacity }
-          })
-        )
+    setLoading(true)
+    const cancelToken = axios.CancelToken.source()
+    getAllTablesRequest({ restaurantId, params, cancelToken })
+      .then(({ data }) => {
+        updateTablesList(data)
+        showNotification("getted", "success")
       })
-      .catch((error) => console.log(error))
-  }, [])
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err.toString(), "error")
+        }
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+
+    return () => {
+      cancelToken.cancel()
+    }
+  }, [params])
 
   const deleteTableById = async (tableId) => {
-    await deleteByOwnerTableRequest(restaurantId, tableId)
+    setLoading(true)
+    try {
+      await deleteByOwnerTableRequest(restaurantId, tableId)
+      showNotification("deleted", "success")
+      const { data } = await getAllTablesRequest({ restaurantId, params })
+      updateTablesList(data)
+    } catch (err) {
+      showNotification(err.toString(), "error")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const updateTablesList = (data) => {
+    if (data.items.length === 0) {
+      if (tables?.length > 0) setTables([])
+    } else {
+      const filteredItems = data.items.map(
+        ({ id, image, name, type, capacity }) => ({
+          id,
+          image,
+          name,
+          type,
+          capacity,
+        })
+      )
+      if (isArraysEqualByIdWithSet(filteredItems, tables)) return
+      setTables(filteredItems)
+    }
+    const newTotalPage = Math.ceil(data?.totalItems / params.limit) || 0
+    if (totalPage !== newTotalPage) setTotalPage(newTotalPage)
   }
 
   const getContextMenuItems = (id) => {
@@ -76,18 +119,19 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
           />
         ))
       ) : (
-        <div className="flex justify-center items-center text-[#b0b0b0]">
-          Tables not found
-        </div>
+        <p className="flex justify-center items-center text-[#b0b0b0]">
+          No items
+        </p>
       )}
-			<Pagination
-          totalPage={Math.ceil(totalItems / params.limit)}
-          getCurrentPage={(index) => {
-            setParams((prev) => {
-              return { ...prev, pageIndex: index }
-            })
-          }}
-        />
+      <Pagination
+        totalPage={totalPage}
+        getCurrentPage={(index) => {
+          if (params.pageIndex === index) return
+          setParams((prev) => {
+            return { ...prev, pageIndex: index }
+          })
+        }}
+      />
     </ul>
   )
 }

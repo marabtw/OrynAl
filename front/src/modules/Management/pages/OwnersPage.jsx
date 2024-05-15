@@ -1,7 +1,7 @@
 import { ROUTERS } from "@router/Router.config"
-import { removeWildcard } from "@helpers/helpers"
+import { removeWildcard } from "@helpers"
 
-import PageWrapper from "@components/PageWrapper/PageWrapper"
+import PageWrapper from "@components/PageWrapper"
 import PageHeading from "@ui/Heading/PageHeading"
 
 import OwnersList from "../Owners/OwnersList/OwnersList"

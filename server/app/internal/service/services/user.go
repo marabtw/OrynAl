@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/alibekabdrakhman1/orynal/config"
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/internal/repository"
@@ -87,6 +88,26 @@ func (s *UserService) Update(ctx context.Context, user *model.User) (*model.User
 	}
 
 	return s.repository.User.Update(ctx, user)
+}
+
+func (s *UserService) ChangePassword(ctx context.Context, pass *model.ChangePasswordRequest) error {
+	id, err := utils.GetIDFromContext(ctx)
+	if err != nil {
+		s.logger.Error(err)
+		return err
+	}
+
+	if pass.OldPassword == pass.NewPassword {
+		return errors.New("old password is equal new password")
+	}
+
+	pass.NewPassword, err = utils.HashPassword(pass.NewPassword)
+	if err != nil {
+		return fmt.Errorf("error hashing password: %v", err)
+	}
+
+	return s.repository.User.ChangePassword(ctx, id, pass)
+
 }
 
 func (s *UserService) Delete(ctx context.Context, id uint) error {

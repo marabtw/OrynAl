@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/pkg/enums"
+	"github.com/alibekabdrakhman1/orynal/pkg/utils"
 	"gorm.io/gorm"
 )
 
@@ -60,6 +61,25 @@ func (r *UserRepository) Update(ctx context.Context, user *model.User) (*model.U
 		Phone:   oldUser.Phone,
 		Role:    oldUser.Role,
 	}, nil
+}
+
+func (r *UserRepository) ChangePassword(ctx context.Context, id uint, pass *model.ChangePasswordRequest) error {
+	var oldUser model.User
+	if err := r.DB.WithContext(ctx).First(&oldUser, id).Error; err != nil {
+		return err
+	}
+
+	if utils.CheckPassword(pass.OldPassword, oldUser.Password) != nil {
+		return errors.New("wrong old password")
+	}
+
+	oldUser.Password = pass.NewPassword
+
+	if err := r.DB.WithContext(ctx).Save(&oldUser).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *UserRepository) Delete(ctx context.Context, id uint) error {

@@ -40,19 +40,12 @@ CREATE TABLE IF NOT EXISTS restaurants (
     address VARCHAR(255) NOT NULL,
     description TEXT,
     city VARCHAR(100),
+    status BOOLEAN DEFAULT TRUE,
+    phone VARCHAR(100) NOT NULL,
     owner_id INTEGER NOT NULL,
     mode_from TIMESTAMP NOT NULL,
     mode_to TIMESTAMP NOT NULL,
     icon VARCHAR,
-    available BOOLEAN DEFAULT TRUE,
-    can_work BOOLEAN DEFAULT FALSE,
-    live_music BOOLEAN DEFAULT FALSE,
-    banquet_hall BOOLEAN DEFAULT FALSE,
-    hookah BOOLEAN DEFAULT FALSE,
-    unlimited_beer BOOLEAN DEFAULT FALSE,
-    rainy_rhythm BOOLEAN DEFAULT FALSE,
-    kids_playroom BOOLEAN DEFAULT FALSE,
-    own_confectioner BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -62,6 +55,27 @@ CREATE TABLE IF NOT EXISTS restaurant_photos (
      restaurant_id INTEGER NOT NULL,
      FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
 );
+
+CREATE table if not exists services (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL
+);
+
+create table if not exists restaurant_service (
+    id serial primary key,
+    service_id integer not null,
+    restaurant_id integer not null,
+    foreign key (service_id) references services(id) on delete cascade,
+    foreign key (restaurant_id) references restaurants(id) on DELETE cascade
+);
+
+-- CREATE TABLE IF NOT EXISTS favorite_restaurants (
+--     id SERIAL PRIMARY KEY,
+--     user_id INTEGER NOT NULL,
+--     restaurant_id INTEGER NOT NULL,
+--     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+--     FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) on delete cascade
+-- );
 
 CREATE TABLE IF NOT EXISTS tables (
      id SERIAL PRIMARY KEY,

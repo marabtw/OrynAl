@@ -1,24 +1,22 @@
+import { getTableCapacity, getTableType } from "../../api"
+
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
-import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
-import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/FormSelectWrapper"
+import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
+import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
+
 import Button from "@ui/Button/Button"
 
-import {
-  getTableCapacity,
-  getTableType,
-} from "@modules/Tables/api/api"
-
-const Form = ({ setDataForUpdate, update }) => {
+const Form = ({ tableData, setDataForUpdate, update }) => {
   return (
     <form className="flex flex-col gap-[30px] w-full px-[20px] py-[30px] border-[3px] border-[#ebebeb] rounded-[20px] max-md:gap-[15px]">
       <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1">
         <FormInputTextWrapper
           label="Название столика:"
           placeholder="Столик #1"
-          onChange={(e) => {
+          onChange={(value) => {
             setDataForUpdate((prevState) => ({
               ...prevState,
-              name: e.target.value,
+              name: value ? value : tableData.name,
             }))
           }}
         />
@@ -28,31 +26,31 @@ const Form = ({ setDataForUpdate, update }) => {
         label={"Тип столика:"}
         placeholder={"Тапчан"}
         options={getTableType()}
-        onChange={(e) => {
+        onChange={(value) => {
           setDataForUpdate((prevState) => ({
             ...prevState,
-            type: e.value,
+            type: value ? value : tableData.type,
           }))
         }}
       />
       <FormInputTextWrapper
         label="Описание:"
         placeholder="Напишите краткое описание меню...."
-        onChange={(e) => {
+        onChange={(value) => {
           setDataForUpdate((prevState) => ({
             ...prevState,
-            description: e.target.value,
+            description: value ? value : tableData.description,
           }))
         }}
       />
-      <FormSelectWrapper
+      <FormInputTextWrapper
         label={"Вместимость:"}
         placeholder={"10 человек"}
-        options={getTableCapacity()}
-        onChange={(e) => {
+        type={"number"}
+        onChange={(value) => {
           setDataForUpdate((prevState) => ({
             ...prevState,
-            capacity: e.value,
+            capacity: value ? +value : tableData.capacity,
           }))
         }}
       />

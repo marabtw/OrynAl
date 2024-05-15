@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo } from "react"
+import { useState, useContext, useMemo, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { jwtDecode } from "jwt-decode"
 
@@ -30,18 +30,17 @@ const Authorization = () => {
     }
   }, [userRole])
 
-  window.addEventListener("beforeunload", () => {
-    localStorage.removeItem("isFirstVisit")
-  })
-
-  window.addEventListener("DOMContentLoaded", () => {
-    const isFirstVisit = localStorage.getItem("isFirstVisit")
-    const accessCode = document.cookie
-      .split(";")
-      .some((cookie) => cookie.trim().startsWith("accessCode="))
-    if (isFirstVisit) {
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      localStorage.removeItem("isFirstVisit")
+    })
+		
+    return () => {
+      window.removeEventListener("beforeunload", () => {
+        localStorage.removeItem("isFirstVisit")
+      })
     }
-  })
+  }, [])
 
   return (
     <>

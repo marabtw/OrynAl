@@ -1,8 +1,8 @@
-import HeroSection from "../HeroSection/HeroSection"
-import HomeRestaurants from "../HomeRestaurants/HomeRestaurants"
-import Footer from "../Footer/Footer"
+import HeroSection from "../HeroSection"
+import HomeRestaurants from "../HomeRestaurants"
+import Footer from "../Footer"
 
-import LocationInfo from "@components/LocationInfo/LocationInfo"
+import LocationInfo from "@components/LocationInfo"
 
 const HomePage = () => {
   return (

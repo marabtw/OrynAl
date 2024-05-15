@@ -1,0 +1,50 @@
+import myApi from "@lib/axios"
+
+export const getRestaurantMenuRequest = async ({
+  restaurantId,
+  cancelToken,
+}) => {
+  const response = await myApi.get(`/api/restaurants/${restaurantId}/menu`, {
+    cancelToken: cancelToken ? cancelToken.token : undefined,
+  })
+  return response.data
+}
+export const getByOwnerMenuItemRequest = async (restaurantId, foodId) => {
+  const response = await myApi.get(
+    `/api/restaurants/${restaurantId}/menu/${foodId}`
+  )
+  return response.data
+}
+export const createByOwnerMenuItemRequest = async (restaurantId, body) => {
+  const response = await myApi.post(
+    `/api/restaurants/${restaurantId}/menu`,
+    body
+  )
+  return response.data
+}
+export const updateByOwnerMenuItemRequest = async (
+  restaurantId,
+  foodId,
+  body
+) => {
+  const response = await myApi.put(
+    `/api/restaurants/${restaurantId}/menu/${foodId}`,
+    body
+  )
+  return response.data
+}
+
+export const deleteByOwnerMenuItemRequest = async (restaurantId, foodId) => {
+  const response = await myApi.delete(
+    `/api/restaurants/${restaurantId}/menu/${foodId}`
+  )
+  return response.data
+}
+
+export const getMenuTypes = () => {
+  return [
+    { label: "Фаст-фуд", value: "Фаст-фуд" },
+    { label: "Первый", value: "Первый" },
+    { label: "Десерт", value: "Десерт" },
+  ]
+}

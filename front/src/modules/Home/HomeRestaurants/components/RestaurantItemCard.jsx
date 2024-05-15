@@ -1,9 +1,11 @@
 import { useState } from "react"
-import LinkButton from "@ui/Button/LinkButton"
-import RatingStars from "@components/RatingStars/RatingStars"
-import { HeartFullIcon, HeartEmptyIcon } from "@/ui/icons/icons"
+
+import { removeWildcard } from "@helpers"
 import { ROUTERS } from "@router/Router.config"
-import { removeWildcard } from "@helpers/helpers"
+
+import RatingStars from "@components/RatingStars"
+import LinkButton from "@ui/Button/LinkButton"
+import { HeartFullIcon, HeartEmptyIcon } from "@ui/icons/icons"
 
 const RestaurantItemCard = ({ data }) => {
   const [favorive, setFavorite] = useState(false)
@@ -39,9 +41,9 @@ const RestaurantItemCard = ({ data }) => {
         {data.address}
       </p>
       <LinkButton
-        to={`${removeWildcard(ROUTERS.Orders.root)}${
-          ROUTERS.Orders.createOrder.replace(":restaurantId", data.id)
-        }`}
+        to={`${removeWildcard(
+          ROUTERS.Orders.root
+        )}${ROUTERS.Orders.createOrder.replace(":restaurantId", data.id)}`}
         text={"забронировать столик"}
         uppercase={true}
         id={data.id}

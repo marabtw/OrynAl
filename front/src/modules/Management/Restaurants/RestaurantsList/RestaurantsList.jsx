@@ -1,17 +1,19 @@
-import { useEffect, useState, useContext } from "react"
+import { useEffect, useState } from "react"
 import { ROUTERS } from "@router/Router.config"
-import { removeWildcard } from "@helpers/helpers"
+import { axios } from "@lib/axios"
 
-import ListCategories from "@components/ListCategories/ListCategories"
-import ListItem from "@components/ListItem/ListItem"
 import {
   getByAdminAllRestaurantsRequest,
   deleteByAdminRestaurantRequest,
-} from "../../api/api"
+} from "../../api"
 
-import Pagination from "@components/Pagination/Pagination"
-import { UIContext } from "@context/UIContext"
-import Loading from "@components/Loading/Loading"
+import { useLoading, useToast } from "@hooks"
+import { removeWildcard } from "@helpers"
+import { isArraysEqualByIdWithSet } from "@utils/index"
+
+import ListCategories from "@components/ListCategories"
+import ListItem from "@components/ListItem"
+import Pagination from "@components/Pagination"
 
 const categories = [
   "id",
@@ -22,73 +24,72 @@ const categories = [
   "Статус",
   "Действие",
 ]
+
 const RestaurantsList = () => {
-  const [restaurantsData, setRestaurantsData] = useState([])
+  const setLoading = useLoading()
+  const showNotification = useToast()
 
-  const { isLoading, setIsLoading } = useContext(UIContext)
-
-  const [totalItems, setTotalItems] = useState(0)
-
-  const [param, setParam] = useState({
+  const [restaurants, setRestaurants] = useState([])
+  const [totalPage, setTotalPage] = useState(0)
+  const [params, setParams] = useState({
     pageIndex: 1,
     limit: 10,
   })
 
   useEffect(() => {
-    setIsLoading(true)
-    getByAdminAllRestaurantsRequest(param.pageIndex, param.limit)
-      .then((response) => {
-        if (!response.data) setRestaurantsData([])
-        else {
-          setRestaurantsData(
-            response.data.items.map(
-              ({ id, name, address, city, owner, status }) => ({
-                id,
-                name,
-                address,
-                city,
-                ownerName: `${owner.name} ${owner.surname}`,
-                restaurantStatus: status,
-              })
-            )
-          )
-          setTotalItems(response.data.totalItems)
+    setLoading(true)
+    const cancelToken = axios.CancelToken.source()
+    getByAdminAllRestaurantsRequest({ params, cancelToken })
+      .then(({ data }) => {
+        updateRestaurantsList(data)
+        showNotification("Данные успешно загружены", "success")
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err.toString(), "error")
         }
       })
-      .catch((error) => {
-        setRestaurantsData([])
-        console.log(error)
-      })
-      .finally(setIsLoading(false))
-  }, [param])
+      .finally(setLoading(false))
+    return () => {
+      cancelToken.cancel()
+    }
+  }, [params])
 
   const deleteRestaurant = async (ownerId) => {
-    setIsLoading(true)
-    await deleteByAdminRestaurantRequest(ownerId)
-    getByAdminAllRestaurantsRequest(param.pageIndex, param.limit)
-      .then((response) => {
-        if (!response.data) setRestaurantsData([])
-        else {
-          setRestaurantsData(
-            response.data.items.map(
-              ({ id, name, address, city, ownerId, status }) => ({
-                id,
-                name,
-                address,
-                city,
-                ownerId,
-                restaurantStatus: status,
-              })
-            )
-          )
-          setTotalItems(response.data.totalItems)
-        }
-      })
-      .catch((error) => {
-        setRestaurantsData([])
-        console.log(error)
-      })
-      .finally(setIsLoading(false))
+    setLoading(true)
+    try {
+      await deleteByAdminRestaurantRequest(ownerId)
+      showNotification("deleted", "success")
+      const { data } = await getByAdminAllRestaurantsRequest(params)
+      updateRestaurantsList(data)
+    } catch (error) {
+      showNotification(error.toString(), "error")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const updateRestaurantsList = (data) => {
+    if (!data) {
+      if (restaurants && restaurants.length > 0) setRestaurants([])
+    } else {
+      const filteredItems = data.items.map(
+        ({ id, name, address, city, owner, status }) => ({
+          id,
+          name,
+          address,
+          city,
+          ownerName: `${owner.name} ${owner?.surname}`.trim(),
+          restaurantStatus: status,
+        })
+      )
+      if (isArraysEqualByIdWithSet(restaurants, filteredItems)) return
+      setRestaurants(filteredItems)
+    }
+    const newTotalPage = Math.ceil(data?.totalItems / params.limit) || 0
+    if (totalPage !== newTotalPage) setTotalPage(newTotalPage)
   }
 
   const getMenuActions = (restaurantId) => {
@@ -111,23 +112,27 @@ const RestaurantsList = () => {
 
   return (
     <>
-      {isLoading && <Loading />}
       <ul className="flex flex-col gap-[20px]">
         <ListCategories categories={categories} />
-        {restaurantsData
-          ? restaurantsData?.map((restaurant, index) => (
-              <ListItem
-                key={restaurant.id}
-                elementData={restaurant}
-                index={index}
-                menuActions={getMenuActions(restaurant.id)}
-              />
-            ))
-          : ""}
+        {restaurants?.length > 0 ? (
+          restaurants.map((restaurant, index) => (
+            <ListItem
+              key={restaurant.id}
+              elementData={restaurant}
+              index={index}
+              menuActions={getMenuActions(restaurant.id)}
+            />
+          ))
+        ) : (
+          <p className="flex justify-center items-center text-[#b0b0b0]">
+            No items
+          </p>
+        )}
         <Pagination
-          totalPage={Math.ceil(totalItems / param.limit)}
+          totalPage={Math.ceil(totalPage / params.limit)}
           getCurrentPage={(index) => {
-            setParam((prev) => {
+            if (params.pageIndex === index) return
+            setParams((prev) => {
               return { ...prev, pageIndex: index }
             })
           }}

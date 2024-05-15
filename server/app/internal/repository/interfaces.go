@@ -14,6 +14,7 @@ type IUserTokenRepository interface {
 type IUserRepository interface {
 	Create(ctx context.Context, user *model.User) (*model.UserResponse, error)
 	Update(ctx context.Context, user *model.User) (*model.UserResponse, error)
+	ChangePassword(ctx context.Context, id uint, pass *model.ChangePasswordRequest) error
 	Delete(ctx context.Context, id uint) error
 	GetByID(ctx context.Context, id uint) (*model.UserResponse, error)
 	GetByEmail(ctx context.Context, email string) (*model.User, error)
@@ -23,13 +24,12 @@ type IUserRepository interface {
 
 type IRestaurantRepository interface {
 	GetRestaurants(ctx context.Context, params *model.Params) (*model.ListResponse, error)
-	GetRestaurantByID(ctx context.Context, id uint) (*model.RestaurantResponse, error)
+	GetRestaurantByID(ctx context.Context, id uint) (*model.Restaurant, error)
 	GetRestaurantsByOwner(ctx context.Context, ownerID uint, params *model.Params) (*model.ListResponse, error)
 	GetFavoriteRestaurants(ctx context.Context, userID uint, params *model.Params) (*model.ListResponse, error)
-	CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.RestaurantResponse, error)
-	CreateRestaurantPhotos(ctx context.Context, restaurant *model.RestaurantPhoto) error
+	CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.Restaurant, error)
 	DeleteRestaurant(ctx context.Context, restaurantID uint) error
-	UpdateRestaurant(ctx context.Context, restaurantID uint, restaurant *model.Restaurant) (*model.RestaurantResponse, error)
+	UpdateRestaurant(ctx context.Context, restaurantID uint, restaurant *model.Restaurant) (*model.Restaurant, error)
 }
 
 type ITableRepository interface {
@@ -56,4 +56,11 @@ type IOrderRepository interface {
 	GetOrder(ctx context.Context, userID uint, id uint) (*model.OrderResponse, error)
 	GetAllOrders(ctx context.Context, userID uint, params *model.Params) (*model.ListResponse, error)
 	GetRestaurantOrders(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error)
+}
+
+type IServicesRepository interface {
+	CreateService(ctx context.Context, service *model.Services) ([]model.Services, error)
+	DeleteService(ctx context.Context, id uint) error
+	GetServices(ctx context.Context) ([]model.Services, error)
+	UpdateService(ctx context.Context, service *model.Services) ([]model.Services, error)
 }

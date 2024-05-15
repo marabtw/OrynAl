@@ -2,12 +2,12 @@ import { useState, useContext, useMemo } from "react"
 import Cookies from "js-cookie"
 import { useNavigate } from "react-router-dom"
 
-import { signupRequest, signinRequest } from "../../api/api"
+import { signupRequest, signinRequest } from "../../api"
 import { jwtDecode } from "jwt-decode"
 import { ROUTERS } from "@router/Router.config"
 
 import { AuthContext } from "@context/AuthContext"
-import { isValidEmail,removeWildcard } from "@helpers/helpers"
+import { isValidEmail,removeWildcard } from "@helpers"
 
 import AuthorizationFormsInput from "./AuthorizationFormsInput"
 

@@ -5,18 +5,24 @@ const resolvePath = (p) => path.resolve(__dirname, p)
 module.exports = {
   webpack: {
     alias: {
-      "@": resolvePath("./src/"),
       "@router": resolvePath("./src/router"),
       "@modules": resolvePath("./src/modules"),
       "@components": resolvePath("./src/components"),
-      "@lib": resolvePath("./src/lib"),
-      "@assets": resolvePath("./src/assets"),
-      "@helpers": resolvePath("./src/helpers"),
-      "@ui": resolvePath("./src/ui"),
-      "@context": resolvePath("./src/context"),
-      "@store": resolvePath("./src/store"),
-      "@data": resolvePath("./src/data"),
-      "@styles": resolvePath("./src/styles"),
+
+      "@helpers": resolvePath("./src/shared/helpers"),
+      "@utils": resolvePath("./src/shared/utils"),
+      "@rejex": resolvePath("./src/shared/rejex"),
+      "@lib": resolvePath("./src/shared/lib"),
+      "@ui": resolvePath("./src/shared/ui"),
+      "@hooks": resolvePath("./src/shared/hooks"),
+
+      "@assets": resolvePath("./src/shared/assets"),
+      "@styles": resolvePath("./src/shared/assets/styles"),
+
+      "@context": resolvePath("./src/shared/context"),
+      "@store": resolvePath("./src/shared/store"),
+
+      "@data": resolvePath("./src/shared/data"),
     },
   },
 }

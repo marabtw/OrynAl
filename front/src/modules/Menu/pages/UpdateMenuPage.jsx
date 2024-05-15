@@ -1,7 +1,9 @@
-import UpdateRestaurantMenu from "../UpdateRestaurantMenu/UpdateRestaurantMenu"
-import PageWrapper from "@components/PageWrapper/PageWrapper"
-import PageHeading from "@ui/Heading/PageHeading"
 import { useParams } from "react-router-dom"
+
+import UpdateRestaurantMenu from "../UpdateRestaurantMenu"
+import PageWrapper from "@components/PageWrapper"
+
+import PageHeading from "@ui/Heading/PageHeading"
 
 const UpdateMenuPage = () => {
   const { restaurantId } = useParams()

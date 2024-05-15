@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { ROUTERS } from "@router/Router.config"
-import { removeWildcard } from "@helpers/helpers"
+import { removeWildcard } from "@helpers"
 
 import ProfileMenuDropdown from "../components/ProfileMenuDropdown"
 import MobileMenuNavigation from "../components/MobileMenuNavigation"

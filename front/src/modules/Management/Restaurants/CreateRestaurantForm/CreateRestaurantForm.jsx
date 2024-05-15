@@ -1,18 +1,23 @@
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { axios } from "@lib/axios"
+
+import { ROUTERS } from "@router/Router.config"
 import {
   getByAdminAllOwnersRequest,
   сreateByAdminRestaurantRequest,
-  getAllServices,
+  getAllServicesRequest,
+  getTimes,
   getAllCities,
-	getTimes,
-} from "../../api/api"
-import { removeWildcard } from "@helpers/helpers"
-import { ROUTERS } from "@router/Router.config"
+} from "../../api"
+
+import { removeWildcard } from "@helpers"
+import { useLoading, useToast } from "@hooks"
+import { isArraysEqualByIdWithSet } from "@utils"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
-import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
-import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/FormSelectWrapper"
+import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
+import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
 
 import Button from "@ui/Button/Button"
 import FormSelect from "@ui/Select/FormSelect"
@@ -20,6 +25,10 @@ import FormCheckbox from "@ui/Field/FormCheckbox"
 
 const CreateRestaurantForm = () => {
   const navigate = useNavigate()
+  const showNotification = useToast()
+  const setLoading = useLoading()
+  let cancelTokenSource = null
+
   const [dataForCreate, setDataForCreate] = useState({
     name: "",
     address: "",
@@ -28,63 +37,12 @@ const CreateRestaurantForm = () => {
     ownerId: "",
     modeFrom: "",
     modeTo: "",
-    can_work: false,
-    live_music: false,
-    banquet_hall: false,
-    hookah: false,
-    unlimited_beer: false,
-    rainy_rhythm: false,
-    kids_playroom: false,
-    own_confectioner: false,
+    phone: "",
     status: true,
+    services: [{ id: 15, name: "123" }],
   })
   const [owners, setOwners] = useState([])
-
-	// useEffect(() => {console.log(dataForCreate)},[dataForCreate])
-
-  const checkService = (name) => {
-    if (name === "Место, где можно поработать") {
-      setDataForCreate((prevState) => ({
-        ...prevState,
-        can_work: !dataForCreate.can_work,
-      }))
-    } else if (name === "Под ритмом диджея") {
-      setDataForCreate((prevState) => ({
-        ...prevState,
-        rainy_rhythm: !dataForCreate.rainy_rhythm,
-      }))
-    } else if (name === "Живая музыка") {
-      setDataForCreate((prevState) => ({
-        ...prevState,
-        live_music: !dataForCreate.live_music,
-      }))
-    } else if (name === "Бар, где пиво без границ") {
-      setDataForCreate((prevState) => ({
-        ...prevState,
-        unlimited_beer: !dataForCreate.unlimited_beer,
-      }))
-    } else if (name === "Банкетный зал") {
-      setDataForCreate((prevState) => ({
-        ...prevState,
-        banquet_hall: !dataForCreate.banquet_hall,
-      }))
-    } else if (name === "С детской игровой комнатой") {
-      setDataForCreate((prevState) => ({
-        ...prevState,
-        kids_playroom: !dataForCreate.kids_playroom,
-      }))
-    } else if (name === "Кальянная") {
-      setDataForCreate((prevState) => ({
-        ...prevState,
-        hookah: !dataForCreate.hookah,
-      }))
-    } else if (name === "Своя кондитерская") {
-      setDataForCreate((prevState) => ({
-        ...prevState,
-        own_confectioner: !dataForCreate.own_confectioner,
-      }))
-    }
-  }
+  const [services, setServices] = useState([])
 
   const isFormValid = () => {
     return (
@@ -99,57 +57,95 @@ const CreateRestaurantForm = () => {
   }
 
   useEffect(() => {
-    getByAdminAllOwnersRequest()
-      .then((res) => {
-        if (!res.data) {
-          setOwners([])
+    setLoading(true)
+    let cancelTokenSource1 = axios.CancelToken.source()
+    let cancelTokenSource2 = axios.CancelToken.source()
+
+    getByAdminAllOwnersRequest({ cancelToken: cancelTokenSource1.token })
+      .then(({ data }) => {
+        if (data.items === 0) {
+          if (owners && owners.length > 0) setOwners([])
         } else {
-          setOwners(
-            res.data?.items.map((owner) => {
-              const id = owner.id
-              const name = owner.name
-              const surname = owner.surname
-              return {
-                label: `${name} ${surname ? surname : ""}`,
-                value: id,
-              }
-            })
-          )
+          const filteredItems = data.items?.map(({ id, name, surname }) => ({
+            label: `${name} ${surname ? surname : ""}`,
+            value: id,
+          }))
+          if (isArraysEqualByIdWithSet(owners, filteredItems)) return
+          setOwners(filteredItems)
         }
       })
-      .catch((error) => {
-        console.log("error: ", error)
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err, "error")
+        }
       })
+      .finally(() => {
+        setLoading(false)
+        cancelTokenSource1.cancel()
+      })
+
+    getAllServicesRequest({ cancelToken: cancelTokenSource2.token })
+      .then(({ data }) => {
+        if (data === 0) {
+          if (services?.length > 0) setServices([])
+        } else {
+          const filteredItems = data
+          if (isArraysEqualByIdWithSet(services, filteredItems)) return
+          setServices(filteredItems)
+        }
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err, "error")
+        }
+      })
+      .finally(() => {
+        setLoading(false)
+        cancelTokenSource2.cancel()
+      })
+
+    return () => {
+      cancelTokenSource1.cancel()
+      cancelTokenSource2.cancel()
+    }
   }, [])
 
   const createRestaurant = () => {
-    if (isFormValid) {
-      сreateByAdminRestaurantRequest(dataForCreate)
-        .then((res) => {
-          navigate(
-            `${removeWildcard(ROUTERS.Management.root)}${
-              ROUTERS.Management.allRestaurants
-            }`
-          )
-        })
-        .catch((error) => console.log("error: ", error))
-    } else {
-      alert("no data")
+    if (!isFormValid()) {
+      showNotification("Форма невалидна", "error")
+      return
     }
+
+    setLoading(true)
+    сreateByAdminRestaurantRequest(dataForCreate)
+      .then(() => {
+        showNotification("Успешно создан", "success")
+        navigate(
+          `${removeWildcard(ROUTERS.Management.root)}${
+            ROUTERS.Management.createRestaurant
+          }`
+        )
+      })
+      .catch((error) => showNotification(error.toString(), "error"))
+      .finally(() => setLoading(false))
   }
 
   return (
     <div className="flex flex-col gap-[30px] w-full">
-      <form className="flex flex-col gap-[30px] w-full px-[20px] py-[40px] border-[3px] border-[#ebebeb] rounded-[20px] ">
-        <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1">
+      <form
+        className="flex flex-col gap-[30px] w-full px-[20px] py-[40px] border-[3px] border-[#ebebeb] rounded-[20px] 
+			max-md:gap-[15px] max-md:py-[20px] max-sm:px-[10px]"
+      >
+        <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1 max-md:gap-[15px]">
           <FormInputTextWrapper
             placeholder="Sandyq"
             label="Название:"
-            onChange={(e) => {
-              setDataForCreate((prevState) => ({
-                ...prevState,
-                name: e.target.value.trim(),
-              }))
+            onChange={(value) => {
+              setDataForCreate((prevState) => ({ ...prevState, name: value }))
             }}
           />
           <FormInputFileWrapper
@@ -157,14 +153,14 @@ const CreateRestaurantForm = () => {
             label="Логотип:"
           />
         </div>
-        <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1">
+        <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1 max-md:gap-[15px]">
           <FormInputTextWrapper
             placeholder="Абай, 101"
             label="Адрес"
-            onChange={(e) => {
+            onChange={(value) => {
               setDataForCreate((prevState) => ({
                 ...prevState,
-                address: e.target.value.trim(),
+                address: value,
               }))
             }}
           />
@@ -176,16 +172,16 @@ const CreateRestaurantForm = () => {
         <FormInputTextWrapper
           placeholder="Напишите краткое описание меню...."
           label="Описание"
-          onChange={(e) => {
+          onChange={(value) => {
             setDataForCreate((prevState) => ({
               ...prevState,
-              description: e.target.value.trim(),
+              description: value,
             }))
           }}
         />
-        <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1">
-          <div className="flex flex-col gap-[15px]">
-            <h3 className="text-[15px] font-[600] left-[22.5px]">
+        <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1 max-md:gap-[15px]">
+          <div className="flex flex-col gap-[15px] max-md:gap-y-[5px]">
+            <h3 className="text-[15px] font-[600] max-md:text-[12px]">
               Режим работы ▼
             </h3>
             <div className="flex items-center gap-[10px]">
@@ -194,10 +190,10 @@ const CreateRestaurantForm = () => {
                   placeholder={"10:00"}
                   placeholderIcon={true}
                   options={getTimes()}
-                  onChange={(e) => {
+                  onChange={(value) => {
                     setDataForCreate((prevState) => ({
                       ...prevState,
-                      modeFrom: e.value,
+                      modeFrom: value,
                     }))
                   }}
                 />
@@ -208,10 +204,10 @@ const CreateRestaurantForm = () => {
                   placeholder={"22:00"}
                   placeholderIcon={true}
                   options={getTimes()}
-                  onChange={(e) => {
+                  onChange={(value) => {
                     setDataForCreate((prevState) => ({
                       ...prevState,
-                      modeTo: e.value,
+                      modeTo: value,
                     }))
                   }}
                 />
@@ -222,11 +218,19 @@ const CreateRestaurantForm = () => {
             label={"Город"}
             placeholder={"Алматы"}
             options={getAllCities()}
-            onChange={(e) => {
+            onChange={(value) => {
               setDataForCreate((prevState) => ({
                 ...prevState,
-                city: e.value,
+                city: value,
               }))
+            }}
+          />
+          <FormInputTextWrapper
+            placeholder="+0 (000) 000 00 00"
+            type={"tel"}
+            label="Номер телефона:"
+            onChange={(value) => {
+              setDataForCreate((prevState) => ({ ...prevState, phone: value }))
             }}
           />
           <FormSelectWrapper
@@ -234,21 +238,17 @@ const CreateRestaurantForm = () => {
             placeholder={"Иван Петров"}
             placeholderIcon={true}
             options={owners}
-            onChange={(e) => {
+            onChange={(value) => {
               setDataForCreate((prevState) => ({
                 ...prevState,
-                ownerId: e.value,
+                ownerId: value,
               }))
             }}
           />
         </div>
         <div className="grid grid-cols-2 gap-[10px] max-md:grid-cols-1">
-          {getAllServices()?.map((service) => (
-            <FormCheckbox
-              label={service.name}
-              forKey={service.id}
-              onChange={() => checkService(service.name)}
-            />
+          {services?.map((service) => (
+            <FormCheckbox key={service.id} label={service.name} />
           ))}
         </div>
       </form>
@@ -256,9 +256,7 @@ const CreateRestaurantForm = () => {
         text="Создать"
         spacingClass={"mx-auto px-[200px] py-[20px]"}
         gradient={true}
-        onClick={() => {
-          createRestaurant()
-        }}
+        onClick={createRestaurant}
       />
     </div>
   )

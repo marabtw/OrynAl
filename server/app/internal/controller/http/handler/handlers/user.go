@@ -40,7 +40,6 @@ func (h *UserHandler) Profile(c echo.Context) error {
 }
 
 func (h *UserHandler) UpdateProfile(c echo.Context) error {
-	currentUser := c.Get("user").(*model.UserResponse)
 	var user model.User
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
@@ -50,7 +49,6 @@ func (h *UserHandler) UpdateProfile(c echo.Context) error {
 		})
 	}
 
-	user.ID = currentUser.ID // Make sure ID is set to current user's ID
 	updatedUser, err := h.service.User.Update(c.Request().Context(), &user)
 	if err != nil {
 		h.logger.Error("Failed to update user profile:", err)
@@ -65,6 +63,32 @@ func (h *UserHandler) UpdateProfile(c echo.Context) error {
 		Status:  http.StatusOK,
 		Message: "User profile updated successfully",
 		Data:    updatedUser,
+	})
+}
+
+func (h *UserHandler) ChangePassword(c echo.Context) error {
+	var pass model.ChangePasswordRequest
+	if err := c.Bind(&pass); err != nil {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid request body",
+			Data:    err.Error(),
+		})
+	}
+
+	err := h.service.User.ChangePassword(c.Request().Context(), &pass)
+	if err != nil {
+		h.logger.Error("Failed to update user password:", err)
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed to update user password",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, response.CustomResponse{
+		Status:  http.StatusOK,
+		Message: "User password updated successfully",
 	})
 }
 

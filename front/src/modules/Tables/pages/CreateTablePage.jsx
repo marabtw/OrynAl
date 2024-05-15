@@ -1,17 +1,18 @@
 import { useParams } from "react-router-dom"
-import PageWrapper from "@components/PageWrapper/PageWrapper"
-import PageHeading from "@ui/Heading/PageHeading"
-import CreateFormsWrapper from "@components/CreateFormsWrapper/CreateFormsWrapper"
 
-import CreateTableForm from "../CreateRestaurantTableForm/CreateRestaurantTableForm"
+import PageWrapper from "@components/PageWrapper"
+import CreateFormsWrapper from "@components/CreateFormsWrapper"
+import CreateTableForm from "../CreateRestaurantTableForm/CreateTableForm"
+
+import PageHeading from "@ui/Heading/PageHeading"
 
 const CreateTablePage = () => {
-	const {restaurantId} = useParams()
+  const { restaurantId } = useParams()
   return (
     <PageWrapper>
       <PageHeading location={"Создать столик"} preLocation={"Мои рестораны"} />
       <CreateFormsWrapper>
-        <CreateTableForm restaurantId={restaurantId}/>
+        <CreateTableForm restaurantId={restaurantId} />
       </CreateFormsWrapper>
     </PageWrapper>
   )

@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import CreateOrder from "../CreateOrder/CreateOrder"
-import RestaurantDetails from "@components/RestaurantDetails/RestaurantDetails"
-import LocationInfo from "@components/LocationInfo/LocationInfo"
-import Loading from "@components/Loading/Loading"
+import CreateOrder from "../CreateOrder"
+import RestaurantDetails from "@components/RestaurantDetails"
+import LocationInfo from "@components/LocationInfo"
+import Loading from "@components/Loading"
 
 import { UIContext } from "@context/UIContext"
-import { getRestaurantRequest } from "../api/api"
+import { getRestaurantRequest } from "../api"
 
 const CreateOrderPage = () => {
   const { isLoading } = useContext(UIContext)

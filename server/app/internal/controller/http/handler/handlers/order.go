@@ -23,7 +23,7 @@ type OrderHandler struct {
 }
 
 func (h *OrderHandler) CreateOrder(c echo.Context) error {
-	var order model.Order
+	var order model.OrderRequest
 	if err := c.Bind(&order); err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,

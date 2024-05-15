@@ -1,14 +1,39 @@
 import { useState } from "react"
+
+import { isValidEmail, isValidPhone } from "@helpers/index"
+import { useToast } from "@hooks"
+
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
 import Button from "@ui/Button/Button"
 
 const UserUpdateForm = ({ currentUserData, updateUserData }) => {
+  const showNotification = useToast()
   const [dataForUpdate, setDataForUpdate] = useState({
     name: "",
     surname: "",
     email: "",
     phone: "",
   })
+
+  const isFormValid = () => {
+    if (
+      !dataForUpdate.name &&
+      !dataForUpdate.surname &&
+      !dataForUpdate.email &&
+      !dataForUpdate.phone
+    ) {
+      showNotification("Не валидна", "info")
+      return false
+    }
+    if (dataForUpdate.email && !isValidEmail(dataForUpdate.email)) {
+      showNotification("Email Не валидна", "warning")
+      return false
+    }
+    if (dataForUpdate.phone && !isValidPhone(dataForUpdate.email)) {
+      showNotification("Phone Не валидна", "warning")
+      return false
+    }
+  }
 
   return (
     <div className="min-w-[40%]">
@@ -20,41 +45,30 @@ const UserUpdateForm = ({ currentUserData, updateUserData }) => {
           <FormInputTextWrapper
             label="Имя:"
             placeholder={currentUserData.name}
-            onChange={(e) => {
-              setDataForUpdate((prevState) => ({
-                ...prevState,
-                name: e.target.value,
-              }))
+            onChange={(value) => {
+              setDataForUpdate((prev) => ({ ...prev, name: value }))
             }}
           />
           <FormInputTextWrapper
             label="Фамилия:"
             placeholder={currentUserData.surname}
-            onChange={(e) => {
-              setDataForUpdate((prevState) => ({
-                ...prevState,
-                surname: e.target.value,
-              }))
+            onChange={(value) => {
+              setDataForUpdate((prev) => ({ ...prev, surname: value }))
             }}
           />
           <FormInputTextWrapper
             label="Почта:"
             placeholder={currentUserData.email}
-            onChange={(e) => {
-              setDataForUpdate((prevState) => ({
-                ...prevState,
-                email: e.target.value,
-              }))
+            onChange={(value) => {
+              setDataForUpdate((prev) => ({ ...prev, email: value }))
             }}
           />
           <FormInputTextWrapper
             label="Телефон номер:"
+            type={"tel"}
             placeholder={currentUserData.phone}
-            onChange={(e) => {
-              setDataForUpdate((prevState) => ({
-                ...prevState,
-                phone: e.target.value,
-              }))
+            onChange={(value) => {
+              setDataForUpdate((prev) => ({ ...prev, phone: value }))
             }}
           />
         </div>
@@ -63,6 +77,9 @@ const UserUpdateForm = ({ currentUserData, updateUserData }) => {
           gradient={true}
           spacingClass={"mx-auto px-[110px] py-[20px]"}
           onClick={() => {
+            if (!isFormValid()) {
+              return
+            }
             const updatedUserData = {
               ...currentUserData,
               ...Object.entries(dataForUpdate).reduce((acc, [key, value]) => {

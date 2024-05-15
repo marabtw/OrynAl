@@ -17,20 +17,47 @@ type OrderRepository struct {
 }
 
 func (r *OrderRepository) CreateOrder(ctx context.Context, order *model.Order) (*model.OrderResponse, error) {
-	if err := r.DB.WithContext(ctx).Create(order).Error; err != nil {
-		return nil, err
-	}
-
 	var orderResponse model.OrderResponse
 
-	if err := r.DB.WithContext(ctx).
-		Preload("Restaurant").
-		Preload("Table").
-		Preload("User").
-		Where("id = ?", order.ID).
-		First(&orderResponse).Error; err != nil {
+	tx := r.DB.WithContext(ctx).Begin()
+
+	if err := tx.Table("orders").Create(order).Error; err != nil {
+		tx.Rollback()
 		return nil, err
 	}
+
+	if err := tx.Table("orders").Preload("Restaurant").Preload("Table").Where("id = ?", order.ID).First(&orderResponse).Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	for _, foodID := range order.OrderFoods {
+		orderFood := model.OrderFood{
+			OrderID: order.ID,
+			FoodID:  foodID,
+		}
+		if err := tx.Table("order_foods").Create(&orderFood).Error; err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, err
+	}
+
+	var orderFoods []model.OrderFoodResponse
+	for _, foodID := range order.OrderFoods {
+		var food model.Food
+		if err := r.DB.WithContext(ctx).Where("id = ?", foodID).First(&food).Error; err != nil {
+			continue
+		}
+		orderFoods = append(orderFoods, model.OrderFoodResponse{
+			FoodID: foodID,
+			Food:   food,
+		})
+	}
+	orderResponse.OrderFoods = orderFoods
 
 	return &orderResponse, nil
 }

@@ -25,6 +25,22 @@ type RestaurantService struct {
 	FormatParams
 }
 
+func (s *RestaurantService) CreateService(ctx context.Context, service *model.Services) ([]model.Services, error) {
+	return s.repository.Services.CreateService(ctx, service)
+}
+
+func (s *RestaurantService) DeleteService(ctx context.Context, id uint) error {
+	return s.repository.Services.DeleteService(ctx, id)
+}
+
+func (s *RestaurantService) GetServices(ctx context.Context) ([]model.Services, error) {
+	return s.repository.Services.GetServices(ctx)
+}
+
+func (s *RestaurantService) UpdateService(ctx context.Context, service *model.Services) ([]model.Services, error) {
+	return s.repository.Services.UpdateService(ctx, service)
+}
+
 func (s *RestaurantService) GetRestaurants(ctx context.Context, params *model.Params) (*model.ListResponse, error) {
 	role, err := utils.GetRoleFromContext(ctx)
 	if err != nil {
@@ -45,11 +61,11 @@ func (s *RestaurantService) GetRestaurants(ctx context.Context, params *model.Pa
 	return s.repository.Restaurant.GetRestaurants(ctx, params)
 }
 
-func (s *RestaurantService) GetRestaurantByID(ctx context.Context, id uint) (*model.RestaurantResponse, error) {
+func (s *RestaurantService) GetRestaurantByID(ctx context.Context, id uint) (*model.Restaurant, error) {
 	return s.repository.Restaurant.GetRestaurantByID(ctx, id)
 }
 
-func (s *RestaurantService) CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.RestaurantResponse, error) {
+func (s *RestaurantService) CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.Restaurant, error) {
 	role, err := utils.GetRoleFromContext(ctx)
 	if err != nil {
 		s.logger.Error(err)
@@ -76,7 +92,7 @@ func (s *RestaurantService) CreateRestaurant(ctx context.Context, restaurant *mo
 	return s.repository.Restaurant.CreateRestaurant(ctx, restaurant)
 }
 
-func (s *RestaurantService) UpdateRestaurant(ctx context.Context, restaurant *model.Restaurant, id uint) (*model.RestaurantResponse, error) {
+func (s *RestaurantService) UpdateRestaurant(ctx context.Context, restaurant *model.Restaurant, id uint) (*model.Restaurant, error) {
 	role, err := utils.GetRoleFromContext(ctx)
 	if err != nil {
 		s.logger.Error(err)

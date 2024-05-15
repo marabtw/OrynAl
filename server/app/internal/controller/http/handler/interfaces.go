@@ -8,6 +8,7 @@ type IUserHandler interface {
 	RefreshToken(c echo.Context) error
 	Profile(c echo.Context) error
 	UpdateProfile(c echo.Context) error
+	ChangePassword(c echo.Context) error
 	DeleteProfile(c echo.Context) error
 }
 
@@ -23,6 +24,9 @@ type IAdminHandler interface {
 	CreateRestaurant(c echo.Context) error
 	DeleteRestaurant(c echo.Context) error
 	UpdateRestaurant(c echo.Context) error
+	CreateService(c echo.Context) error
+	DeleteService(c echo.Context) error
+	UpdateService(c echo.Context) error
 }
 
 type IRestaurantHandler interface {
@@ -32,6 +36,7 @@ type IRestaurantHandler interface {
 	GetRestaurantOrders(c echo.Context) error
 	DeleteRestaurant(c echo.Context) error
 	UpdateRestaurant(c echo.Context) error
+	GetServices(c echo.Context) error
 }
 
 type IReviewsHandler interface {

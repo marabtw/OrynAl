@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import Select from "react-select"
 import { SearchIcon } from "@ui/icons/icons"
 
-import { searchByOwnerRestaurants } from "../../api/api"
+import { searchByOwnerRestaurants } from "../../api"
 import { useNavigate } from "react-router-dom"
 import { ROUTERS } from "@router/Router.config"
-import { removeWildcard } from "@helpers/helpers"
+import { removeWildcard } from "@helpers"
 
 const SearchRestaurant = () => {
   const navigate = useNavigate()

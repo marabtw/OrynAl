@@ -6,6 +6,10 @@ DROP TABLE IF EXISTS orders;
 
 DROP TABLE IF EXISTS tables;
 
+DROP TABLE IF EXISTS restaurant_service;
+
+DROP TABLE IF EXISTS services;
+
 DROP TABLE IF EXISTS restaurant_photos;
 
 DROP TABLE IF EXISTS restaurant_reviews;

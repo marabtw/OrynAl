@@ -23,11 +23,21 @@ type OrderService struct {
 	FormatParams
 }
 
-func (s *OrderService) Create(ctx context.Context, order *model.Order) (*model.OrderResponse, error) {
-	if order.Status != enums.Reserved {
-		return nil, errors.New("order status is invalid")
+func (s *OrderService) Create(ctx context.Context, order *model.OrderRequest) (*model.OrderResponse, error) {
+	userID, err := utils.GetIDFromContext(ctx)
+	if err != nil {
+		return nil, err
 	}
-	createdOrder, err := s.repository.Order.CreateOrder(ctx, order)
+
+	createdOrder, err := s.repository.Order.CreateOrder(ctx, &model.Order{
+		RestaurantID: order.RestaurantID,
+		TotalSum:     order.TotalSum,
+		UserID:       userID,
+		TableID:      order.TableID,
+		Date:         order.Date,
+		Status:       order.Status,
+		OrderFoods:   order.OrderFoods,
+	})
 	if err != nil {
 		return nil, err
 	}

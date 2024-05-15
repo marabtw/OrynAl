@@ -1,18 +1,15 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { ROUTERS } from "@router/Router.config"
-import { removeWildcard } from "@helpers/helpers"
+import { removeWildcard } from "@helpers"
 
 import {
-  SearchIcon,
   MenuIcon,
   ProfileMenuIcon,
   RestaurantsIconForHeader,
   HistoryIconForHeader,
 } from "@ui/icons/icons"
 import Logo from "@assets/images/logo.png"
-
-import { searchByOwnerRestaurants } from "../api/api"
 
 import ProfileMenuDropdown from "../components/ProfileMenuDropdown"
 import MobileMenuNavigation from "../components/MobileMenuNavigation"
@@ -26,13 +23,13 @@ const mobileMenuItems = [
       ROUTERS.Restaurant.myRestaurants
     }`,
   },
-  {
-    label: "История заказов",
-    icon: <HistoryIconForHeader />,
-    to: `${removeWildcard(ROUTERS.Orders.root)}${
-      ROUTERS.Orders.myOrdersHistory
-    }`,
-  },
+  // {
+  //   label: "История заказов",
+  //   icon: <HistoryIconForHeader />,
+  //   to: `${removeWildcard(ROUTERS.Orders.root)}${
+  //     ROUTERS.Orders.restaurantOrdersHistory
+  //   }`,
+  // },
 ]
 
 const OwnerHeader = ({ user }) => {
@@ -68,14 +65,14 @@ const OwnerHeader = ({ user }) => {
         >
           Мои рестораны
         </Link>
-        <Link
+        {/* <Link
           to={`${removeWildcard(ROUTERS.Orders.root)}${
-            ROUTERS.Orders.myOrdersHistory
+            ROUTERS.Orders.restaurantOrdersHistory
           }`}
           className="max-md:hidden"
         >
           История заказов
-        </Link>
+        </Link> */}
       </div>
       <div className="flex items-center gap-[50px]">
         <SearchRestaurant />

@@ -21,10 +21,11 @@ func (s *Server) setupAuthRoutes(g *echo.Group) {
 }
 
 func (s *Server) setupProfileRoutes(g *echo.Group) {
-	auth := g.Group("/profile", s.jwt.ValidateAuth)
-	auth.GET("", s.handler.User.Profile)
-	auth.PUT("", s.handler.User.UpdateProfile)
-	auth.DELETE("", s.handler.User.DeleteProfile)
+	profile := g.Group("/profile", s.jwt.ValidateAuth)
+	profile.GET("", s.handler.User.Profile)
+	profile.PUT("", s.handler.User.UpdateProfile)
+	profile.DELETE("", s.handler.User.DeleteProfile)
+	profile.PUT("/change-password", s.handler.User.ChangePassword, s.jwt.ValidateAuth)
 }
 
 func (s *Server) setupAdminRoutes(g *echo.Group) {
@@ -41,6 +42,10 @@ func (s *Server) setupAdminRoutes(g *echo.Group) {
 	admin.GET("/restaurants/:id", s.handler.Admin.GetRestaurant)
 	admin.GET("/clients", s.handler.Admin.GetClients)
 	admin.DELETE("/clients/:id", s.handler.Admin.DeleteClient)
+	admin.POST("/services", s.handler.Admin.CreateService)
+	admin.PUT("/services/:id", s.handler.Admin.UpdateService)
+	admin.DELETE("/services/:id", s.handler.Admin.DeleteService)
+	admin.GET("/services", s.handler.Restaurant.GetServices)
 }
 
 func (s *Server) setupOrderRoutes(g *echo.Group) {
@@ -56,13 +61,13 @@ func (s *Server) setupOrderRoutes(g *echo.Group) {
 func (s *Server) setupRestaurantRoutes(g *echo.Group) {
 	restaurant := g.Group("/restaurants")
 	restaurant.Use(s.jwt.ValidateAuth)
-
 	restaurant.GET("", s.handler.Restaurant.GetRestaurants)
 	restaurant.GET("/:id", s.handler.Restaurant.GetRestaurantByID)
 	restaurant.GET("/:id/orders", s.handler.Restaurant.GetRestaurantOrders, s.jwt.ValidateOwner)
 	//restaurant.GET("/favorite", s.handler.Restaurant.FavoriteRestaurants)
 	restaurant.POST("/:id/reviews", s.handler.Reviews.CreateReview)
 	restaurant.GET("/:id/reviews", s.handler.Reviews.GetReviews)
+	restaurant.GET("/services", s.handler.Restaurant.GetServices)
 
 	s.setupMenuRoutes(restaurant)
 	s.setupTableRoutes(restaurant)

@@ -10,7 +10,7 @@ import { removeWildcard } from "@helpers"
 
 import ListCategories from "@components/ListCategories"
 import ListItem from "@components/ListItem"
-import Pagination from "@components/Pagination"
+import Pagination from "@components/Pagination/Pagination"
 
 const categories = [
   "ID",

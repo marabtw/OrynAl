@@ -1,4 +1,4 @@
-import PreviousDataDisplay from "@components/PreviousDataDisplay"
+import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
 
 const UserDetails = ({ currentUserData, deleteUser }) => {
   return (

@@ -1,21 +1,15 @@
-import { useState, useContext, useMemo } from "react"
-import Cookies from "js-cookie"
-import { useNavigate } from "react-router-dom"
-
-import { signupRequest, signinRequest } from "../../api"
-import { jwtDecode } from "jwt-decode"
-import { ROUTERS } from "@router/Router.config"
+import { useState, useContext } from "react"
 
 import { AuthContext } from "@context/AuthContext"
-import { isValidEmail,removeWildcard } from "@helpers"
+import { isValidEmail, isValidPhone } from "@helpers"
 
 import AuthorizationFormsInput from "./AuthorizationFormsInput"
 
 import Button from "@ui/Button/Button"
 
 const Register = ({ changeAuth }) => {
-  const navigate = useNavigate()
-  const { setUser } = useContext(AuthContext)
+  const { signup } = useContext(AuthContext)
+
   const [name, setName] = useState("")
   const [surname, setSurname] = useState("")
   const [email, setEmail] = useState("")
@@ -23,58 +17,22 @@ const Register = ({ changeAuth }) => {
   const [password, setPassword] = useState("")
   const [rePassword, setRePassword] = useState("")
 
-  const isFormValid = useMemo(() => {
+  const isFormValid = () => {
     return (
       isValidEmail(email) &&
       name &&
-      phone &&
+      isValidPhone(phone) &&
       password &&
       password === rePassword
     )
-  })
+  }
 
   const handleSignup = async (e) => {
-    e.preventDefault()
-    if (isFormValid) {
-      try {
-        const status = (await signupRequest(name, surname, email, phone, password))
-          .status
-        if (status === 201) {
-          const data = (await signinRequest(email, password)).data.data
-          Cookies.set("accessToken", data.access_token, {
-            SameSite: "None",
-            Secure: true,
-          })
-          Cookies.set("refreshToken", data.refresh_token, {
-            SameSite: "None",
-            Secure: true,
-          })
-					localStorage.setItem("isFirstVisit", "false")
-          const decodedUser = jwtDecode(data.access_token)
-          setUser(decodedUser)
-          const role = decodedUser.role
-          if (role === "admin") {
-						navigate(
-							`${removeWildcard(ROUTERS.Management.root)}${
-								ROUTERS.Management.allRestaurants
-							}`
-						)
-					} else if (role === "owner") {
-						navigate(
-							`${removeWildcard(ROUTERS.Restaurant.root)}${
-								ROUTERS.Restaurant.myRestaurants
-							}`
-						)
-					} else {
-						navigate(`${ROUTERS.Home}`)
-					}
-        }
-      } catch (error) {
-        console.error("error: " + error.message)
-      }
-    } else {
-      console.log("valid error")
+		e.preventDefault()
+    if (!isFormValid()) {
+      return
     }
+    signup({ name, surname, email, phone, password })
   }
 
   return (
@@ -102,6 +60,7 @@ const Register = ({ changeAuth }) => {
             placeholder="+7 777 77 77"
             required={true}
             onChange={(value) => setPhone(value)}
+            type="tel"
           />
           <AuthorizationFormsInput
             label="Почта"

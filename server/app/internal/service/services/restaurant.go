@@ -25,7 +25,11 @@ type RestaurantService struct {
 	FormatParams
 }
 
-func (s *RestaurantService) CreateService(ctx context.Context, service *model.Services) ([]model.Services, error) {
+func (s *RestaurantService) PopularRestaurants(ctx context.Context) (*model.ListResponse, error) {
+	return s.repository.Restaurant.GetPopularRestaurants(ctx)
+}
+
+func (s *RestaurantService) CreateService(ctx context.Context, service *model.Service) ([]model.Service, error) {
 	return s.repository.Services.CreateService(ctx, service)
 }
 
@@ -33,11 +37,11 @@ func (s *RestaurantService) DeleteService(ctx context.Context, id uint) error {
 	return s.repository.Services.DeleteService(ctx, id)
 }
 
-func (s *RestaurantService) GetServices(ctx context.Context) ([]model.Services, error) {
+func (s *RestaurantService) GetServices(ctx context.Context) ([]model.Service, error) {
 	return s.repository.Services.GetServices(ctx)
 }
 
-func (s *RestaurantService) UpdateService(ctx context.Context, service *model.Services) ([]model.Services, error) {
+func (s *RestaurantService) UpdateService(ctx context.Context, service *model.Service) ([]model.Service, error) {
 	return s.repository.Services.UpdateService(ctx, service)
 }
 

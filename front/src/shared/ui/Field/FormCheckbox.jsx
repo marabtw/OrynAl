@@ -1,25 +1,24 @@
-import { useState } from "react"
+import { useState, useEffect} from "react"
 
-const getRandomNumber = () => {
-  return Math.floor(Math.random() * 99999999999)
-}
-
-const FormCheckbox = ({ label, onChange, initialChecked }) => {
+const FormCheckbox = ({ service = {}, onChange, initialChecked }) => {
   const [checked, setChecked] = useState(initialChecked)
-  const randomNumber = getRandomNumber()
+
+	useEffect(() => {
+    setChecked(initialChecked)
+  }, [initialChecked])
 
   return (
     <label
-      htmlFor={`checkbox-${randomNumber}`}
+      htmlFor={`checkbox-${service.id}`}
       className="relative flex gap-x-[10px] items-center max-w-max max-md:text-[14px]"
     >
       <input
-        id={`checkbox-${randomNumber}`}
+        id={`checkbox-${service.id}`}
         type="checkbox"
         className="hidden"
         onChange={() => {
           setChecked(!checked)
-          onChange(label)
+          onChange(service)
         }}
       />
       <span
@@ -27,7 +26,7 @@ const FormCheckbox = ({ label, onChange, initialChecked }) => {
       >
         {checked && <div className="w-full h-full bg-[#05FF00]"></div>}
       </span>
-      <p className="cursor-pointer">{label}</p>
+      <p className="cursor-pointer">{service.name}</p>
     </label>
   )
 }

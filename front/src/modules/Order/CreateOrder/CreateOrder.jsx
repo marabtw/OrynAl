@@ -1,19 +1,27 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
+import { ROUTERS } from "@router/Router.config"
 import { createByUserOrder } from "../api"
 
-import TableReservation from "./components/TableReservation"
-import SelectMenu from "./components/SelectMenu"
-import Cart from "./components/Cart"
+import { removeWildcard } from "@helpers"
+import { useLoading, useToast } from "@hooks"
 
+import TableReservation from "./components/TableReservation/TableReservation"
+import SelectMenu from "./components/SelectMenu/SelectMenu"
+import Cart from "./components/Cart/Cart"
 import { CartIcon } from "@ui/icons/icons"
 
 const CreateOrder = ({ restaurantId }) => {
+  const navigate = useNavigate()
+  const setLoading = useLoading()
+  const showNotification = useToast()
+
   const [showCart, setShowCart] = useState(false)
   const [dataForCreateOrder, setDataForCreateOrder] = useState({
     tableId: -1,
-    cart: [],
-    totalPrice: 0,
+    foods: [],
+    totalSum: 0,
     restaurantId: +restaurantId,
     status: "Завершен",
   })
@@ -25,26 +33,47 @@ const CreateOrder = ({ restaurantId }) => {
   }
 
   const createOrder = () => {
-    if (!isOrderValid()) return
-    createByUserOrder(dataForCreateOrder)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err))
-      .finally()
+    if (!isOrderValid()) {
+      showNotification("Вы не выбрали", "warning")
+      return
+    }
+
+		const formattedDataForCreateOrder = {
+			...dataForCreateOrder,
+			foods: dataForCreateOrder.foods.map(food => food.id),
+		};
+
+    setLoading(true)
+    createByUserOrder(formattedDataForCreateOrder)
+      .then(() => {
+        showNotification("Успешно создан", "success")
+        navigate(`${removeWildcard(ROUTERS.Home)}`)
+      })
+      .catch((err) => {
+        showNotification(err.toString(), "error")
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const getFoodForCart = (food) => {
-    const isFoodInCart = dataForCreateOrder?.cart.some(
+    if (!food) {
+      showNotification("Такой еды нету в меню", "warning")
+      return
+    }
+    const isFoodInCart = dataForCreateOrder.foods.some(
       (item) => item.id === food.id
     )
     if (!isFoodInCart) {
       setDataForCreateOrder((prev) => {
-        return { ...prev, cart: [...prev.cart, food] }
+        return { ...prev, foods: [...prev.foods, food] }
       })
     } else {
       setDataForCreateOrder((prev) => {
         return {
           ...prev,
-          cart: [...prev.cart.filter((order) => order.id !== food.id)],
+          foods: [...prev.foods.filter((order) => order.id !== food.id)],
         }
       })
     }
@@ -55,7 +84,7 @@ const CreateOrder = ({ restaurantId }) => {
       dataForCreateOrder.restaurantId &&
       dataForCreateOrder.tableId &&
       dataForCreateOrder.tableId >= 0 &&
-      dataForCreateOrder.cart.length > 0
+      dataForCreateOrder.foods.length > 0
     )
   }
 
@@ -66,11 +95,17 @@ const CreateOrder = ({ restaurantId }) => {
         <SelectMenu
           restaurantId={restaurantId}
           getFoodForCart={getFoodForCart}
-          selectedFoodsId={dataForCreateOrder.cart.map((food) => food.id)}
+          selectedFoodsId={
+            dataForCreateOrder?.foods.length > 0
+              ? dataForCreateOrder.foods.map((food) => food.id)
+              : []
+          }
         />
         <Cart
           show={showCart}
-          cartOrders={dataForCreateOrder.cart}
+          foodsInCart={
+            dataForCreateOrder?.foods.length > 0 ? dataForCreateOrder.foods : []
+          }
           updateCart={setDataForCreateOrder}
           createOrder={createOrder}
         />

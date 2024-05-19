@@ -7,7 +7,6 @@ import {
   MenuIcon,
   ProfileMenuIcon,
   RestaurantsIconForHeader,
-  HistoryIconForHeader,
 } from "@ui/icons/icons"
 import Logo from "@assets/images/logo.png"
 
@@ -23,13 +22,6 @@ const mobileMenuItems = [
       ROUTERS.Restaurant.myRestaurants
     }`,
   },
-  // {
-  //   label: "История заказов",
-  //   icon: <HistoryIconForHeader />,
-  //   to: `${removeWildcard(ROUTERS.Orders.root)}${
-  //     ROUTERS.Orders.restaurantOrdersHistory
-  //   }`,
-  // },
 ]
 
 const OwnerHeader = ({ user }) => {
@@ -65,18 +57,19 @@ const OwnerHeader = ({ user }) => {
         >
           Мои рестораны
         </Link>
-        {/* <Link
-          to={`${removeWildcard(ROUTERS.Orders.root)}${
-            ROUTERS.Orders.restaurantOrdersHistory
-          }`}
-          className="max-md:hidden"
-        >
-          История заказов
-        </Link> */}
       </div>
       <div className="flex items-center gap-[50px]">
         <SearchRestaurant />
-        {user ? (
+        {user?.role === "guest" || !user?.role ? (
+          <Link
+            className="relative flex items-center cursor-pointer"
+            to={`${removeWildcard(ROUTERS.Authorization.root)}${
+              ROUTERS.Authorization.login
+            }`}
+          >
+            Войти
+          </Link>
+        ) : (
           <div
             className="relative flex items-center cursor-pointer"
             onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
@@ -86,15 +79,6 @@ const OwnerHeader = ({ user }) => {
               <ProfileMenuDropdown close={() => setIsProfileMenuOpen(false)} />
             )}
           </div>
-        ) : (
-          <Link
-            className="relative flex items-center cursor-pointer"
-            to={`${removeWildcard(ROUTERS.Authorization.root)}${
-              ROUTERS.Authorization.login
-            }`}
-          >
-            Войти
-          </Link>
         )}
       </div>
       {isMobileNavOpen && (

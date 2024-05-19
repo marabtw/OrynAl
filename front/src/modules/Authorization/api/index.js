@@ -16,7 +16,11 @@ export const signupRequest = async (name, surname, email, phone, password) => {
   return response
 }
 
-export const refreshTokenRequest = async () => {
-  const response = await myApi.get("/refresh")
+export const refreshTokenRequest = async ({token}) => {
+  const response = await myApi.get("/refresh", {
+		headers: {
+      Authorization: `Bearer ${token}`,
+    },
+	})
   return response.data
 }

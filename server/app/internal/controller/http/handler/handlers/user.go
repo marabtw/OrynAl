@@ -131,6 +131,12 @@ func (h *UserHandler) SignIn(c echo.Context) error {
 		})
 	}
 
+	//return c.JSON(http.StatusCreated, response.CustomResponse{
+	//	Status:  0,
+	//	Message: "OK",
+	//	Data:    request,
+	//})
+
 	userToken, err := h.service.Auth.Login(c.Request().Context(), request)
 	if err != nil {
 		h.logger.Error(err)

@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react"
-import { getByUserAllOrders } from "../api"
+import { getByUserAllOrders, getByOwnerAllOrders } from "../api"
 import ListCategories from "@components/ListCategories"
 import OrdersHistoryItem from "./components/OrdersHistoryItem"
 
 const categories = ["id", "Ресторан", "Адрес", "Дата", "Статус", "Действие"]
 
-const OrdersHistory = ({restaurantId}) => {
+const OrdersHistory = ({ restaurantId }) => {
   const [orders, setOrders] = useState([])
 
   useEffect(() => {
-    getByUserAllOrders(restaurantId)
-      .then((response) => {
-        setOrders(response.data)
-      })
-      .catch((error) => console.log("error"))
+    restaurantId
+      ? getByOwnerAllOrders(restaurantId)
+          .then((response) => {
+            setOrders(response.data)
+          })
+          .catch((error) => console.log("error"))
+      : getByUserAllOrders()
+          .then((response) => {
+            setOrders(response.data)
+          })
+          .catch((error) => console.log("error"))
   }, [])
 
   return (

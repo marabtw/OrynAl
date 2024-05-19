@@ -20,9 +20,11 @@ const Router = () => {
   const { user } = useContext(AuthContext)
   const navigate = useNavigate()
 
+  // console.log("user: ", user)
+
   useEffect(() => {
     const isFirstVisit = localStorage.getItem("isFirstVisit") === null
-
+    console.log("isFirstVisit", isFirstVisit)
     if (isFirstVisit) {
       localStorage.setItem("isFirstVisit", "false")
       navigate(getInitialRoute(user.role))

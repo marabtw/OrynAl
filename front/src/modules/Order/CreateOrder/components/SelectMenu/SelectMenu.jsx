@@ -7,23 +7,23 @@ import FoodCard from "./components/FoodCard"
 
 const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
   const [menu, setMenu] = useState([])
-  const [currentTypeOfMenu, setCurrentTypeOfMenu] = useState("")
-  const [typesOfMenu, setTypesOfMenu] = useState([])
+  const [currentCategory, setCurrentCategory] = useState("")
+  const [menuCategories, setMenuCategories] = useState([])
   const [filteredMenu, setFilteredMenu] = useState([])
 
   useEffect(() => {
-    getRestaurantMenuRequest(restaurantId)
+    getRestaurantMenuRequest({restaurantId})
       .then((res) => {
         setMenu(res.data)
-        setTypesOfMenu(Object.keys(res.data))
-        setCurrentTypeOfMenu(Object.keys(res.data)[0])
+        setMenuCategories(Object.keys(res.data))
+        setCurrentCategory(Object.keys(res.data)[0])
       })
       .catch((error) => console.log(error))
   }, [restaurantId])
 
   useEffect(() => {
     setFilteredMenu(
-      menu[currentTypeOfMenu]?.map(
+      menu[currentCategory]?.map(
         ({ id, image, name, type, description, price, status }) => {
           return {
             id,
@@ -37,13 +37,13 @@ const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
         }
       )
     )
-  }, [currentTypeOfMenu])
+  }, [currentCategory])
 
   return (
     <div className="">
       <FoodCategories
-        categories={typesOfMenu}
-        selectCategory={setCurrentTypeOfMenu}
+        categories={menuCategories}
+        selectCategory={setCurrentCategory}
       />
       <div className="grid grid-cols-3 gap-y-[100px] gap-x-[20px] mt-[100px] max-xl:grid-cols-2 max-md:grid-cols-1">
         {filteredMenu?.map((food) => (

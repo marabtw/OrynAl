@@ -23,7 +23,34 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
     description: "",
     price: 0,
     available: true,
+    services: [],
   })
+
+  const handleChange = (key, value) => {
+    setDataForCreate((prevState) => {
+      if (Array.isArray(dataForCreate[key]) && key === "services") {
+        const existingIndex = prevState[key].findIndex(
+          (item) => item.id === value.id
+        )
+        if (existingIndex !== -1) {
+          return {
+            ...prevState,
+            [key]: prevState[key].filter((_, index) => index !== existingIndex),
+          }
+        } else {
+          return {
+            ...prevState,
+            [key]: [...prevState[key], value],
+          }
+        }
+      } else {
+        return {
+          ...prevState,
+          [key]: value,
+        }
+      }
+    })
+  }
 
   const isFormValid = () => {
     return (
@@ -39,7 +66,7 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
       showNotification("Форма невалидна", "warning")
       return
     }
-		
+
     setLoading(true)
     createByOwnerMenuItemRequest(restaurantId, dataForCreate)
       .then(() => {
@@ -106,8 +133,8 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
           label={"Доступность"}
           placeholder={"Доступен"}
           options={[
-            { label: "Доступен", value: "true" },
-            { label: "Не доступен", value: "false" },
+            { label: "Доступен", value: "Доступен" },
+            { label: "Не доступен", value: "Не доступен" },
           ]}
           onChange={(value) => {
             setDataForCreate((prevState) => ({

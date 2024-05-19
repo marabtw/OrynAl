@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/internal/service"
 	"github.com/alibekabdrakhman1/orynal/pkg/response"
@@ -23,7 +24,7 @@ type AdminHandler struct {
 }
 
 func (h *AdminHandler) CreateService(c echo.Context) error {
-	var createService model.Services
+	var createService model.Service
 	if err := c.Bind(&createService); err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -77,7 +78,7 @@ func (h *AdminHandler) DeleteService(c echo.Context) error {
 }
 
 func (h *AdminHandler) UpdateService(c echo.Context) error {
-	var updateService model.Services
+	var updateService model.Service
 	if err := c.Bind(&updateService); err != nil {
 		return c.JSON(http.StatusBadRequest, response.CustomResponse{
 			Status:  http.StatusBadRequest,
@@ -322,6 +323,8 @@ func (h *AdminHandler) CreateRestaurant(c echo.Context) error {
 			Data:    err.Error(),
 		})
 	}
+
+	fmt.Println(restaurant)
 
 	createdRestaurant, err := h.service.Restaurant.CreateRestaurant(c.Request().Context(), &restaurant)
 	if err != nil {

@@ -1,6 +1,7 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useContext } from "react"
 import { UIContext } from "@context/UIContext"
+import { axios } from "@lib/axios"
 
 export const useToast = () => {
   const { toast } = useContext(UIContext)
@@ -51,5 +52,68 @@ export const useContextMenu = (index) => {
     }
   }, [openedContextMenuIndex])
 
-  return { openedContextMenuIndex, handleContextMenu, closeContextMenuFunction }
+  return {
+    openedContextMenuIndex,
+    handleContextMenu,
+    closeContextMenuFunction,
+  }
+}
+
+export const useHeaderHeight = () => {
+  const { headerHeight } = useContext(UIContext)
+  return headerHeight
+}
+
+export const useCloudinary = () => {
+  const uploadImages = async (files) => {
+    const urls = []
+
+    const uploadSingleImage = async (file) => {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append(
+        "upload_preset",
+        process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET_NAME
+      )
+
+      try {
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+          formData
+        )
+        return { url: response.data.url, publicId: response.data.public_id }
+      } catch (error) {
+        console.error("Error uploading image:", error)
+        throw error
+      }
+    }
+
+    try {
+      for (const file of files) {
+        const url = await uploadSingleImage(file)
+        urls.push(url)
+      }
+      return urls
+    } catch (error) {
+      throw error
+    }
+  }
+
+  const deleteImage = async (publicID) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/delete/${publicID}`
+      )
+      return response.data
+    } catch (error) {
+      console.error("Error deleting image:", error)
+
+      throw error
+    }
+  }
+
+  return {
+    uploadImages,
+    deleteImage,
+  }
 }

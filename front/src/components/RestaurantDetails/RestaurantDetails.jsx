@@ -1,6 +1,6 @@
-import Slider from "./components/Slider"
+import Slider from "./components/Slider/Slider"
 import CommentsContainer from "./components/CommentsContainer"
-import RestaurantBriefInfo from "../RestaurantBriefInfo"
+import RestaurantBriefInfo from "../RestaurantBriefInfo/RestaurantBriefInfo"
 
 const RestaurantDetails = ({ restaurantData }) => {
   return (

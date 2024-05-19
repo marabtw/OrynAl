@@ -11,7 +11,7 @@ import {
   getAllCities,
 } from "../../api"
 
-import { removeWildcard } from "@helpers"
+import { removeWildcard, isValidPhone } from "@helpers"
 import { useLoading, useToast } from "@hooks"
 import { isArraysEqualByIdWithSet } from "@utils"
 
@@ -27,7 +27,6 @@ const CreateRestaurantForm = () => {
   const navigate = useNavigate()
   const showNotification = useToast()
   const setLoading = useLoading()
-  let cancelTokenSource = null
 
   const [dataForCreate, setDataForCreate] = useState({
     name: "",
@@ -39,7 +38,7 @@ const CreateRestaurantForm = () => {
     modeTo: "",
     phone: "",
     status: true,
-    services: [{ id: 15, name: "123" }],
+    services: [],
   })
   const [owners, setOwners] = useState([])
   const [services, setServices] = useState([])
@@ -52,8 +51,35 @@ const CreateRestaurantForm = () => {
       dataForCreate.city &&
       dataForCreate.ownerId &&
       dataForCreate.modeFrom &&
-      dataForCreate.modeTo
+      dataForCreate.modeTo &&
+      isValidPhone(dataForCreate.phone)
     )
+  }
+
+  const handleChange = (key, value) => {
+    setDataForCreate((prevState) => {
+      if (Array.isArray(dataForCreate[key]) && key === "services") {
+        const existingIndex = prevState[key].findIndex(
+          (item) => item.id === value.id
+        )
+        if (existingIndex !== -1) {
+          return {
+            ...prevState,
+            [key]: prevState[key].filter((_, index) => index !== existingIndex),
+          }
+        } else {
+          return {
+            ...prevState,
+            [key]: [...prevState[key], value],
+          }
+        }
+      } else {
+        return {
+          ...prevState,
+          [key]: value,
+        }
+      }
+    })
   }
 
   useEffect(() => {
@@ -126,7 +152,7 @@ const CreateRestaurantForm = () => {
         showNotification("Успешно создан", "success")
         navigate(
           `${removeWildcard(ROUTERS.Management.root)}${
-            ROUTERS.Management.createRestaurant
+            ROUTERS.Management.allRestaurants
           }`
         )
       })
@@ -145,7 +171,7 @@ const CreateRestaurantForm = () => {
             placeholder="Sandyq"
             label="Название:"
             onChange={(value) => {
-              setDataForCreate((prevState) => ({ ...prevState, name: value }))
+              handleChange("name", value)
             }}
           />
           <FormInputFileWrapper
@@ -158,10 +184,7 @@ const CreateRestaurantForm = () => {
             placeholder="Абай, 101"
             label="Адрес"
             onChange={(value) => {
-              setDataForCreate((prevState) => ({
-                ...prevState,
-                address: value,
-              }))
+              handleChange("address", value)
             }}
           />
           <FormInputFileWrapper
@@ -173,10 +196,7 @@ const CreateRestaurantForm = () => {
           placeholder="Напишите краткое описание меню...."
           label="Описание"
           onChange={(value) => {
-            setDataForCreate((prevState) => ({
-              ...prevState,
-              description: value,
-            }))
+            handleChange("description", value)
           }}
         />
         <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1 max-md:gap-[15px]">
@@ -191,10 +211,7 @@ const CreateRestaurantForm = () => {
                   placeholderIcon={true}
                   options={getTimes()}
                   onChange={(value) => {
-                    setDataForCreate((prevState) => ({
-                      ...prevState,
-                      modeFrom: value,
-                    }))
+                    handleChange("modeFrom", value)
                   }}
                 />
               </div>
@@ -205,10 +222,7 @@ const CreateRestaurantForm = () => {
                   placeholderIcon={true}
                   options={getTimes()}
                   onChange={(value) => {
-                    setDataForCreate((prevState) => ({
-                      ...prevState,
-                      modeTo: value,
-                    }))
+                    handleChange("modeTo", value)
                   }}
                 />
               </div>
@@ -219,10 +233,7 @@ const CreateRestaurantForm = () => {
             placeholder={"Алматы"}
             options={getAllCities()}
             onChange={(value) => {
-              setDataForCreate((prevState) => ({
-                ...prevState,
-                city: value,
-              }))
+              handleChange("city", value)
             }}
           />
           <FormInputTextWrapper
@@ -230,7 +241,7 @@ const CreateRestaurantForm = () => {
             type={"tel"}
             label="Номер телефона:"
             onChange={(value) => {
-              setDataForCreate((prevState) => ({ ...prevState, phone: value }))
+              handleChange("phone", value)
             }}
           />
           <FormSelectWrapper
@@ -239,16 +250,19 @@ const CreateRestaurantForm = () => {
             placeholderIcon={true}
             options={owners}
             onChange={(value) => {
-              setDataForCreate((prevState) => ({
-                ...prevState,
-                ownerId: value,
-              }))
+              handleChange("ownerId", value)
             }}
           />
         </div>
         <div className="grid grid-cols-2 gap-[10px] max-md:grid-cols-1">
           {services?.map((service) => (
-            <FormCheckbox key={service.id} label={service.name} />
+            <FormCheckbox
+              key={service.id}
+              service={service}
+              onChange={(service) => {
+                handleChange("services", service)
+              }}
+            />
           ))}
         </div>
       </form>

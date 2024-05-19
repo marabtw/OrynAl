@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import CreateOrder from "../CreateOrder"
-import RestaurantDetails from "@components/RestaurantDetails"
-import LocationInfo from "@components/LocationInfo"
+import CreateOrder from "../CreateOrder/CreateOrder"
+import RestaurantDetails from "@components/RestaurantDetails/RestaurantDetails"
+import LocationInfo from "@components/LocationInfo/LocationInfo"
 import Loading from "@components/Loading"
 
 import { UIContext } from "@context/UIContext"
@@ -15,7 +15,7 @@ const CreateOrderPage = () => {
   const [restaurant, setRestaurant] = useState({})
 
   useEffect(() => {
-    getRestaurantRequest(restaurantId)
+    getRestaurantRequest({restaurantId})
       .then((res) => {
         setRestaurant(res.data)
       })

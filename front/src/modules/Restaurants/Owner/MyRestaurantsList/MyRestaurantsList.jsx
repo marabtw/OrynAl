@@ -6,7 +6,7 @@ import { getAllRestaurantsRequest } from "../../api"
 import { useToast, useLoading } from "@hooks"
 import { isArraysEqualByIdWithSet } from "@utils/index"
 
-import Pagination from "@components/Pagination"
+import Pagination from "@components/Pagination/Pagination"
 import RestaurantCard from "./components/MyRestaurantCard"
 import { Grid1x2Icon, Grid2x2Icon } from "@ui/icons/icons"
 
@@ -25,9 +25,9 @@ const MyRestaurantsList = () => {
 
   useEffect(() => {
     setLoading(true)
-    const cancelToken = axios.CancelToken.source()
+    const cancelTokenSource = axios.CancelToken.source()
 
-    getAllRestaurantsRequest({ params, cancelToken })
+    getAllRestaurantsRequest({ params, cancelToken: cancelTokenSource.token })
       .then(({ data }) => {
         if (data.items.length === 0) {
           if (myRestaurants?.length > 0) setMyRestaurants([])
@@ -52,7 +52,7 @@ const MyRestaurantsList = () => {
       .finally(() => setLoading(false))
 
     return () => {
-      cancelToken.cancel()
+      cancelTokenSource.cancel()
     }
   }, [params])
 
@@ -93,7 +93,7 @@ const MyRestaurantsList = () => {
               : "flex flex-col gap-[30px]"
           }`}
         >
-          {myRestaurants?.length > 0 ? (
+          {myRestaurants?.length > 0 &&
             myRestaurants.map((restaurant, index) => (
               <RestaurantCard
                 key={restaurant.id}
@@ -101,13 +101,13 @@ const MyRestaurantsList = () => {
                 displayType={displayType}
                 index={index}
               />
-            ))
-          ) : (
-            <p className="flex justify-center items-center text-[#b0b0b0]">
-              No items
-            </p>
-          )}
+            ))}
         </div>
+        {myRestaurants?.length === 0 && (
+          <p className="flex justify-center items-center text-[#b0b0b0]">
+            No items
+          </p>
+        )}
         <Pagination
           totalPage={totalPage}
           getCurrentPage={(index) => {

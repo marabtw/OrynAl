@@ -1,63 +1,32 @@
 import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
-
 import { jwtDecode } from "jwt-decode"
+
+import { ROUTERS } from "@router/Router.config"
 import { signinRequest } from "../../api"
 import { AuthContext } from "@context/AuthContext"
 
 import { isValidEmail, removeWildcard } from "@helpers"
-import { ROUTERS } from "@router/Router.config"
 
 import AuthorizationFormsInput from "./AuthorizationFormsInput"
-
 import Button from "@ui/Button/Button"
 
 const Login = ({ changeAuth }) => {
-  const navigate = useNavigate()
+  const { signin } = useContext(AuthContext)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const { setUser } = useContext(AuthContext)
+  const isValid = () => {
+    return isValidEmail(email) && password
+  }
 
   const handleSignin = async (e) => {
     e.preventDefault()
-    if (isValidEmail(email) && password) {
-      try {
-        const data = (await signinRequest(email, password)).data.data
-        Cookies.set("accessToken", data.access_token, {
-          SameSite: "None",
-          Secure: true,
-        })
-        Cookies.set("refreshToken", data.refresh_token, {
-          SameSite: "None",
-          Secure: true,
-        })
-				localStorage.setItem("isFirstVisit", "false")
-        const decodedUser = jwtDecode(data.access_token)
-        setUser(decodedUser)
-        const role = decodedUser.role
-        if (role === "admin") {
-          navigate(
-            `${removeWildcard(ROUTERS.Management.root)}${
-              ROUTERS.Management.allRestaurants
-            }`
-          )
-        } else if (role === "owner") {
-          navigate(
-            `${removeWildcard(ROUTERS.Restaurant.root)}${
-              ROUTERS.Restaurant.myRestaurants
-            }`
-          )
-        } else {
-          navigate(`${ROUTERS.Home}`)
-        }
-      } catch (error) {
-        console.error("error: ", error.message)
-      }
-    } else {
-      console.log("Invalid email or password")
+    if (!isValid()) {
+      return
     }
+    signin({ email, password })
   }
 
   return (

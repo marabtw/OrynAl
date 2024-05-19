@@ -4,25 +4,29 @@ import "swiper/css"
 import "swiper/css/pagination"
 import "swiper/css/navigation"
 
-import { Pagination, Navigation } from "swiper/modules"
+import { Navigation } from "swiper/modules"
 
 const Slider = ({ images = [] }) => {
   return (
     <>
       <Swiper
-        slidesPerView={3}
+        slidesPerView={"auto"}
         spaceBetween={30}
-        loop={true}
-        pagination={{
-          clickable: true,
-        }}
+        loop={false}
+        pagination={false}
         navigation={true}
-        modules={[Pagination, Navigation]}
-				className="h-[200px]"
+        modules={[Navigation]}
+        className="h-[300px]"
       >
         {images.length > 0
-          ? images.map((image) => <SwiperSlide className="h-full border rounded-xl "><img src={image}/></SwiperSlide>)
-          : [1, 2, 3].map(() => <SwiperSlide className="h-full border rounded-xl bg-slate-100"></SwiperSlide>)}
+          ? images.map((image) => (
+              <SwiperSlide className="min-w-[300px] aspect-square border rounded-xl ">
+                <img src={image} className="w-full"/>
+              </SwiperSlide>
+            ))
+          : [1, 2, 3].map(() => (
+              <SwiperSlide className=" min-w-[300px] aspect-square border rounded-xl bg-slate-100"></SwiperSlide>
+            ))}
       </Swiper>
     </>
     // <div className="h-[286px] w-full overflow-hidden">

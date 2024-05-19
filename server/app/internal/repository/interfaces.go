@@ -27,9 +27,12 @@ type IRestaurantRepository interface {
 	GetRestaurantByID(ctx context.Context, id uint) (*model.Restaurant, error)
 	GetRestaurantsByOwner(ctx context.Context, ownerID uint, params *model.Params) (*model.ListResponse, error)
 	GetFavoriteRestaurants(ctx context.Context, userID uint, params *model.Params) (*model.ListResponse, error)
+	GetPopularRestaurants(ctx context.Context) (*model.ListResponse, error)
 	CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.Restaurant, error)
 	DeleteRestaurant(ctx context.Context, restaurantID uint) error
 	UpdateRestaurant(ctx context.Context, restaurantID uint, restaurant *model.Restaurant) (*model.Restaurant, error)
+	UpdateRestaurantPhotos(ctx context.Context, restaurantID uint, photos []model.RestaurantPhoto) error
+	UpdateRestaurantServices(ctx context.Context, restaurantID uint, services []model.Service) error
 }
 
 type ITableRepository interface {
@@ -59,8 +62,8 @@ type IOrderRepository interface {
 }
 
 type IServicesRepository interface {
-	CreateService(ctx context.Context, service *model.Services) ([]model.Services, error)
+	CreateService(ctx context.Context, service *model.Service) ([]model.Service, error)
 	DeleteService(ctx context.Context, id uint) error
-	GetServices(ctx context.Context) ([]model.Services, error)
-	UpdateService(ctx context.Context, service *model.Services) ([]model.Services, error)
+	GetServices(ctx context.Context) ([]model.Service, error)
+	UpdateService(ctx context.Context, service *model.Service) ([]model.Service, error)
 }

@@ -35,11 +35,12 @@ type IRestaurantService interface {
 	UpdateRestaurant(ctx context.Context, restaurant *model.Restaurant, id uint) (*model.Restaurant, error)
 	DeleteRestaurant(ctx context.Context, id uint) error
 	FavoriteRestaurants(ctx context.Context, id uint, params *model.Params) (*model.ListResponse, error)
+	PopularRestaurants(ctx context.Context) (*model.ListResponse, error)
 	GetRestaurantOrders(ctx context.Context, id uint, params *model.Params) (*model.ListResponse, error)
-	CreateService(ctx context.Context, service *model.Services) ([]model.Services, error)
+	CreateService(ctx context.Context, service *model.Service) ([]model.Service, error)
 	DeleteService(ctx context.Context, id uint) error
-	GetServices(ctx context.Context) ([]model.Services, error)
-	UpdateService(ctx context.Context, service *model.Services) ([]model.Services, error)
+	GetServices(ctx context.Context) ([]model.Service, error)
+	UpdateService(ctx context.Context, service *model.Service) ([]model.Service, error)
 	FormatParams
 }
 

@@ -1,0 +1,27 @@
+import { useState } from "react"
+
+const SortByCategoryContainer = ({ sortList, className }) => {
+  const [active, setActive] = useState("Сортировать в этом разделе")
+
+  return (
+    <div className={`w-full flex justify-between flex-wrap gap-[10px] ${className} max-lg:justify-center`}>
+      {sortList?.map((el) => (
+        <span
+          key={el}
+          className={`flex items-center cursor-pointer 
+						px-[10px] py-[5px]
+						text-[20px] leading-[41px] font-[400]
+						rounded-[10px] 
+						${el === active ? "text-white bg-[#6AA7FC]" : "hover:bg-[#f2f3f6]"} 
+						transition-all duration-150
+						max-lg:text-[18px] max-lg:leading-[25px] max-sm:text-[16px] max-sm:leading-[20px] max-md:text-center`}
+          onClick={() => setActive(el)}
+        >
+          {el}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+export default SortByCategoryContainer

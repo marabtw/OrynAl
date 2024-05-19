@@ -2,15 +2,16 @@ import myApi from "@lib/axios"
 import {
   deleteByAdminRestaurantRequest,
   getAllCities,
-  getAllServicesRequest,
   getTimes,
 } from "@modules/Management/api"
+
+import { getAllServicesRequest } from "@modules/Management/api"
 
 export {
   deleteByAdminRestaurantRequest,
   getAllCities,
-  getAllServicesRequest,
   getTimes,
+	getAllServicesRequest,
 }
 
 export const getAllRestaurantsRequest = async ({ params, cancelToken }) => {
@@ -22,7 +23,7 @@ export const getAllRestaurantsRequest = async ({ params, cancelToken }) => {
     : {}
   const response = await myApi.get(`/api/restaurants`, {
     params: queryParams,
-    cancelToken: cancelToken ? cancelToken.token : undefined,
+    cancelToken: cancelToken ? cancelToken : undefined,
   })
   return response.data
 }

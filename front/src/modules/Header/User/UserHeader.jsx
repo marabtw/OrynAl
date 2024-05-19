@@ -34,23 +34,25 @@ const UserHeader = ({ user }) => {
 
   return (
     <header
-      className={`relative w-full h-full flex justify-between items-center`}
+      className={`relative w-full h-full flex justify-between items-center font-poppins text-[20px] leading-[30px] max-lg:text-[16px] max-lg:leading-[20px]`}
     >
       <MenuIcon
-        className="text-[20px] cursor-pointer md:hidden"
+        className="text-[25px] cursor-pointer hover:scale-105 md:hidden"
         onClick={() => setIsMobileNavOpen(true)}
       />
-      <div className="h-[25%] flex gap-[36px] items-center">
+      <div className=" flex items-center gap-[36px] max-xl:gap-[25px]">
         <Link to={ROUTERS.Home} className="h-full max-md:hidden">
           <img
             src={Logo}
             alt="logo"
-            className="bg-slate-500 h-full rounded-full cursor-pointer"
+            className="bg-[#4476fb] h-[42px] rounded-full cursor-pointer"
           />
         </Link>
-        <h2 className="max-md:hidden">OrynAl - Сервис онлайн-заказов</h2>
+        <h2 className="font-semibold  max-sm:hidden">
+          OrynAl - Сервис онлайн-заказов
+        </h2>
       </div>
-      <ul className="flex gap-[36px]">
+      <ul className="flex items-center gap-[36px] min-w-min font-bold">
         <li className="cursor-pointer max-md:hidden">
           <Link
             to={`${removeWildcard(ROUTERS.Orders.root)}${
@@ -60,17 +62,7 @@ const UserHeader = ({ user }) => {
             Мои заказы
           </Link>
         </li>
-        {user ? (
-          <div
-            className="relative flex items-center cursor-pointer"
-            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-          >
-            <ProfileMenuIcon className="text-[30px]" />
-            {isProfileMenuOpen && (
-              <ProfileMenuDropdown close={() => setIsProfileMenuOpen(false)} />
-            )}
-          </div>
-        ) : (
+        {user?.role === "guest" ? (
           <Link
             className="relative flex items-center cursor-pointer"
             to={`${removeWildcard(ROUTERS.Authorization.root)}${
@@ -79,6 +71,16 @@ const UserHeader = ({ user }) => {
           >
             Войти
           </Link>
+        ) : (
+          <div
+            className="relative flex items-center"
+            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+          >
+            <ProfileMenuIcon className="text-[30px] hover:scale-105 cursor-pointer" />
+            {isProfileMenuOpen && (
+              <ProfileMenuDropdown close={() => setIsProfileMenuOpen(false)} />
+            )}
+          </div>
         )}
       </ul>
       {isMobileNavOpen && (

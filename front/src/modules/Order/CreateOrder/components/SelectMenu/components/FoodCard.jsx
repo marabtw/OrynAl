@@ -9,7 +9,7 @@ const FoodCard = ({
     description: "",
   },
   getFoodForCart,
-  selectedFoodsId,
+  selectedFoodsId=[],
 }) => {
   return (
     <div

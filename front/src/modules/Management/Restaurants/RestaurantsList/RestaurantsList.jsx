@@ -13,7 +13,7 @@ import { isArraysEqualByIdWithSet } from "@utils/index"
 
 import ListCategories from "@components/ListCategories"
 import ListItem from "@components/ListItem"
-import Pagination from "@components/Pagination"
+import Pagination from "@components/Pagination/Pagination"
 
 const categories = [
   "id",

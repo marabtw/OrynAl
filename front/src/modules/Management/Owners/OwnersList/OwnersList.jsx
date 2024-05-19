@@ -10,7 +10,7 @@ import { isArraysEqualByIdWithSet } from "@utils"
 
 import ListCategories from "@components/ListCategories"
 import ListItem from "@components/ListItem"
-import Pagination from "@components/Pagination"
+import Pagination from "@components/Pagination/Pagination"
 
 const categories = ["id", "Имя", "Фамилия", "Почта", "Телефон", "Действие"]
 

@@ -4,10 +4,14 @@ import UserHeader from "./User/UserHeader"
 import OwnerHeader from "./Owner/OwnerHeader"
 import AdminHeader from "./Admin/AdminHeader"
 
+import { useHeaderHeight } from "@hooks"
+
 const Header = () => {
-  const { user, userRole } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
+  const headerHeight = useHeaderHeight()
+
   const checkUserRole = () => {
-    switch (userRole) {
+    switch (user.role) {
       case "user":
         return <UserHeader user={user} />
       case "owner":
@@ -21,8 +25,15 @@ const Header = () => {
 
   return (
     <div
-      className={`sticky top-0 w-full h-[120px] px-[2%] bg-white rounded-bl-[50px] rounded-br-[50px] shadow-[0px_4px_10px_rgba(0,0,0,.25)] z-[44] 
-		max-md:h-[60px] max-md:px-[4%] max-md:rounded-bl-[25px] max-md:rounded-br-[25px]`}
+      className={`sticky top-0 w-full z-[55]
+			px-[50px]
+			rounded-bl-[50px] rounded-br-[50px] 
+			bg-white  shadow-[0px_4px_10px_rgba(0,0,0,.25)] 
+			transition-all duration-300
+			max-md:px-[4%] max-lg:rounded-bl-[25px] max-lg:rounded-br-[25px]`}
+      style={{
+        height: `${headerHeight}px`,
+      }}
     >
       {checkUserRole()}
     </div>

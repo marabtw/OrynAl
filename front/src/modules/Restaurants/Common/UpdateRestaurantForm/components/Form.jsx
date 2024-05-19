@@ -1,4 +1,4 @@
-import { getAllCities, getAllServicesRequest, getTimes } from "../../../api"
+import { getAllCities, getTimes } from "../../../api"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
 import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
@@ -7,49 +7,37 @@ import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
 import FormCheckbox from "@ui/Field/FormCheckbox"
 import FormSelect from "@ui/Select/FormSelect"
 
-const Form = ({ restaurantData, setDataForUpdate }) => {
-  const checkService = (service) => {
-    if (service === "Место, где можно поработать") {
-      setDataForUpdate((prevState) => ({
-        ...prevState,
-        can_work: !restaurantData.can_work,
-      }))
-    } else if (service === "Под ритмом диджея") {
-      setDataForUpdate((prevState) => ({
-        ...prevState,
-        rainy_rhythm: !restaurantData.rainy_rhythm,
-      }))
-    } else if (service === "Живая музыка") {
-      setDataForUpdate((prevState) => ({
-        ...prevState,
-        live_music: !restaurantData.live_music,
-      }))
-    } else if (service === "Бар, где пиво без границ") {
-      setDataForUpdate((prevState) => ({
-        ...prevState,
-        unlimited_beer: !restaurantData.unlimited_beer,
-      }))
-    } else if (service === "Банкетный зал") {
-      setDataForUpdate((prevState) => ({
-        ...prevState,
-        banquet_hall: !restaurantData.banquet_hall,
-      }))
-    } else if (service === "С детской игровой комнатой") {
-      setDataForUpdate((prevState) => ({
-        ...prevState,
-        kids_playroom: !restaurantData.kids_playroom,
-      }))
-    } else if (service === "Кальянная") {
-      setDataForUpdate((prevState) => ({
-        ...prevState,
-        hookah: !restaurantData.hookah,
-      }))
-    } else if (service === "Своя кондитерская") {
-      setDataForUpdate((prevState) => ({
-        ...prevState,
-        own_confectioner: !restaurantData.own_confectioner,
-      }))
-    }
+const Form = ({ services, restaurantData, setDataForUpdate }) => {
+	
+  const handleChange = (key, value) => {
+    setDataForUpdate((prevState) => {
+      if (Array.isArray(restaurantData[key]) && key === "services") {
+        const existingIndex = prevState[key].findIndex(
+          (item) => item.id === value.id
+        )
+        if (existingIndex !== -1) {
+          return {
+            ...prevState,
+            [key]: prevState[key].filter((_, index) => index !== existingIndex),
+          }
+        } else {
+          return {
+            ...prevState,
+            [key]: [...prevState[key], value],
+          }
+        }
+      } else if (typeof value === "boolean") {
+        return {
+          ...prevState,
+          [key]: value,
+        }
+      } else {
+        return {
+          ...prevState,
+          [key]: value ? value : restaurantData[key],
+        }
+      }
+    })
   }
 
   return (
@@ -58,37 +46,30 @@ const Form = ({ restaurantData, setDataForUpdate }) => {
         <FormInputTextWrapper
           placeholder="Sandyq"
           label="Название:"
-          onChange={(value) => {
-            setDataForUpdate((prevState) => ({
-              ...prevState,
-              name: value ? value : restaurantData.name,
-            }))
-          }}
+          onChange={(value) => handleChange("name", value)}
         />
-        <FormInputFileWrapper placeholder="Добавить логотип" label="Логотип:" />
+        <FormInputFileWrapper
+          placeholder="Добавить логотип"
+          label="Логотип:"
+          onChange={(value) => handleChange("logo", value)}
+        />
       </div>
       <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1">
         <FormInputTextWrapper
           placeholder="Абай, 101"
           label="Адрес"
-          onChange={(value) => {
-            setDataForUpdate((prevState) => ({
-              ...prevState,
-              address: value ? value : restaurantData.address,
-            }))
-          }}
+          onChange={(value) => handleChange("address", value)}
         />
-        <FormInputFileWrapper placeholder="Добавить фото" label="Фотографии:" />
+        <FormInputFileWrapper
+          placeholder="Добавить фото"
+          label="Фотографии:"
+          onChange={(value) => handleChange("photos", value)}
+        />
       </div>
       <FormInputTextWrapper
         placeholder="Напишите краткое описание меню...."
         label="Описание"
-        onChange={(value) => {
-          setDataForUpdate((prevState) => ({
-            ...prevState,
-            description: value ? value : restaurantData.description,
-          }))
-        }}
+        onChange={(value) => handleChange("description", value)}
       />
       <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1">
         <div className="flex flex-col gap-[15px]">
@@ -100,12 +81,7 @@ const Form = ({ restaurantData, setDataForUpdate }) => {
               <FormSelect
                 placeholder={"10:00"}
                 options={getTimes()}
-                onChange={(value) => {
-                  setDataForUpdate((prevState) => ({
-                    ...prevState,
-                    modeFrom: value ? value : restaurantData.modeFrom,
-                  }))
-                }}
+                onChange={(value) => handleChange("modeFrom", value)}
               />
             </div>
             <p className="text-[#C6C6C6] text-[15px]">-</p>
@@ -113,12 +89,7 @@ const Form = ({ restaurantData, setDataForUpdate }) => {
               <FormSelect
                 placeholder={"22:00"}
                 options={getTimes()}
-                onChange={(value) => {
-                  setDataForUpdate((prevState) => ({
-                    ...prevState,
-                    modeTo: value ? value : restaurantData.modeTo,
-                  }))
-                }}
+                onChange={(value) => handleChange("modeTo", value)}
               />
             </div>
           </div>
@@ -127,12 +98,7 @@ const Form = ({ restaurantData, setDataForUpdate }) => {
           label={"Город"}
           placeholder={"Алматы"}
           options={getAllCities()}
-          onChange={(value) => {
-            setDataForUpdate((prevState) => ({
-              ...prevState,
-              city: value ? value : restaurantData.city,
-            }))
-          }}
+          onChange={(value) => handleChange("city", value)}
         />
       </div>
       <FormSelectWrapper
@@ -141,21 +107,20 @@ const Form = ({ restaurantData, setDataForUpdate }) => {
           { label: "Активный", value: true },
           { label: "Не активный", value: false },
         ]}
-        onChange={(value) => {
-          setDataForUpdate((prevState) => ({
-            ...prevState,
-            status: value ? value : restaurantData.status,
-          }))
-        }}
-        defaultValueIndex={restaurantData.status ? 0 : 1}
+        onChange={(value) => handleChange("status", value)}
+        defaultValueIndex={restaurantData.status ? 1 : 0}
       />
       <div className="grid grid-cols-2 gap-[10px] max-md:grid-cols-1">
-        {getAllServicesRequest().map((service) => (
+        {services?.map((service) => (
           <FormCheckbox
-            keyFor={service.id}
-            label={service.name}
-            initialChecked={false}
-            onChange={() => checkService(service.name)}
+            key={service.id}
+            service={service}
+            initialChecked={restaurantData.services?.some(
+              (obj) => obj.id === service.id
+            )}
+            onChange={(service) => {
+              handleChange("services", service)
+            }}
           />
         ))}
       </div>

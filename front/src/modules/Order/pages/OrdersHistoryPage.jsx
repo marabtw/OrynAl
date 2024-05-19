@@ -1,4 +1,4 @@
-import OrdersHistory from "../OrdersHistory"
+import OrdersHistory from "../OrdersHistory/OrdersHistory"
 import PageWrapper from "@components/PageWrapper"
 import PageHeading from "@ui/Heading/PageHeading"
 import { useParams } from "react-router-dom"

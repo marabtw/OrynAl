@@ -1,35 +1,49 @@
 import { useEffect, useState } from "react"
-import Select from "react-select"
-import { SearchIcon } from "@ui/icons/icons"
-
-import { searchByOwnerRestaurants } from "../../api"
 import { useNavigate } from "react-router-dom"
+import Select from "react-select"
+import { axios } from "@lib/axios"
+
 import { ROUTERS } from "@router/Router.config"
+import { searchByOwnerRestaurants } from "../../api"
+
+import { useToast } from "@hooks"
 import { removeWildcard } from "@helpers"
+
+import { SearchIcon } from "@ui/icons/icons"
 
 const SearchRestaurant = () => {
   const navigate = useNavigate()
+  const showNotification = useToast()
+
   const [searchQuery, setSearchQuery] = useState("")
   const [options, setOptions] = useState([])
 
   useEffect(() => {
+    const cancelTokenSource = axios.CancelToken.source()
+
     if (searchQuery?.length >= 2) {
-      searchByOwnerRestaurants(searchQuery)
+      searchByOwnerRestaurants({
+        searchQuery,
+        cancelToken: cancelTokenSource.token,
+      })
         .then((res) => {
           setOptions(
-            res.data.items?.map((restaurant) => {
-              return {
-                label: restaurant.name,
-                value: restaurant.id,
-              }
-            })
+            res.data.items?.map((restaurant) => ({
+              label: restaurant.name,
+              value: restaurant.id,
+            }))
           )
         })
-        .catch((error) => {
-          setOptions([])
+        .catch((err) => {
+          if (!axios.isCancel(err)) {
+            showNotification(err.toString(), "error")
+          }
+          if (options?.length > 0) setOptions([])
         })
-    } else {
-      setOptions([])
+    }
+
+    return () => {
+      cancelTokenSource.cancel()
     }
   }, [searchQuery])
 

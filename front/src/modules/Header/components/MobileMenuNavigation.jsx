@@ -10,7 +10,7 @@ const MobileMenuNavigation = ({ items, closeMobileNav }) => {
         <hr />
         <div className="flex flex-col gap-4 text-[18px]">
           {items.map((el) => (
-            <MobileMenuNavItem item={el} />
+            <MobileMenuNavItem item={el} closeMobileNav={closeMobileNav}/>
           ))}
         </div>
         <button

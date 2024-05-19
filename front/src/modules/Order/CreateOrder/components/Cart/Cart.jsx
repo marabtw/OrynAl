@@ -3,76 +3,81 @@ import logo from "@assets/svg/orderLogo.svg"
 import Button from "@ui/Button/Button"
 import { CrossIcon, MinusIcon, PlusIcon } from "@ui/icons/icons"
 
-const Cart = ({ show, cartOrders = [], updateCart, createOrder }) => {
-  const [totalPrice, setTotolPrice] = useState(0)
+const Cart = ({ show, foodsInCart = [], updateCart, createOrder }) => {
+  const [totalSum, setTotalSum] = useState(0)
 
   useEffect(() => {
-    updateCart((prev) => {
-      return {
-        ...prev,
-        totalPrice: totalPrice,
-      }
-    })
-  }, [totalPrice])
+    // console.log(totalSum)
+    // updateCart((prev) => {
+    //   return {
+    //     ...prev,
+    //     totalSum: totalSum,
+    //   }
+    // })
+  }, [totalSum])
 
   useEffect(() => {
-    if (!cartOrders || cartOrders.length === 0) {
-      setTotolPrice(0)
+    if (!foodsInCart || foodsInCart.length === 0) {
+      setTotalSum(0)
       return
     }
-    const totalPrice = cartOrders.reduce((acc, item) => {
+    const totalPrice = foodsInCart.reduce((acc, item) => {
       if (!item) return acc
       return acc + item.price * item.amount
     }, 0)
-    setTotolPrice(totalPrice)
-  }, [cartOrders])
+    setTotalSum(totalPrice)
+  }, [foodsInCart])
 
-  const increase = (id) => {
+  const increase = (foodId) => {
     updateCart((prev) => {
       return {
         ...prev,
-        cart: prev.cart?.map((order) => {
-          if (order.id === id) {
-            const newAmount = order.amount + 1
-            return {
-              ...order,
-              amount: newAmount,
-              itemTotalPrice: order.price * newAmount,
-            }
-          }
-          return order
-        }),
+        foods:
+          prev.foods?.length > 0
+            ? prev.foods.map((food) => {
+                if (food.id === foodId) {
+                  const newAmount = food.amount + 1
+                  return {
+                    ...food,
+                    amount: newAmount,
+                    itemTotalPrice: food.price * newAmount,
+                  }
+                } else {
+									console.log("food not found in cart")
+								}
+              })
+            : [],
       }
     })
   }
 
-  const decrease = (id) => {
+  const decrease = (foodId) => {
     let needFilter = false
-    const updatedCart = cartOrders.map((order) => {
-      if (order.id === id) {
-        const newAmount = order.amount - 1
+    const updatedCart = foodsInCart.map((food) => {
+      if (food.id === foodId) {
+        const newAmount = food.amount - 1
         if (newAmount > 0) {
           needFilter = false
           return {
-            ...order,
+            ...food,
             amount: newAmount,
-            itemTotalPrice: order.price * newAmount,
+            itemTotalPrice: food.price * newAmount,
           }
         } else {
           needFilter = true
           return null
         }
       }
-      return order
+      return food
     })
     if (needFilter) {
       updateCart((prev) => {
-        return { ...prev, cart: updatedCart.filter((order) => order !== null) }
+        return { ...prev, foods: updatedCart.filter((order) => order !== null) }
       })
       return
     }
     updateCart((prev) => {
-      return { ...prev, cart: updatedCart }
+      return { ...prev, foods: updatedCart }
     })
   }
 
@@ -96,8 +101,8 @@ const Cart = ({ show, cartOrders = [], updateCart, createOrder }) => {
         <div className="w-full h-[1104px] p-[5px] rounded-bl-[50px] rounded-br-[50px] bg-gradient-to-r from-[#62ADFC] to-[#447BFB] max-2xl:h-[calc(100%-137px)]">
           <div className="flex flex-col justify-between w-full h-full px-[30px] py-[40px] bg-white rounded-bl-[50px] rounded-br-[50px]">
             <ul className="flex-1 overflow-auto px-[10px]">
-              {cartOrders?.length > 0 ? (
-                cartOrders.map((cartItem, index) => (
+              {foodsInCart?.length > 0 ? (
+                foodsInCart.map((cartItem, index) => (
                   <li key={cartItem?.id}>
                     <div className="flex items-center gap-[20px]">
                       <div className="w-[50px] h-[50px] rounded-full overflow-hidden border bg-slate-100">
@@ -136,7 +141,7 @@ const Cart = ({ show, cartOrders = [], updateCart, createOrder }) => {
                         </button>
                       </div>
                     </div>
-                    {index < cartOrders.length && (
+                    {index < foodsInCart.length && (
                       <div className="w-[55%] h-[3px] mb-[10px] mx-auto bg-[#c4c4c4]"></div>
                     )}
                   </li>
@@ -152,7 +157,7 @@ const Cart = ({ show, cartOrders = [], updateCart, createOrder }) => {
                     Итого{" "}
                   </h4>
                   <h4 className="text-[32px] font-[600] leading-[24px] text-[#487AFB]">
-                    {totalPrice}
+                    {totalSum}
                   </h4>
                 </div>
                 <div className="w-full h-[6px] mt-[15px] bg-[#447AFB] rounded-[10px]"></div>

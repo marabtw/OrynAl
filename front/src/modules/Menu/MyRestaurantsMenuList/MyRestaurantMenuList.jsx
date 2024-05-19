@@ -11,7 +11,7 @@ import { removeWildcard } from "@helpers"
 import ListItem from "@components/ListItem"
 import ListCategories from "@components/ListCategories"
 import MenuCategoriesSlider from "./components/MenuCategoriesSlider"
-import Pagination from "@components/Pagination"
+import Pagination from "@components/Pagination/Pagination"
 
 const categories = [
   "ID",

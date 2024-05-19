@@ -1,13 +1,7 @@
 import RestaurantItemCard from "./RestaurantItemCard"
 import Search from "./Search"
-import SortByCategoryContainer from "@components/SortByCategoryContainer"
-
-import { getAllRestaurantsRequest } from "../../api/index"
-import { useContext, useEffect, useState } from "react"
-import { UIContext } from "@context/UIContext"
-
-import Loading from "@components/Loading"
-import Pagination from "@components/Pagination"
+import SortByCategoryContainer from "@components/SortByCategoryContainer/SortByCategoryContainer"
+import Pagination from "@components/Pagination/Pagination"
 
 const sortList = [
   "Сортировать в этом разделе",
@@ -18,44 +12,24 @@ const sortList = [
   "По расстоянию от меня",
 ]
 
-const Restaurants = () => {
-  const { isLoading, setIsLoading } = useContext(UIContext)
-  const [restaurants, setRestaurants] = useState([])
-
-  const [totalItems, setTotalItems] = useState(0)
-
-  const [params, setParams] = useState({
-    pageIndex: 1,
-    limit: 6,
-  })
-
-  useEffect(() => {
-    setIsLoading(true)
-    getAllRestaurantsRequest({params})
-      .then((res) => {
-        setRestaurants(res.data.items)
-				setTotalItems(res.data.totalItems)
-      })
-      .catch((error) => console.log(error))
-      .finally(setIsLoading(false))
-  }, [params])
-
+const Restaurants = ({restaurants, totalPage, setParams}) => {
   return (
     <>
-      {isLoading && <Loading />}
       <div className="flex flex-col gap-[90px] max-lg:gap-[30px]">
         <div className="flex justify-center">
           <Search />
         </div>
-        <SortByCategoryContainer sortList={sortList} />
-        <div className="grid grid-cols-3 gap-[20px] max-lg:grid-cols-2 max-sm:grid-cols-1">
+        <div className="px-[100px] max-md:px-0">
+          <SortByCategoryContainer sortList={sortList} />
+        </div>
+        <div className="grid grid-cols-3 gap-[24px] max-md:grid-cols-2 ">
           {restaurants?.length > 0 &&
             restaurants.map((restaurant) => (
               <RestaurantItemCard key={restaurant.id} data={restaurant} />
             ))}
         </div>
         <Pagination
-          totalPage={Math.ceil(totalItems / params.limit)}
+          totalPage={totalPage}
           getCurrentPage={(index) => {
             setParams((prev) => {
               return { ...prev, pageIndex: index }

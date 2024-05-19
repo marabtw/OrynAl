@@ -33,9 +33,12 @@ type IRestaurantHandler interface {
 	GetRestaurants(c echo.Context) error
 	GetRestaurantByID(c echo.Context) error
 	//FavoriteRestaurants(c echo.Context) error
+	PopularRestaurants(c echo.Context) error
 	GetRestaurantOrders(c echo.Context) error
 	DeleteRestaurant(c echo.Context) error
 	UpdateRestaurant(c echo.Context) error
+	UpdateRestaurantPhotos(c echo.Context) error
+	UpdateRestaurantServices(c echo.Context) error
 	GetServices(c echo.Context) error
 }
 

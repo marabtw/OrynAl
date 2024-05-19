@@ -1,10 +1,10 @@
 import { useContext, useState, useEffect } from "react"
 
 import TableCard from "./components/TableCard"
-import SortByCategoryContainer from "@components/SortByCategoryContainer"
+import SortByCategoryContainer from "@components/SortByCategoryContainer/SortByCategoryContainer"
 import ChooseTime from "./components/ChooseTime"
 
-import Pagination from "@components/Pagination"
+import Pagination from "@components/Pagination/Pagination"
 
 import { getAllTablesRequest } from "../../../api"
 import { UIContext } from "src/shared/context/UIContext"
@@ -33,7 +33,7 @@ const TableReservation = ({ restaurantId, getTableId }) => {
 
   useEffect(() => {
     setIsLoading(true)
-    getAllTablesRequest(restaurantId, params)
+    getAllTablesRequest({restaurantId, params})
       .then((res) => {
         if (res.data === null) setTables([])
         else {

@@ -1,7 +1,7 @@
 import { useState } from "react"
 
-import RestaurantBriefInfo from "@components/RestaurantBriefInfo"
-import LocationInfo from "@components/LocationInfo"
+import RestaurantBriefInfo from "@components/RestaurantBriefInfo/RestaurantBriefInfo"
+import LocationInfo from "@components/LocationInfo/LocationInfo"
 
 import OrderReceipt from "./components/OrderReceipt"
 import OrderMenu from "./components/OrderMenu"

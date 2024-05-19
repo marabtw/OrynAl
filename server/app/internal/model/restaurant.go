@@ -15,19 +15,20 @@ type Restaurant struct {
 	ModeFrom    time.Time         `gorm:"not null" json:"modeFrom"`
 	ModeTo      time.Time         `gorm:"not null" json:"modeTo"`
 	Icon        string            `json:"icon,omitempty"`
-	Services    []Services        `gorm:"many2many:restaurant_services;" json:"services"`
-	Photos      []RestaurantPhoto `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"-"`
+	Services    []Service         `gorm:"many2many:restaurant_services;" json:"services"`
+	Photos      []RestaurantPhoto `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"photos,omitempty"`
 	Orders      []Order           `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"-"`
 	Tables      []Table           `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"-"`
 }
 
 type RestaurantPhoto struct {
 	ID           uint   `gorm:"primaryKey;autoIncrement" json:"id"`
+	PublicID     string `gorm:"not null" json:"publicId"`
 	PhotoURL     string `json:"photo"`
 	RestaurantID uint   `gorm:"not null;foreignkey:ID" json:"restaurantId"`
 }
 
-type Services struct {
+type Service struct {
 	ID   uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name string `gorm:"size:255;not null" json:"name"`
 }

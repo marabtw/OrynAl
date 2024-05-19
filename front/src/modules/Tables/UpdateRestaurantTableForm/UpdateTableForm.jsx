@@ -13,7 +13,7 @@ import { useLoading, useToast } from "@hooks"
 import { isObjectEqual } from "@utils/index"
 import { removeWildcard } from "@helpers"
 
-import PreviousDataDisplay from "@components/PreviousDataDisplay"
+import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
 import UpdateFormsContainer from "@components/UpdateFormsContainer"
 import Form from "./components/Form"
 import Button from "@ui/Button/Button"

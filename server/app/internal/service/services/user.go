@@ -158,7 +158,16 @@ func (s *UserService) GetAllClients(ctx context.Context, params *model.Params) (
 	if role != enums.Admin {
 		return nil, errors.New("permission denied")
 	}
-	return s.repository.User.GetAllClients(ctx, params)
+
+	list, err := s.repository.User.GetAllClients(ctx, params)
+	if err != nil {
+		s.logger.Error(err)
+		return nil, err
+	}
+
+	list.TotalPages = list.TotalItems / list.ItemsPerPage
+
+	return list, err
 }
 
 func (s *UserService) GetAllOwners(ctx context.Context, params *model.Params) (*model.ListResponse, error) {

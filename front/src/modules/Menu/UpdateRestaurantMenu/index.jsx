@@ -10,7 +10,7 @@ import {
   updateByOwnerMenuItemRequest,
 } from "../api"
 
-import PreviousDataDisplay from "@components/PreviousDataDisplay"
+import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
 import UpdateFormsContainer from "@components/UpdateFormsContainer"
 import Button from "@ui/Button/Button"
 

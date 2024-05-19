@@ -1,5 +1,5 @@
 import avatarIcon from "@assets/images/icons/avatarIcon.jpeg"
-import RatingStars from "@components/RatingStars"
+import RatingStars from "@components/RatingStars/RatingStars"
 
 const CommentsContainer = ({ comments }) => {
   return (

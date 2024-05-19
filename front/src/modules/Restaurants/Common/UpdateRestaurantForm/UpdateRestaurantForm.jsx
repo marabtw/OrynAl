@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react"
+import { useEffect, useState, useContext, useCallback } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { axios } from "@lib/axios"
 
@@ -10,13 +10,18 @@ import {
   updateByOwnerRestaurantRequest,
   deleteByAdminRestaurantRequest,
   getRestaurantRequest,
+  getAllServicesRequest,
 } from "../../api"
 
 import { useLoading, useToast } from "@hooks"
 import { removeWildcard } from "@helpers"
-import { isObjectEqual, formatTimeString } from "@utils"
+import {
+  isObjectEqual,
+  formatTimeString,
+  isArraysEqualByIdWithSet,
+} from "@utils"
 
-import PreviousDataDisplay from "@components/PreviousDataDisplay"
+import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
 import UpdateFormsContainer from "@components/UpdateFormsContainer"
 import Form from "./components/Form"
 import RestaurantImagesSlider from "./components/RestaurantImagesSlider"
@@ -28,8 +33,9 @@ const UpdateRestaurantForm = () => {
   const setLoading = useLoading()
   const showNotification = useToast()
 
-  const { userRole } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const [restaurantData, setRestaurantData] = useState([])
+  const [services, setServices] = useState([])
 
   const [dataForUpdate, setDataForUpdate] = useState({
     name: "",
@@ -38,56 +44,77 @@ const UpdateRestaurantForm = () => {
     city: "",
     modeFrom: "",
     modeTo: "",
-    can_work: false,
-    live_music: false,
-    banquet_hall: false,
-    hookah: false,
-    unlimited_beer: false,
-    rainy_rhythm: false,
-    kids_playroom: false,
-    own_confectioner: false,
+    services: [],
     status: true,
   })
 
   useEffect(() => {
-    setLoading(true)
-    const cancelToken = axios.CancelToken.source()
+    const cancelTokenSource1 = axios.CancelToken.source()
+    const cancelTokenSource2 = axios.CancelToken.source()
 
-    const getData =
-      userRole === "admin" ? getByAdminRestaurantRequest : getRestaurantRequest
-    getData({ restaurantId, cancelToken })
-      .then(({ data }) => {
-        setRestaurantData(data)
-        showNotification("getted", "success")
-      })
-      .catch((err) => {
+    const fetchServices = async () => {
+      try {
+        const { data } = await getAllServicesRequest({
+          cancelToken: cancelTokenSource1.token,
+        })
+        if (data.length === 0) {
+          if (services.length > 0) setServices([])
+        } else {
+          if (!isArraysEqualByIdWithSet(services, data)) {
+            setServices(data)
+          }
+        }
+      } catch (err) {
         if (axios.isCancel(err)) {
           showNotification("Запрос был отменен", "warning")
         } else {
           showNotification(err.toString(), "error")
         }
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+      }
+    }
+
+    const fetchRestaurantData = async () => {
+      try {
+        const getData =
+          user.role === "admin"
+            ? getByAdminRestaurantRequest
+            : getRestaurantRequest
+        const { data } = await getData({
+          restaurantId,
+          cancelToken: cancelTokenSource2.token,
+        })
+        console.log(data)
+        if (!isObjectEqual(restaurantData, data)) {
+          console.log("object")
+          setRestaurantData(data)
+          setDataForUpdate(data)
+        }
+      } catch (err) {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err.toString(), "error")
+        }
+      }
+    }
+
+    const fetchData = async () => {
+      setLoading(true)
+      await Promise.all([fetchServices(), fetchRestaurantData()])
+      showNotification("Данные успешно загрузились", "success")
+      setLoading(false)
+    }
+
+    fetchData()
 
     return () => {
-      cancelToken.cancel()
+      cancelTokenSource1.cancel()
+      cancelTokenSource2.cancel()
     }
-  }, [])
+  }, [restaurantId])
 
-  const UpdateRestaurantData = () => {
-    const updatedData = {
-      ...restaurantData,
-      ...Object.entries(dataForUpdate).reduce((acc, [key, value]) => {
-        if (value !== "") {
-          acc[key] = value
-        }
-        return acc
-      }, {}),
-    }
-
-    if (isObjectEqual(updatedData, restaurantData)) {
+  const handleUpdateRestaurantData = useCallback(() => {
+    if (isObjectEqual(dataForUpdate, restaurantData)) {
       showNotification("Данные не изменились", "info")
       return
     }
@@ -95,12 +122,12 @@ const UpdateRestaurantForm = () => {
     setLoading(true)
 
     const updateRequest =
-      userRole === "admin"
+      user.role === "admin"
         ? updateByAdminRestaurantRequest
         : updateByOwnerRestaurantRequest
 
     const navigateAfter =
-      userRole === "admin"
+      user.role === "admin"
         ? `${removeWildcard(ROUTERS.Management.root)}${
             ROUTERS.Management.allRestaurants
           }`
@@ -108,7 +135,7 @@ const UpdateRestaurantForm = () => {
             ROUTERS.Restaurant.myRestaurants
           }`
 
-    updateRequest(restaurantId, updatedData)
+    updateRequest(restaurantId, dataForUpdate)
       .then(() => {
         showNotification("Успешно обновлено", "success")
         navigate(navigateAfter)
@@ -119,10 +146,11 @@ const UpdateRestaurantForm = () => {
       .finally(() => {
         setLoading(false)
       })
-  }
+  }, [restaurantId, user.role, dataForUpdate])
 
-  const deleteRestaurantData = () => {
+  const handleDeleteRestaurantData = useCallback(() => {
     setLoading(true)
+
     deleteByAdminRestaurantRequest(restaurantId)
       .then(() => {
         showNotification("deleted", "success")
@@ -138,22 +166,7 @@ const UpdateRestaurantForm = () => {
       .finally(() => {
         setLoading(false)
       })
-  }
-
-  const renameServices = () => {
-    const services = []
-    if (restaurantData.can_work) services.push("Место, где можно поработать")
-    if (restaurantData.live_music) services.push("Живая музыка")
-    if (restaurantData.banquet_hall) services.push("Банкетный зал")
-    if (restaurantData.hookah) services.push("Кальянная")
-    if (restaurantData.unlimited_beer)
-      services.push("Бар, где пиво без границ ")
-    if (restaurantData.rainy_rhythm) services.push("Под ритмом диджея ")
-    if (restaurantData.kids_playroom)
-      services.push("С детской игровой комнатой")
-    if (restaurantData.own_confectioner) services.push("Своя кондитерская")
-    return services
-  }
+  }, [restaurantId])
 
   return (
     <UpdateFormsContainer>
@@ -200,19 +213,23 @@ const UpdateRestaurantForm = () => {
         <PreviousDataDisplay
           label={"Сервис:"}
           value={
-            renameServices().length > 0
-              ? renameServices().join(" ")
+            restaurantData?.services?.length > 0
+              ? restaurantData.services
               : "no service"
           }
         />
       </div>
-      <Form restaurantData={restaurantData} setDataForUpdate={setDataForUpdate} />
-      {userRole === "admin" ? (
+      <Form
+        services={services}
+        restaurantData={restaurantData}
+        setDataForUpdate={setDataForUpdate}
+      />
+      {user.role === "admin" ? (
         <Button
           text="Удалить"
           spacingClass={"mx-auto px-[120px] py-[20px]"}
           backgroundColor={"#FF5050"}
-          onClick={deleteRestaurantData}
+          onClick={handleDeleteRestaurantData}
         />
       ) : (
         <div></div>
@@ -221,7 +238,7 @@ const UpdateRestaurantForm = () => {
         gradient={true}
         text="Изменить"
         spacingClass={"mx-auto px-[120px] py-[20px]"}
-        onClick={UpdateRestaurantData}
+        onClick={handleUpdateRestaurantData}
       />
     </UpdateFormsContainer>
   )

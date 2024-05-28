@@ -32,12 +32,17 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
   const [params, setParams] = useState({
     pageIndex: 1,
     limit: 10,
+    q: "",
   })
 
   useEffect(() => {
     setLoading(true)
     const cancelTokenSource = axios.CancelToken.source()
-    getAllTablesRequest({ restaurantId, params, cancelToken: cancelTokenSource })
+    getAllTablesRequest({
+      restaurantId,
+      params,
+      cancelToken: cancelTokenSource,
+    })
       .then(({ data }) => {
         updateTablesList(data)
         showNotification("getted", "success")
@@ -77,9 +82,9 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
       if (tables?.length > 0) setTables([])
     } else {
       const filteredItems = data.items.map(
-        ({ id, image, name, type, capacity }) => ({
+        ({ id, photo, name, type, capacity }) => ({
           id,
-          image,
+          photo,
           name,
           type,
           capacity,
@@ -110,9 +115,14 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
   return (
     <ul className="flex flex-col gap-[20px]">
       <ListCategories categories={categories} />
-			<TableCategoriesSlider restaurantId={restaurantId}/>
+      <TableCategoriesSlider
+        restaurantId={restaurantId}
+        getCategory={(type) => {
+          setParams((prev) => ({ ...prev, q: type }))
+        }}
+      />
       {tables?.length > 0 ? (
-        tables?.map((table, index) => (
+        tables.map((table, index) => (
           <ListItem
             key={table.id}
             elementData={table}

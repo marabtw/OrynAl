@@ -41,7 +41,7 @@ const TableCategoriesSlider = ({ restaurantId, getCategory = () => {} }) => {
 
   return (
     <>
-      {categories?.length > 0 ? (
+      {categories?.length > 0 && (
         <Swiper
           slidesPerView={5}
           centeredSlides={false}
@@ -69,8 +69,6 @@ const TableCategoriesSlider = ({ restaurantId, getCategory = () => {} }) => {
             </SwiperSlide>
           ))}
         </Swiper>
-      ) : (
-        <div></div>
       )}
     </>
   )

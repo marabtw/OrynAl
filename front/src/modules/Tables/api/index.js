@@ -9,7 +9,7 @@ export const getAllTablesRequest = async ({
     ? {
         page: params.pageIndex,
         limit: params.limit,
-				q: "",
+				q: params.q,
       }
     : {}
   const response = await myApi.get(`/api/restaurants/${restaurantId}/tables`, {

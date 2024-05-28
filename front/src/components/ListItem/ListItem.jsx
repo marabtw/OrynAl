@@ -28,50 +28,52 @@ const ListItem = ({ elementData, menuActions, index }) => {
   }, [openedContextMenuIndex])
 
   const renderValue = (key, value) => {
-    if (key === "image") {
-      return (
+    if (key === "photo") {
+      return value ? (
         <div
-          className={`w-[38px] aspect-square rounded-full overflow-hidden ${
-            value ? "border-none" : "border"
-          }`}
+          className={`w-[38px] aspect-square rounded-full overflow-hidden border-none`}
         >
-          {value && <img src={value} />}
+          <img alt="a" src={value.route} className="h-full rounded-full "/>
         </div>
+      ) : (
+        <div></div>
       )
     } else if (key === "restaurantStatus") {
       return statusMap[value]
+    } else if (key === "foodStatus") {
+      return foodStatusMap[value]
     } else {
       return <h4 className="flex">{value}</h4>
     }
   }
 
-  const renderMobileVersion = (key, value) => {
-    if (key === "id") {
-      return (
-        <div key={key} className="flex justify-between items-center">
-          <h4 className="flex text-[#6aa7fc] font-semibold">{value}</h4>
-          {renderContextMenu()}
-        </div>
-      )
-    } else {
-      return (
-        <div key={key} className="flex justify-between gap-1 items-center">
-          <h4>{rename(key)}</h4>
-          {key === "image" ? (
-            <div
-              className={`w-[38px] aspect-square rounded-full overflow-hidden ${
-                value ? "border-none" : "border"
-              }`}
-            >
-              {value && <img src={value} />}
-            </div>
-          ) : (
-            <h4 className="flex">{value}</h4>
-          )}
-        </div>
-      )
-    }
-  }
+  // const renderMobileVersion = (key, value) => {
+  //   if (key === "id") {
+  //     return (
+  //       <div key={key} className="flex justify-between items-center">
+  //         <h4 className="flex text-[#6aa7fc] font-semibold">{value}</h4>
+  //         {renderContextMenu()}
+  //       </div>
+  //     )
+  //   } else {
+  //     return (
+  //       <div key={key} className="flex justify-between gap-1 items-center">
+  //         <h4>{rename(key)}</h4>
+  //         {key === "image" ? (
+  //           <div
+  //             className={`w-[38px] aspect-square rounded-full overflow-hidden ${
+  //               value ? "border-none" : "border"
+  //             }`}
+  //           >
+  //             {value && <img src={value} />}
+  //           </div>
+  //         ) : (
+  //           <h4 className="flex">{value}</h4>
+  //         )}
+  //       </div>
+  //     )
+  //   }
+  // }
 
   const renderContextMenu = () => {
     return (
@@ -111,14 +113,14 @@ const ListItem = ({ elementData, menuActions, index }) => {
           {renderContextMenu()}
         </div>
       </li>
-      <li
+      {/* <li
         className="relative flex flex-col gap-1 px-[20px] py-[10px] rounded-[10px] bg-white overflow-hidden 
 			md:hidden max-md:text-[14px]"
       >
         {Object.keys(elementData)?.map((key) =>
           renderMobileVersion(key, elementData[key])
         )}
-      </li>
+      </li> */}
     </>
   )
 }
@@ -146,5 +148,11 @@ const statusMap = {
   true: "Активный",
   false: "Неактивный",
 }
+
+const foodStatusMap = {
+  true: "Да",
+  false: "Нет",
+}
+
 
 export default ListItem

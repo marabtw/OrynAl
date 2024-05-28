@@ -29,19 +29,33 @@ const MyRestaurantMenuList = ({ restaurantId }) => {
   const showNotification = useToast()
 
   const [menu, setMenu] = useState([])
-  const [currentTypeOfMenu, setCurrentTypeOfMenu] = useState("")
-  const [typesOfMenu, setTypesOfMenu] = useState([])
-  const [filteredMenu, setFilteredMenu] = useState([])
+  const [currentCategory, setCurrentCategory] = useState("")
+
+  const [params, setParams] = useState({
+    pageIndex: 1,
+    limit: 10,
+    q: "",
+  })
 
   useEffect(() => {
     setLoading(true)
     const cancelToken = axios.CancelToken.source()
 
-    getRestaurantMenuRequest({ restaurantId, cancelToken })
+    getRestaurantMenuRequest({ restaurantId, params, cancelToken })
       .then(({ data }) => {
-        setMenu(data)
-        setTypesOfMenu(Object.keys(data))
-        setCurrentTypeOfMenu(Object.keys(data)[0])
+        setMenu(
+          data?.items.map(
+            ({ id, photo, name, type, description, price, available }) => ({
+              id,
+              photo,
+              name,
+              type,
+              description,
+              price,
+              foodStatus: available,
+            })
+          )
+        )
         showNotification("Данные успешно загружены", "success")
       })
       .catch((err) => {
@@ -58,27 +72,7 @@ const MyRestaurantMenuList = ({ restaurantId }) => {
     return () => {
       cancelToken.cancel()
     }
-  }, [restaurantId])
-
-  useEffect(() => {
-    menu[currentTypeOfMenu]
-      ? setFilteredMenu(
-          menu[currentTypeOfMenu].map(
-            ({ id, image, name, type, description, price, status }) => {
-              return {
-                id,
-                image,
-                name,
-                type,
-                description,
-                price,
-                foodStatus: status,
-              }
-            }
-          )
-        )
-      : setFilteredMenu([])
-  }, [currentTypeOfMenu])
+  }, [params])
 
   const deleteFoodById = async (foodId) => {
     setLoading(true)
@@ -86,8 +80,6 @@ const MyRestaurantMenuList = ({ restaurantId }) => {
       await deleteByOwnerMenuItemRequest(restaurantId, foodId)
       const { data } = await getRestaurantMenuRequest(restaurantId)
       setMenu(data)
-      setTypesOfMenu(Object.keys(data))
-      setCurrentTypeOfMenu(Object.keys(data)[0])
       showNotification("deleted", "success")
     } catch (err) {
       showNotification(err.toString(), "error")
@@ -114,21 +106,19 @@ const MyRestaurantMenuList = ({ restaurantId }) => {
   return (
     <ul className="flex flex-col gap-[20px]">
       <ListCategories categories={categories} />
-      {filteredMenu?.length > 0 && (
-        <MenuCategoriesSlider
-          menuTypes={typesOfMenu}
-          getCategory={(type) => {
-            setCurrentTypeOfMenu(type)
-          }}
-        />
-      )}
-      {filteredMenu?.length > 0 ? (
-        filteredMenu.map((itemData, index) => (
+      <MenuCategoriesSlider
+        restaurantId={restaurantId}
+        getCategory={(type) => {
+          setParams((prev) => ({ ...prev, q: type }))
+        }}
+      />
+      {menu?.length > 0 ? (
+        menu.map((food, index) => (
           <ListItem
-            key={itemData.id}
-            elementData={itemData}
+            key={food.id}
+            elementData={food}
             index={index}
-            menuActions={getContextMenuItems(itemData.id)}
+            menuActions={getContextMenuItems(food.id)}
           />
         ))
       ) : (

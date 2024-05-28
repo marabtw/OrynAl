@@ -27,6 +27,10 @@ const CreateTableForm = ({ restaurantId }) => {
     photo: {},
   })
 
+  useEffect(() => {
+    console.log(dataForCreate)
+  }, [dataForCreate])
+
   const isFormValid = () => {
     return (
       isObjectEmpty(dataForCreate.photo) &&
@@ -54,7 +58,7 @@ const CreateTableForm = ({ restaurantId }) => {
 
     try {
       const uploadedIcon = await upload(
-        [dataForCreate.photo],
+        [dataForCreate.photo]
         // transformationSettings
       )
       const photo = {
@@ -66,9 +70,7 @@ const CreateTableForm = ({ restaurantId }) => {
         ...dataForCreate,
         photo,
       }
-
-			console.log(updatedDataForCreate)
-
+			
       await createTable(updatedDataForCreate)
     } catch (error) {
       showNotification("Ошибка при создании ресторана", "error")
@@ -79,16 +81,6 @@ const CreateTableForm = ({ restaurantId }) => {
   }
 
   const createTable = async (data) => {
-		const testData = {
-			name: "table",
-			type: "Round",
-			description: "sersdfa sdf asf",
-			capacity: 10,
-			photo: {
-				route: "cc/dd/dd"
-			}
-		}
-		console.log(testData)
     createByOwnerTableRequest({ restaurantId, body: data })
       .then(() => {
         showNotification("Успешно создан", "success")

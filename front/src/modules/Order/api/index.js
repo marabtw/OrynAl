@@ -16,7 +16,7 @@ export const getByOwnerAllOrders = async (restaurantId, params) => {
   const response = await myApi.get(`/api/restaurants/${restaurantId}/orders`, {
     params: queryParams,
   })
-  return response
+  return response.data
 }
 
 export const getByUserAllOrders = async (params) => {
@@ -29,25 +29,25 @@ export const getByUserAllOrders = async (params) => {
   const response = await myApi.get("/api/orders", {
     params: queryParams,
   })
-  return response
+  return response.data
 }
 
 export const getOrder = async (orderId) => {
   const response = await myApi.get(`/api/orders/${orderId}`)
-  return response
+  return response.data
 }
 
 export const createByUserOrder = async (body) => {
   const response = await myApi.post(`/api/orders/create`, body)
-  return response
+  return response.data
 }
 
 export const updateOrder = async (orderId, body) => {
   const response = await myApi.put(`/api/orders/${orderId}`, body)
-  return response
+  return response.data
 }
 
 export const deleteOrder = async (orderId) => {
   const response = await myApi.delete(`/api/orders/${orderId}`)
-  return response
+  return response.data
 }

@@ -1,5 +1,10 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
+import { axios } from "@lib/axios"
+
+import { useToast } from "@hooks"
+
+import { getByOwnerMenuCategoriesRequest } from "@modules/Menu/api"
 
 import "swiper/css"
 import "swiper/css/pagination"
@@ -7,25 +12,47 @@ import "swiper/css/navigation"
 
 import "@styles/swiperSlider.css"
 
-const MenuCategoriesSlider = ({
-  menuTypes = [],
-  getCategory = () => {},
-}) => {
+const MenuCategoriesSlider = ({ restaurantId, getCategory = () => {} }) => {
+  const showNotification = useToast()
   const [activeIndex, setActiveIndex] = useState(0)
+  const [categories, setCategories] = useState([])
+
+  useEffect(() => {
+    const cancelTokenSource = axios.CancelToken.source()
+    getByOwnerMenuCategoriesRequest({
+      restaurantId,
+      cancelToken: cancelTokenSource,
+    })
+      .then(({ data }) => {
+        setCategories(data)
+        showNotification("getted", "success")
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err.toString(), "error")
+        }
+      })
+
+    return () => {
+      cancelTokenSource.cancel()
+    }
+  }, [])
 
   return (
     <>
-      <Swiper
-        slidesPerView={5}
-        centeredSlides={false}
-        spaceBetween={30}
-        pagination={false}
-        navigation={false}
-        loop={false}
-        className="h-[40px]"
-      >
-        {menuTypes?.length > 0 &&
-          menuTypes?.map((category, index) => (
+      {categories?.length > 0 && (
+        <Swiper
+          slidesPerView={5}
+          centeredSlides={false}
+          spaceBetween={30}
+          pagination={false}
+          navigation={false}
+          loop={false}
+          className="h-[40px]"
+        >
+          {categories?.map((category, index) => (
             <SwiperSlide
               key={category}
               onClick={() => {
@@ -42,7 +69,8 @@ const MenuCategoriesSlider = ({
               </div>
             </SwiperSlide>
           ))}
-      </Swiper>
+        </Swiper>
+      )}
     </>
   )
 }

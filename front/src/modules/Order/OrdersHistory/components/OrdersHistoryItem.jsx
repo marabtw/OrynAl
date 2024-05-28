@@ -5,25 +5,27 @@ import { MoreVerticalIcon } from "@ui/icons/icons"
 const OrdersHistoryList = ({ order }) => {
   const [showActions, setShowActions] = useState(false)
 
+	console.log(order)
+
   const getStatus = (status) => (
     <div className="flex items-center gap-[10px] w-[50%] min-w-max">
       {(() => {
         switch (status) {
-          case "booked":
+          case "Забронирован":
             return (
               <>
                 <div className="w-[12px] h-[12px] bg-[#31A24C] rounded-full"></div>
                 <h5>Забронирован</h5>
               </>
             )
-          case "cancelled":
+          case "Отменен":
             return (
               <>
                 <div className="w-[12px] h-[12px] bg-[#FF0000] rounded-full"></div>
                 <h5>Отменен</h5>
               </>
             )
-          case "completed":
+          case "Завершен":
             return (
               <>
                 <div className="w-[12px] h-[12px] bg-[#070707] rounded-full"></div>
@@ -42,8 +44,8 @@ const OrdersHistoryList = ({ order }) => {
       <li className="grid grid-cols-[.8fr_repeat(4,1fr)_.5fr] items-center w-full px-[20px] py-[10px] font-poppins bg-white rounded-[20px] max-md:hidden">
         <h5 className="">{order.id}</h5>
         <div className="flex justify-center items-center gap-[10px]">
-          <img src={order.image} alt="" className="w-[50px]" />
-          <h5>{order.name}</h5>
+          <img src={order.restaurant.icon.route} alt="" className="w-[50px]" />
+          <h5>{order.restaurant.name}</h5>
         </div>
         <h5 className="text-center">{order.address}</h5>
         <h5 className="text-center">{order.date}</h5>

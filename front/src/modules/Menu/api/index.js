@@ -2,9 +2,18 @@ import myApi from "@lib/axios"
 
 export const getRestaurantMenuRequest = async ({
   restaurantId,
+  params,
   cancelToken,
 }) => {
+  const queryParams = params
+    ? {
+        page: params.pageIndex,
+        limit: params.limit,
+        q: params.q,
+      }
+    : {}
   const response = await myApi.get(`/api/restaurants/${restaurantId}/menu`, {
+    params: queryParams,
     cancelToken: cancelToken ? cancelToken.token : undefined,
   })
   return response.data
@@ -12,6 +21,18 @@ export const getRestaurantMenuRequest = async ({
 export const getByOwnerMenuItemRequest = async (restaurantId, foodId) => {
   const response = await myApi.get(
     `/api/restaurants/${restaurantId}/menu/${foodId}`
+  )
+  return response.data
+}
+export const getByOwnerMenuCategoriesRequest = async ({
+  restaurantId,
+  cancelToken,
+}) => {
+  const response = await myApi.get(
+    `/api/restaurants/${restaurantId}/menu/categories`,
+    {
+      cancelToken: cancelToken ? cancelToken.token : undefined,
+    }
   )
   return response.data
 }

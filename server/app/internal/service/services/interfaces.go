@@ -30,6 +30,7 @@ type IUserService interface {
 
 type IRestaurantService interface {
 	GetRestaurants(ctx context.Context, params *model.Params) (*model.ListResponse, error)
+	GetStatistics(ctx context.Context) (*model.Statistics, error)
 	GetRestaurantByID(ctx context.Context, id uint) (*model.Restaurant, error)
 	CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.Restaurant, error)
 	UpdateRestaurant(ctx context.Context, restaurant *model.Restaurant, id uint) (*model.Restaurant, error)
@@ -49,6 +50,8 @@ type FormatParams interface {
 	TablesSearchFormatting(params *model.Params, ctx echo.Context) (*model.Params, error)
 	UserSearchFormatting(params *model.Params, ctx echo.Context) (*model.Params, error)
 	OrderSearchFormatting(params *model.Params, ctx echo.Context) (*model.Params, error)
+	MenuSearchFormatting(params *model.Params, ctx echo.Context) (*model.Params, error)
+	ReviewsSearchFormatting(params *model.Params, ctx echo.Context) (*model.Params, error)
 }
 
 type IOrderService interface {
@@ -61,11 +64,13 @@ type IOrderService interface {
 }
 
 type IMenuService interface {
-	GetRestaurantMenu(ctx context.Context, restaurantID uint) (map[string][]model.Food, error)
+	GetRestaurantMenu(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error)
 	GetRestaurantFood(ctx context.Context, restaurantID, foodID uint) (*model.Food, error)
 	CreateRestaurantFood(ctx context.Context, restaurantID uint, food *model.Food) (*model.Food, error)
 	UpdateRestaurantFood(ctx context.Context, restaurantID uint, food *model.Food) (*model.Food, error)
 	DeleteRestaurantFood(ctx context.Context, restaurantID, foodID uint) error
+	GetMenuCategories(ctx context.Context, restaurantID uint) ([]string, error)
+	FormatParams
 }
 
 type ITableService interface {
@@ -75,5 +80,13 @@ type ITableService interface {
 	UpdateRestaurantTable(ctx context.Context, restaurantID uint, table *model.Table) (*model.Table, error)
 	DeleteRestaurantTable(ctx context.Context, restaurantID uint, tableID uint) error
 	GetAvailableTime(ctx context.Context, restaurantID uint, tableID uint, date time.Time) ([]time.Time, error)
+	GetTableCategories(ctx context.Context, restaurantID uint) ([]string, error)
+	FormatParams
+}
+
+type IReviewsService interface {
+	GetReviews(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error)
+	CreateReview(ctx context.Context, review *model.RestaurantReview) (*model.RestaurantReview, error)
+	DeleteReview(ctx context.Context, id uint) error
 	FormatParams
 }

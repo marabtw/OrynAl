@@ -1,8 +1,8 @@
 import myApi from "@lib/axios"
 
-import { getAllRestaurantsRequest } from "@modules/Restaurants/api"
+import { getAllRestaurantsRequest, getAllPopularRestaurantsRequest } from "@modules/Restaurants/api"
 
-export { getAllRestaurantsRequest }
+export { getAllRestaurantsRequest, getAllPopularRestaurantsRequest }
 
 export const searchRestaurants = async ({ searchQuery, cancelToken }) => {
   const response = await myApi.get(`/api/restaurants?q=${searchQuery}`, {

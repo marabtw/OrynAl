@@ -45,13 +45,24 @@ const AuthContextProvider = ({ children }) => {
     try {
       const response = await refreshTokenRequest({ refreshToken })
       const newAccessToken = response.data.accessToken
-      Cookies.set("accessToken", newAccessToken, { SameSite: "None", Secure: true })
+      const newRefreshToken = response.data.refreshToken
+      Cookies.set("accessToken", newAccessToken, {
+        SameSite: "None",
+        Secure: true,
+      })
+      Cookies.set("refreshToken", newRefreshToken, {
+        SameSite: "None",
+        Secure: true,
+      })
       const newDecodedToken = jwtDecode(newAccessToken)
       updateUser(newDecodedToken)
     } catch (err) {
       setUser({ role: "guest" })
-			setIsAuthed(false)
-			showNotification("Не удалось обновить токен. Пожалуйста, войдите снова.", "error")
+      setIsAuthed(false)
+      showNotification(
+        "Не удалось обновить токен. Пожалуйста, войдите снова.",
+        "error"
+      )
     }
   }
 
@@ -65,14 +76,15 @@ const AuthContextProvider = ({ children }) => {
       })
       setIsAuthed(true)
     } catch (err) {
-			showNotification("Не удалось загрузить профиль.", "error")
+      setIsAuthed(false)
+      showNotification("Не удалось загрузить профиль.", "error")
     }
   }
 
   const deleteUser = () => {
     Cookies.remove("accessToken", { SameSite: "None", Secure: true })
     Cookies.remove("refreshToken", { SameSite: "None", Secure: true })
-		localStorage.removeItem("isFirstVisit")
+    sessionStorage.removeItem("isNotFirstVisit")
     setUser({ role: "guest" })
     setIsAuthed(false)
     navigate(ROUTERS.Home)
@@ -94,7 +106,6 @@ const AuthContextProvider = ({ children }) => {
         SameSite: "None",
         Secure: true,
       })
-      localStorage.setItem("isFirstVisit", "false")
       const newDecodedToken = jwtDecode(data.access_token)
       updateUser(newDecodedToken)
       if (newDecodedToken.role === "admin") {
@@ -114,20 +125,24 @@ const AuthContextProvider = ({ children }) => {
       }
       showNotification("Авторизвация прошла успешно", "success")
     } catch (err) {
-      showNotification(err.toString(), "error")
+      showNotification("Не удалось войти. Ошибка: ",err.toString(), "error")
     }
   }
 
   const signup = async ({ name, surname, email, phone, password }) => {
     try {
-      const status = (
-        await signupRequest(name, surname, email, phone, password)
-      ).status
+      const { status } = await signupRequest(
+        name,
+        surname,
+        email,
+        phone,
+        password
+      )
       if (status === 201) {
         signin({ email, password })
       }
     } catch (err) {
-      showNotification(err.toString(), "error")
+      showNotification("Не удалось зарегистрировать. Ошибка: ",err.toString(), "error")
     }
   }
 

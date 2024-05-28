@@ -14,19 +14,23 @@ const UIContextProvider = ({ children }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.innerWidth < 768) {
+      if (window.innerWidth <= 768) {
         setHeaderHeight(60)
-      } else if (window.scrollY > 700) {
-        setHeaderHeight(80)
-      } else {
-        setHeaderHeight(120)
+      } else if (window.innerWidth > 768) {
+        if (window.scrollY > 900) {
+          setHeaderHeight(80)
+        } else {
+          setHeaderHeight(120)
+        }
       }
     }
 
     window.addEventListener("scroll", handleScroll)
+    window.addEventListener("resize", handleScroll)
 
     return () => {
       window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("resize", handleScroll)
     }
   }, [])
 

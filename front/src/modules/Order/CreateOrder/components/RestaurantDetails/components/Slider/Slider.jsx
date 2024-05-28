@@ -20,8 +20,12 @@ const Slider = ({ images = [] }) => {
       >
         {images.length > 0
           ? images.map((image) => (
-              <SwiperSlide className="min-w-[300px] aspect-square border rounded-xl ">
-                <img src={image} className="w-full"/>
+              <SwiperSlide className="min-w-[300px] aspect-square border, ">
+                <img
+                  src={image.route}
+                  alt={image.route}
+                  className="w-full rounded-xl"
+                />
               </SwiperSlide>
             ))
           : [1, 2, 3].map(() => (
@@ -29,13 +33,6 @@ const Slider = ({ images = [] }) => {
             ))}
       </Swiper>
     </>
-    // <div className="h-[286px] w-full overflow-hidden">
-    //   <div className="flex gap-[30px] w-[878px] overflow-hidden">
-    //     {images?.map((image) => (
-    //       <img key={image + Math.random()} src={image} className="min-w-[30%] w-[30%] min-h-[286px] overflow-hidden rounded-[20px]" />
-    //     ))}
-    //   </div>
-    // </div>
   )
 }
 

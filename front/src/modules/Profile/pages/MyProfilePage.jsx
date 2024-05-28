@@ -1,4 +1,4 @@
-import PageWrapper from "@components/PageWrapper"
+import PageWrapper from "@components/PageWrapper/PageWrapper"
 import PageHeading from "@ui/Heading/PageHeading"
 import MyProfile from "../MyProfile/MyProfile"
 

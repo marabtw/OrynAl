@@ -1,10 +1,16 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-const SortByCategoryContainer = ({ sortList, className }) => {
-  const [active, setActive] = useState("Сортировать в этом разделе")
+const SortByCategoryContainer = ({ sortList, className, getCategory=() => {} }) => {
+  const [active, setActive] = useState("Все рестораны")
+
+  useEffect(() => {
+    getCategory(active)
+  }, [active])
 
   return (
-    <div className={`w-full flex justify-between flex-wrap gap-[10px] ${className} max-lg:justify-center`}>
+    <div
+      className={`w-full flex flex-wrap gap-[20px] ${className} max-lg:justify-center`}
+    >
       {sortList?.map((el) => (
         <span
           key={el}

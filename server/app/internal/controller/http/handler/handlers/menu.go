@@ -23,6 +23,41 @@ type MenuHandler struct {
 	logger  *zap.SugaredLogger
 }
 
+func (h *MenuHandler) GetMenuCategories(c echo.Context) error {
+	restaurantID := c.Param("id")
+	if restaurantID == "" {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Restaurant ID is required",
+		})
+	}
+
+	id, err := strconv.ParseUint(restaurantID, 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid restaurant ID",
+			Data:    err.Error(),
+		})
+	}
+
+	types, err := h.service.Menu.GetMenuCategories(c.Request().Context(), uint(id))
+	if err != nil {
+		h.logger.Error("Failed to get tables for restaurant:", err)
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed to get tables for restaurant",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, response.CustomResponse{
+		Status:  http.StatusOK,
+		Message: "Types retrieved successfully",
+		Data:    types,
+	})
+}
+
 func (h *MenuHandler) GetRestaurantMenu(c echo.Context) error {
 	restaurantID := c.Param("id")
 	if restaurantID == "" {
@@ -41,7 +76,16 @@ func (h *MenuHandler) GetRestaurantMenu(c echo.Context) error {
 		})
 	}
 
-	menu, err := h.service.Menu.GetRestaurantMenu(c.Request().Context(), uint(id))
+	searchParams, err := h.service.Menu.MenuSearchFormatting(model.NewParams(), c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed reading params",
+			Data:    err.Error(),
+		})
+	}
+
+	menu, err := h.service.Menu.GetRestaurantMenu(c.Request().Context(), uint(id), searchParams)
 	if err != nil {
 		h.logger.Error("Failed to get restaurant menu:", err)
 		return c.JSON(http.StatusInternalServerError, response.CustomResponse{

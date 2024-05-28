@@ -1,5 +1,5 @@
 import UpdateRestaurantForm from "../Common/UpdateRestaurantForm/UpdateRestaurantForm"
-import PageWrapper from "@components/PageWrapper"
+import PageWrapper from "@components/PageWrapper/PageWrapper"
 import PageHeading from "@ui/Heading/PageHeading"
 
 const UpdateRestaurantPage = () => {

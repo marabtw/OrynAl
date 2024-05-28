@@ -1,7 +1,7 @@
 import { getAllCities, getTimes } from "../../../api"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
-import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
+import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
 import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
 
 import FormCheckbox from "@ui/Field/FormCheckbox"

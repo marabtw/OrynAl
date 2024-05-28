@@ -15,14 +15,16 @@ const CommentsContainer = ({ comments }) => {
             <div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-[18px] font-[500] leading-[27px]">
-                    {comment.name}
-                  </h2>
+                  {comment.name && (
+                    <h2 className="text-[18px] font-[500] leading-[27px]">
+                      {comment.name}
+                    </h2>
+                  )}
                   <h4 className="text-[14px] leading-[21px] text-[#979797]">
                     {comment.data}
                   </h4>
                 </div>
-                <RatingStars rate={comment.rate}/>
+                <RatingStars rate={comment.rate} />
               </div>
               <p className="px-[15px] py-[10px] rounded-[10px] bg-[#f1f1f1] text-[14px] leading-[21px]">
                 {comment.comment}

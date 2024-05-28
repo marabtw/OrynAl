@@ -25,12 +25,17 @@ type RestaurantHandler struct {
 	*infrastructure.FormatParams
 }
 
-func (h *RestaurantHandler) UpdateRestaurantPhotos(c echo.Context) error {
+func (h *RestaurantHandler) SavedRestaurants(c echo.Context) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (h *RestaurantHandler) UpdateRestaurantServices(c echo.Context) error {
+func (h *RestaurantHandler) SaveRestaurant(c echo.Context) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h *RestaurantHandler) UnsaveRestaurant(c echo.Context) error {
 	//TODO implement me
 	panic("implement me")
 }
@@ -175,6 +180,24 @@ func (h *RestaurantHandler) GetRestaurants(c echo.Context) error {
 		Status:  http.StatusOK,
 		Message: "Success",
 		Data:    restaurants,
+	})
+}
+
+func (h *RestaurantHandler) GetStatistics(c echo.Context) error {
+	statistics, err := h.service.Restaurant.GetStatistics(c.Request().Context())
+	if err != nil {
+		h.logger.Error("Failed to get restaurants:", err)
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed to get restaurants",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, response.CustomResponse{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    statistics,
 	})
 }
 

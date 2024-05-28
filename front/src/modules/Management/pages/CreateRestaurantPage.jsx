@@ -1,5 +1,5 @@
-import PageWrapper from "@components/PageWrapper"
-import CreateFormsWrapper from "@components/CreateFormsWrapper"
+import PageWrapper from "@components/PageWrapper/PageWrapper"
+import CreateFormsWrapper from "@components/CreateFormsWrapper/CreateFormsWrapper"
 import PageHeading from "@ui/Heading/PageHeading"
 
 import CreateRestaurantForm from "../Restaurants/CreateRestaurantForm/CreateRestaurantForm"

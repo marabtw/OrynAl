@@ -1,6 +1,6 @@
 import Slider from "./components/Slider/Slider"
-import CommentsContainer from "./components/CommentsContainer"
-import RestaurantBriefInfo from "../RestaurantBriefInfo/RestaurantBriefInfo"
+import CommentsContainer from "./components/CommentsContainer/CommentsContainer"
+import RestaurantBriefInfo from "@components/RestaurantBriefInfo/RestaurantBriefInfo"
 
 const RestaurantDetails = ({ restaurantData }) => {
   return (
@@ -9,7 +9,7 @@ const RestaurantDetails = ({ restaurantData }) => {
         <RestaurantBriefInfo data={restaurantData} />
       </div>
       <div className=" ">
-        <Slider images={restaurantData.images} />
+        <Slider images={restaurantData.photos} />
         <CommentsContainer comments={restaurantData.comments} />
       </div>
     </div>

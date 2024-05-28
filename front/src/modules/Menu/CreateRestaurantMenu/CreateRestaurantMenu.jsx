@@ -1,18 +1,20 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { ROUTERS } from "@router/Router.config"
 import { createByOwnerMenuItemRequest, getMenuTypes } from "../api"
 
-import { useLoading, useToast } from "@hooks"
+import { useCloudinary, useLoading, useToast } from "@hooks"
 import { removeWildcard } from "@helpers"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
-import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
+import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
 import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
 import Button from "@ui/Button/Button"
+import { isObjectEmpty } from "@utils/index"
 
 const CreateRestaurantMenu = ({ restaurantId }) => {
+  const { upload } = useCloudinary()
   const navigate = useNavigate()
   const setLoading = useLoading()
   const showNotification = useToast()
@@ -23,7 +25,7 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
     description: "",
     price: 0,
     available: true,
-    services: [],
+    photo: {},
   })
 
   const handleChange = (key, value) => {
@@ -43,6 +45,11 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
             [key]: [...prevState[key], value],
           }
         }
+      } else if (key === "photo") {
+        return {
+          ...prevState,
+          [key]: value[0] || {},
+        }
       } else {
         return {
           ...prevState,
@@ -54,6 +61,7 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
 
   const isFormValid = () => {
     return (
+      isObjectEmpty(dataForCreate.photo) &&
       dataForCreate.name &&
       dataForCreate.type &&
       dataForCreate.description &&
@@ -61,14 +69,47 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
     )
   }
 
-  const createMenuFood = () => {
+  const uploadImages = async () => {
     if (!isFormValid()) {
       showNotification("Форма невалидна", "warning")
       return
     }
 
     setLoading(true)
-    createByOwnerMenuItemRequest(restaurantId, dataForCreate)
+
+    const transformationSettings = {
+      width: 100,
+      height: 100,
+      crop: "fill",
+      gravity: "center",
+    }
+
+    try {
+      const uploadedIcon = await upload(
+        [dataForCreate.photo]
+        // transformationSettings
+      )
+      const photo = {
+        // publicId: uploadedIcon[0].public_id,
+        route: uploadedIcon[0].secure_url,
+      }
+
+      const updatedDataForCreate = {
+        ...dataForCreate,
+        photo,
+      }
+
+      await createMenuFood(updatedDataForCreate)
+    } catch (error) {
+      showNotification("Ошибка при создании ресторана", "error")
+      console.error("Error creating restaurant:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const createMenuFood = async (data) => {
+    createByOwnerMenuItemRequest(restaurantId, data)
       .then(() => {
         showNotification("Успешно создан", "success")
         navigate(
@@ -88,33 +129,30 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
           label="Название меню:"
           placeholder="Чизбургер"
           onChange={(value) => {
-            setDataForCreate((prevState) => ({
-              ...prevState,
-              name: value,
-            }))
+            handleChange("name", value)
           }}
         />
-        <FormInputFileWrapper label="Фотографии:" placeholder="Добавить фото" />
+        <FormInputFileWrapper
+          label="Фотографии:"
+          placeholder="Добавить фото"
+          getFiles={(files) => {
+            handleChange("photo", files)
+          }}
+        />
       </div>
       <FormSelectWrapper
         label={"Тип меню:"}
         placeholder={"Фаст-фуд"}
         options={getMenuTypes()}
         onChange={(value) => {
-          setDataForCreate((prevState) => ({
-            ...prevState,
-            type: value,
-          }))
+          handleChange("type", value)
         }}
       />
       <FormInputTextWrapper
         label="Описание:"
         placeholder="Напишите краткое описание меню...."
         onChange={(value) => {
-          setDataForCreate((prevState) => ({
-            ...prevState,
-            description: value,
-          }))
+          handleChange("description", value)
         }}
       />
       <div className="grid grid-cols-2 gap-[20px]">
@@ -123,10 +161,7 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
           placeholder={"1200 тенге"}
           type="number"
           onChange={(value) => {
-            setDataForCreate((prevState) => ({
-              ...prevState,
-              price: value ? +value : 0,
-            }))
+            handleChange("price", +value)
           }}
         />
         <FormSelectWrapper
@@ -137,10 +172,7 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
             { label: "Не доступен", value: "Не доступен" },
           ]}
           onChange={(value) => {
-            setDataForCreate((prevState) => ({
-              ...prevState,
-              available: value,
-            }))
+            handleChange("available", value)
           }}
           defaultValueIndex={0}
         />
@@ -149,7 +181,7 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
         text="Создать"
         gradient={true}
         spacingClass={"mx-auto px-[120px] py-[20px]"}
-        onClick={createMenuFood}
+        onClick={uploadImages}
       />
     </form>
   )

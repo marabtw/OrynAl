@@ -8,7 +8,7 @@ import { useLoading, useToast } from "@hooks"
 import { isArraysEqualByIdWithSet } from "@utils/index"
 import { removeWildcard } from "@helpers"
 
-import ListItem from "@components/ListItem"
+import ListItem from "@components/ListItem/ListItem"
 import ListCategories from "@components/ListCategories"
 import MenuCategoriesSlider from "./components/MenuCategoriesSlider"
 import Pagination from "@components/Pagination/Pagination"

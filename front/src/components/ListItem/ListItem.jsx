@@ -2,7 +2,7 @@ import { useEffect } from "react"
 
 import { useContextMenu } from "@hooks"
 
-import ContextMenu from "../ContextMenu"
+import ContextMenu from "../ContextMenu/ContextMenu"
 import { MoreVerticalIcon } from "@ui/icons/icons"
 
 const ListItem = ({ elementData, menuActions, index }) => {

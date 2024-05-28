@@ -27,8 +27,12 @@ const Header = () => {
     <div
       className={`sticky top-0 w-full z-[55]
 			px-[50px]
-			rounded-bl-[50px] rounded-br-[50px] 
-			bg-white  shadow-[0px_4px_10px_rgba(0,0,0,.25)] 
+			${
+        user.role === "guest" || user.role === "user"
+          ? "rounded-bl-[50px] rounded-br-[50px]  shadow-[0px_4px_10px_rgba(0,0,0,.25)] "
+          : ""
+      }
+			bg-white 
 			transition-all duration-300
 			max-md:px-[4%] max-lg:rounded-bl-[25px] max-lg:rounded-br-[25px]`}
       style={{

@@ -1,5 +1,5 @@
 import React from "react"
-import ContextMenu from "@components/ContextMenu"
+import ContextMenu from "@components/ContextMenu/ContextMenu"
 import { MoreVerticalIcon } from "@ui/icons/icons"
 import { useContextMenu } from "@hooks"
 

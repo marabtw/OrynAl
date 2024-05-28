@@ -13,6 +13,7 @@ type Manager struct {
 	Food       IFoodRepository
 	Table      ITableRepository
 	Services   IServicesRepository
+	Reviews    IReviewsRepository
 }
 
 func NewManager(db *gorm.DB) *Manager {
@@ -24,5 +25,6 @@ func NewManager(db *gorm.DB) *Manager {
 		Food:       postgre.NewFoodRepository(db),
 		Table:      postgre.NewTableRepository(db),
 		Services:   postgre.NewServicesRepository(db),
+		Reviews:    postgre.NewReviewsRepository(db),
 	}
 }

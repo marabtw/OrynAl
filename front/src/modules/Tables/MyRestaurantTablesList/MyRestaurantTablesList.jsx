@@ -9,8 +9,9 @@ import { isArraysEqualByIdWithSet } from "@utils/index"
 import { removeWildcard } from "@helpers"
 
 import ListCategories from "@components/ListCategories"
-import ListItem from "@components/ListItem"
+import ListItem from "@components/ListItem/ListItem"
 import Pagination from "@components/Pagination/Pagination"
+import TableCategoriesSlider from "./components/TableCategoriesSlider"
 
 const categories = [
   "ID",
@@ -35,8 +36,8 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
 
   useEffect(() => {
     setLoading(true)
-    const cancelToken = axios.CancelToken.source()
-    getAllTablesRequest({ restaurantId, params, cancelToken })
+    const cancelTokenSource = axios.CancelToken.source()
+    getAllTablesRequest({ restaurantId, params, cancelToken: cancelTokenSource })
       .then(({ data }) => {
         updateTablesList(data)
         showNotification("getted", "success")
@@ -53,7 +54,7 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
       })
 
     return () => {
-      cancelToken.cancel()
+      cancelTokenSource.cancel()
     }
   }, [params])
 
@@ -109,6 +110,7 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
   return (
     <ul className="flex flex-col gap-[20px]">
       <ListCategories categories={categories} />
+			<TableCategoriesSlider restaurantId={restaurantId}/>
       {tables?.length > 0 ? (
         tables?.map((table, index) => (
           <ListItem

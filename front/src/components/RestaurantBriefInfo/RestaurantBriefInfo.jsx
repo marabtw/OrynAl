@@ -3,6 +3,7 @@ import { formatTimeString } from "@utils"
 import icon from "@assets/images/icons/workIcon.png"
 
 const RestaurantBriefInfo = ({ data, className }) => {
+	console.log(data)
   const getService = (name) => {
     return (
       <div className="flex py-[10px] px-[20px] gap-x-[10px] h-[53px] items-center shadow-[0px_4px_10px_-2px_rgba(0,0,0,.2)] rounded-[20px]">
@@ -16,8 +17,8 @@ const RestaurantBriefInfo = ({ data, className }) => {
     <div className={`flex flex-col gap-[40px] w-full bg-white rounded-[20px] ${className}`}>
       <div className="grid grid-cols-[133px_1fr] gap-x-[20px] gap-y-[10px] max-md:grid-cols-1">
         <div className="w-[133px] aspect-square rounded-full max-md:hidden">
-          {data.image ? (
-            <img src={data.image} alt="icon" className="w-full rounded-full " />
+          {data?.icon ? (
+            <img src={data.icon.route} alt="icon" className="w-full rounded-full " />
           ) : (
             <div className="w-full h-full border-2 rounded-full bg-slate-100"></div>
           )}

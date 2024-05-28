@@ -31,23 +31,26 @@ type IAdminHandler interface {
 
 type IRestaurantHandler interface {
 	GetRestaurants(c echo.Context) error
+	GetStatistics(c echo.Context) error
 	GetRestaurantByID(c echo.Context) error
-	//FavoriteRestaurants(c echo.Context) error
+	SavedRestaurants(c echo.Context) error
+	SaveRestaurant(c echo.Context) error
+	UnsaveRestaurant(c echo.Context) error
 	PopularRestaurants(c echo.Context) error
 	GetRestaurantOrders(c echo.Context) error
 	DeleteRestaurant(c echo.Context) error
 	UpdateRestaurant(c echo.Context) error
-	UpdateRestaurantPhotos(c echo.Context) error
-	UpdateRestaurantServices(c echo.Context) error
 	GetServices(c echo.Context) error
 }
 
 type IReviewsHandler interface {
 	CreateReview(c echo.Context) error
 	GetReviews(c echo.Context) error
+	DeleteReview(c echo.Context) error
 }
 
 type ITableHandler interface {
+	GetTableCategories(c echo.Context) error
 	GetRestaurantTables(c echo.Context) error
 	GetRestaurantTable(c echo.Context) error
 	CreateRestaurantTable(c echo.Context) error
@@ -57,6 +60,7 @@ type ITableHandler interface {
 }
 
 type IMenuHandler interface {
+	GetMenuCategories(c echo.Context) error
 	GetRestaurantMenu(c echo.Context) error
 	GetRestaurantFood(c echo.Context) error
 	CreateRestaurantFood(c echo.Context) error

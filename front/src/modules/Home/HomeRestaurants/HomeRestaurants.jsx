@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { axios } from "@lib/axios"
 
-import { getAllRestaurantsRequest } from "../api/index"
+import {
+  getAllRestaurantsRequest,
+  getAllPopularRestaurantsRequest
+} from "../api/index"
 
 import { useLoading, useToast } from "@hooks"
 import { isArraysEqualByIdWithSet } from "@utils"
@@ -27,12 +30,12 @@ const HomeRestaurants = React.forwardRef((props, ref) => {
     limit: 3,
   })
 
-  const loadRestaurants = async (params, setData, setTotalPage) => {
+  const loadRestaurants = async (request, params, setData, setTotalPage) => {
     setLoading(true)
     const cancelTokenSource = axios.CancelToken.source()
 
     try {
-      const { data } = await getAllRestaurantsRequest({
+      const { data } = await request({
         params,
         cancelToken: cancelTokenSource.token,
       })
@@ -64,11 +67,17 @@ const HomeRestaurants = React.forwardRef((props, ref) => {
   }
 
   useEffect(() => {
-    loadRestaurants(restaurantsParams, setRestaurants, setRestaurantsTotalPage)
+    loadRestaurants(
+      getAllRestaurantsRequest,
+      restaurantsParams,
+      setRestaurants,
+      setRestaurantsTotalPage
+    )
   }, [restaurantsParams])
 
   useEffect(() => {
     loadRestaurants(
+      getAllPopularRestaurantsRequest,
       popularRestaurantsParams,
       setPopularRestaurants,
       setPopularRestaurantsTotalPage

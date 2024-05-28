@@ -9,7 +9,7 @@ import { useLoading, useToast } from "@hooks"
 import { isArraysEqualByIdWithSet } from "@utils"
 
 import ListCategories from "@components/ListCategories"
-import ListItem from "@components/ListItem"
+import ListItem from "@components/ListItem/ListItem"
 import Pagination from "@components/Pagination/Pagination"
 
 const categories = ["id", "Имя", "Фамилия", "Почта", "Телефон", "Действие"]

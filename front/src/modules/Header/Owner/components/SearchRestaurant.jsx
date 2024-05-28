@@ -19,6 +19,10 @@ const SearchRestaurant = () => {
   const [options, setOptions] = useState([])
 
   useEffect(() => {
+    console.log(options)
+  }, [options])
+
+  useEffect(() => {
     const cancelTokenSource = axios.CancelToken.source()
 
     if (searchQuery?.length >= 2) {
@@ -26,9 +30,9 @@ const SearchRestaurant = () => {
         searchQuery,
         cancelToken: cancelTokenSource.token,
       })
-        .then((res) => {
+        .then(({ data }) => {
           setOptions(
-            res.data.items?.map((restaurant) => ({
+            data.items?.map((restaurant) => ({
               label: restaurant.name,
               value: restaurant.id,
             }))
@@ -36,7 +40,7 @@ const SearchRestaurant = () => {
         })
         .catch((err) => {
           if (!axios.isCancel(err)) {
-            showNotification(err.toString(), "error")
+            // showNotification(err.toString(), "error")
           }
           if (options?.length > 0) setOptions([])
         })
@@ -51,7 +55,7 @@ const SearchRestaurant = () => {
     container: (provided, state) => ({
       ...provided,
       width: "100%",
-      minWidth: "300px",
+      height: "100%",
     }),
     control: (provided, state) => ({
       ...provided,
@@ -60,9 +64,6 @@ const SearchRestaurant = () => {
       borderRadius: "20px",
       padding: "3px 5px 3px 30px",
       cursor: "text",
-      fontSize: "15px",
-      fontWeight: "600",
-      lineHeight: "22.5px",
       boxShadow: "none",
       "&:hover": {
         borderColor: "#4277FB",
@@ -78,8 +79,8 @@ const SearchRestaurant = () => {
         color: "#fff",
       },
     }),
-    indicatorSeparator: (provided, state) => ({ display: "none" }), // Убираем разделитель
-    dropdownIndicator: (provided, state) => ({ display: "none" }), // Убираем стрелку
+    indicatorSeparator: (provided, state) => ({ display: "none" }),
+    dropdownIndicator: (provided, state) => ({ display: "none" }),
     placeholder: (provided, state) => ({
       ...provided,
       color: "#c4c4c4",
@@ -87,13 +88,13 @@ const SearchRestaurant = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative w-[323px] h-full overflow-hidden font-ttcommon font-[500] text-[15px] leading-[17.5px] max-md:w-[250px] max-sm:w-[180px]">
       <SearchIcon className="absolute top-[50%] left-[18px] text-[14px] text-[#c4c4c4] translate-y-[-50%] z-30 pointer-events-none" />
       <Select
         options={options}
         styles={customStyles}
-        placeholder={`${"Search"}`}
-        value={searchQuery}
+        placeholder={`${"Поиск ресторана"}`}
+        // value={null}
         onChange={(e) => {
           navigate(
             `${removeWildcard(

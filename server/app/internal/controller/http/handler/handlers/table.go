@@ -22,6 +22,41 @@ type TableHandler struct {
 	logger  *zap.SugaredLogger
 }
 
+func (h *TableHandler) GetTableCategories(c echo.Context) error {
+	restaurantID := c.Param("id")
+	if restaurantID == "" {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Restaurant ID is required",
+		})
+	}
+
+	id, err := strconv.ParseUint(restaurantID, 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid restaurant ID",
+			Data:    err.Error(),
+		})
+	}
+
+	types, err := h.service.Table.GetTableCategories(c.Request().Context(), uint(id))
+	if err != nil {
+		h.logger.Error("Failed to get tables for restaurant:", err)
+		return c.JSON(http.StatusInternalServerError, response.CustomResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed to get tables for restaurant",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, response.CustomResponse{
+		Status:  http.StatusOK,
+		Message: "Types retrieved successfully",
+		Data:    types,
+	})
+}
+
 func (h *TableHandler) GetRestaurantTables(c echo.Context) error {
 	restaurantID := c.Param("id")
 	if restaurantID == "" {

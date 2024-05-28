@@ -1,10 +1,13 @@
 package model
 
+import "time"
+
 type Params struct {
 	Filter     map[string]interface{}
 	Query      string
 	Order      interface{}
 	SortVector interface{}
+	Date       *time.Time
 	Offset     int
 	Limit      int
 	PageIndex  int

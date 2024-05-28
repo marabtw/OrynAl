@@ -23,6 +23,10 @@ type TableService struct {
 	FormatParams
 }
 
+func (s *TableService) GetTableCategories(ctx context.Context, restaurantID uint) ([]string, error) {
+	return s.repository.Table.GetTableCategories(ctx, restaurantID)
+}
+
 func (s *TableService) GetRestaurantTables(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error) {
 	return s.repository.Table.GetRestaurantTables(ctx, restaurantID, params)
 }

@@ -42,6 +42,7 @@ const mobileMenuItems = [
 const AdminHeader = ({ user }) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
+  const [selectedNavItem, setSelectedNavItem] = useState("Рестораны")
 
   return (
     <header
@@ -51,7 +52,7 @@ const AdminHeader = ({ user }) => {
         className="text-[20px] cursor-pointer md:hidden"
         onClick={() => setIsMobileNavOpen(true)}
       />
-      <div className="h-[25%] flex gap-[36px] items-center">
+      <div className="h-[25%] flex gap-[36px] items-center font-[400] text-[20px] leading-[23px]">
         <Link
           to={`${removeWildcard(ROUTERS.Management.root)}${
             ROUTERS.Management.allRestaurants
@@ -68,7 +69,12 @@ const AdminHeader = ({ user }) => {
           to={`${removeWildcard(ROUTERS.Management.root)}${
             ROUTERS.Management.allRestaurants
           }`}
-          className="max-md:hidden"
+          onClick={() => setSelectedNavItem("Рестораны")}
+          className={`max-md:hidden transition-all duration-200 font-[400] ${
+            selectedNavItem === "Рестораны"
+              ? "relative font-[600] after:absolute after:w-[28%] after:h-[5px] after:top-full after:left-0 after:bg-customBLue after:rounded-full"
+              : ""
+          }`}
         >
           Рестораны
         </Link>
@@ -76,7 +82,12 @@ const AdminHeader = ({ user }) => {
           to={`${removeWildcard(ROUTERS.Management.root)}${
             ROUTERS.Management.owners
           }`}
-          className="max-md:hidden"
+          onClick={() => setSelectedNavItem("Владельцы")}
+          className={`max-md:hidden transition-all duration-200 ${
+            selectedNavItem === "Владельцы"
+              ? "relative font-[600] after:absolute after:w-[28%] after:h-[5px] after:top-full after:left-0 after:bg-customBLue after:rounded-full"
+              : ""
+          }`}
         >
           Владельцы
         </Link>
@@ -84,7 +95,12 @@ const AdminHeader = ({ user }) => {
           to={`${removeWildcard(ROUTERS.Management.root)}${
             ROUTERS.Management.clients
           }`}
-          className="max-md:hidden"
+          onClick={() => setSelectedNavItem("Клиенты")}
+          className={`max-md:hidden transition-all duration-200 ${
+            selectedNavItem === "Клиенты"
+              ? "relative font-[600] after:absolute after:w-[28%] after:h-[5px] after:top-full after:left-0 after:bg-customBLue after:rounded-full"
+              : ""
+          }`}
         >
           Клиенты
         </Link>
@@ -92,17 +108,22 @@ const AdminHeader = ({ user }) => {
           to={`${removeWildcard(ROUTERS.RestaurantServices.root)}${
             ROUTERS.RestaurantServices.services
           }`}
-          className="max-md:hidden"
+          onClick={() => setSelectedNavItem("Сервисы")}
+          className={`max-md:hidden transition-all duration-200 ${
+            selectedNavItem === "Сервисы"
+              ? "relative font-[600] after:absolute after:w-[28%] after:h-[5px] after:top-full after:left-0 after:bg-customBLue after:rounded-full"
+              : ""
+          }`}
         >
           Сервисы
         </Link>
       </div>
       {user ? (
-        <div
-          className="relative flex items-center cursor-pointer"
-          onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-        >
-          <ProfileMenuIcon className="text-[30px]" />
+        <div className="profile-menu-dropdown relative flex items-center">
+          <ProfileMenuIcon
+            className="text-[38px] hover:scale-105 transition-all max-md:text-[30px] cursor-pointer"
+            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+          />
           {isProfileMenuOpen && (
             <ProfileMenuDropdown close={() => setIsProfileMenuOpen(false)} />
           )}

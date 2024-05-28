@@ -7,13 +7,13 @@ import { removeWildcard } from "@helpers"
 
 import { SettingsIcon, ExitIcon } from "@ui/icons/icons"
 
-const ProfileMenuDropdown = ({ close }) => {
+const ProfileMenuDropdown = ({ close, opened }) => {
   const { user, deleteUser } = useContext(AuthContext)
   const dropdownRef = useRef(null)
 
 
   const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target) && !event.target.closest(".profile-menu-dropdown")) {
       close()
     }
   }
@@ -25,7 +25,7 @@ const ProfileMenuDropdown = ({ close }) => {
       document.removeEventListener("mousedown", handleClickOutside)
       document.removeEventListener("touchstart", handleClickOutside)
     }
-  }, [])
+  }, [opened])
 
   return (
     <div

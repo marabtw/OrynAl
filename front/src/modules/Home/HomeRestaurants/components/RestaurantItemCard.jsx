@@ -33,18 +33,25 @@ const RestaurantItemCard = ({ data }) => {
         />
       )}
       <div className="rounded-full overflow-hidden w-[65%]">
-        {data.image ? (
-          <img src={data.image} alt="restaurant" className="w-full" />
+        {data.icon ? (
+          <img src={data.icon.route} alt="restaurant" className="w-full" />
         ) : (
           <div className="w-full aspect-square rounded-full border bg-slate-100"></div>
         )}
       </div>
-      <h2 className="text-[40px] leading-[60px] font-[600] underline 
-			max-2xl:text-[30px] max-2xl:leading-[48px] max-lg:text-[20px] max-lg:leading-[30px] max-sm:text-[16px] max-sm:leading-[20px]">
+      <h2
+        className="text-[40px] leading-[60px] font-[600] underline 
+			max-2xl:text-[30px] max-2xl:leading-[48px] max-lg:text-[20px] max-lg:leading-[30px] max-sm:text-[16px] max-sm:leading-[20px]"
+      >
         {data.name}
       </h2>
       <div className="">
-        <RatingStars textStyles={"text-[32px] max-xl:text-[26px] max-lg:text-[20px] max-md:text-[14px]"} rate={data.rate} />
+        <RatingStars
+          textStyles={
+            "text-[32px] max-xl:text-[26px] max-lg:text-[20px] max-md:text-[14px]"
+          }
+          rate={data.rate}
+        />
       </div>
       {/* <p className="w-[204px] text-center text-[17px] leading-[25.5px]">
         {data.categories}
@@ -53,12 +60,15 @@ const RestaurantItemCard = ({ data }) => {
         {data.address}
       </p>
       <LinkButton
+        needAuth={true}
         to={`${removeWildcard(
           ROUTERS.Orders.root
         )}${ROUTERS.Orders.createOrder.replace(":restaurantId", data.id)}`}
         text={"Забронировать"}
         uppercase={true}
-        spacingClass={"w-[236px] py-[18px] px-[5px] max-lg:w-[150px] max-lg:py-[8px] max-sm:w-full"}
+        spacingClass={
+          "w-[236px] py-[18px] px-[5px] max-lg:w-[150px] max-lg:py-[8px] max-sm:w-full"
+        }
         textClass="text-[15px] leading-[22.5px] font-[600] tracking-tight max-lg:text-center max-lg:text-[12px] max-lg:leading-[16px] max-sm:text-[10px] max-sm:leading-[14px]"
       />
     </div>

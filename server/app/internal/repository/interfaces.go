@@ -24,6 +24,7 @@ type IUserRepository interface {
 
 type IRestaurantRepository interface {
 	GetRestaurants(ctx context.Context, params *model.Params) (*model.ListResponse, error)
+	GetStatistics(ctx context.Context) (*model.Statistics, error)
 	GetRestaurantByID(ctx context.Context, id uint) (*model.Restaurant, error)
 	GetRestaurantsByOwner(ctx context.Context, ownerID uint, params *model.Params) (*model.ListResponse, error)
 	GetFavoriteRestaurants(ctx context.Context, userID uint, params *model.Params) (*model.ListResponse, error)
@@ -31,7 +32,7 @@ type IRestaurantRepository interface {
 	CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.Restaurant, error)
 	DeleteRestaurant(ctx context.Context, restaurantID uint) error
 	UpdateRestaurant(ctx context.Context, restaurantID uint, restaurant *model.Restaurant) (*model.Restaurant, error)
-	UpdateRestaurantPhotos(ctx context.Context, restaurantID uint, photos []model.RestaurantPhoto) error
+	UpdateRestaurantPhotos(ctx context.Context, restaurantID uint, photos []model.Photo) error
 	UpdateRestaurantServices(ctx context.Context, restaurantID uint, services []model.Service) error
 }
 
@@ -42,14 +43,16 @@ type ITableRepository interface {
 	UpdateTable(ctx context.Context, table *model.Table) (*model.Table, error)
 	DeleteTable(ctx context.Context, id uint) error
 	GetAvailableTime(ctx context.Context, date time.Time) ([]time.Time, error)
+	GetTableCategories(ctx context.Context, restaurantID uint) ([]string, error)
 }
 
 type IFoodRepository interface {
-	GetRestaurantMenu(ctx context.Context, restaurantID uint) (map[string][]model.Food, error)
+	GetRestaurantMenu(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error)
 	GetRestaurantFood(ctx context.Context, restaurantID uint, foodID uint) (*model.Food, error)
 	CreateRestaurantFood(ctx context.Context, food *model.Food) (*model.Food, error)
 	UpdateRestaurantFood(ctx context.Context, food *model.Food) (*model.Food, error)
 	DeleteRestaurantFood(ctx context.Context, foodID uint) error
+	GetMenuCategories(ctx context.Context, restaurantID uint) ([]string, error)
 }
 
 type IOrderRepository interface {
@@ -66,4 +69,11 @@ type IServicesRepository interface {
 	DeleteService(ctx context.Context, id uint) error
 	GetServices(ctx context.Context) ([]model.Service, error)
 	UpdateService(ctx context.Context, service *model.Service) ([]model.Service, error)
+}
+
+type IReviewsRepository interface {
+	GetReviews(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error)
+	CreateReview(ctx context.Context, review *model.RestaurantReview) (*model.RestaurantReview, error)
+	DeleteReview(ctx context.Context, id uint) error
+	GetReview(ctx context.Context, id uint) (*model.RestaurantReview, error)
 }

@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom"
 
 import CreateRestaurantMenu from "../CreateRestaurantMenu/CreateRestaurantMenu"
-import PageWrapper from "@components/PageWrapper"
-import CreateFormsWrapper from "@components/CreateFormsWrapper"
+import PageWrapper from "@components/PageWrapper/PageWrapper"
+import CreateFormsWrapper from "@components/CreateFormsWrapper/CreateFormsWrapper"
 
 import PageHeading from "@ui/Heading/PageHeading"
 

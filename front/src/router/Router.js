@@ -17,19 +17,16 @@ import Order from "@modules/Order"
 import Services from "@modules/Services"
 
 const Router = () => {
-  const { user } = useContext(AuthContext)
+  const { user, isAuthed } = useContext(AuthContext)
   const navigate = useNavigate()
 
-  // console.log("user: ", user)
-
   useEffect(() => {
-    const isFirstVisit = localStorage.getItem("isFirstVisit") === null
-    console.log("isFirstVisit", isFirstVisit)
-    if (isFirstVisit) {
-      localStorage.setItem("isFirstVisit", "false")
+    const isFirstVisit = sessionStorage.getItem("isNotFirstVisit") === "true"
+    if (!isFirstVisit && user.role && user.role !== "guest") {
+      sessionStorage.setItem("isNotFirstVisit", "true")
       navigate(getInitialRoute(user.role))
     }
-  }, [user])
+  }, [user.role])
 
   const getInitialRoute = (role) => {
     if (role === "admin") {

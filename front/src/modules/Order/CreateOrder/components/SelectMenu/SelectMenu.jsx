@@ -4,21 +4,25 @@ import { getRestaurantMenuRequest } from "../../../api"
 
 import FoodCategories from "./components/FoodCategories"
 import FoodCard from "./components/FoodCard"
+import { useToast } from "@hooks"
 
 const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
+  const showNotification = useToast()
   const [menu, setMenu] = useState([])
   const [currentCategory, setCurrentCategory] = useState("")
   const [menuCategories, setMenuCategories] = useState([])
   const [filteredMenu, setFilteredMenu] = useState([])
 
   useEffect(() => {
-    getRestaurantMenuRequest({restaurantId})
+    getRestaurantMenuRequest({ restaurantId })
       .then((res) => {
         setMenu(res.data)
         setMenuCategories(Object.keys(res.data))
         setCurrentCategory(Object.keys(res.data)[0])
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        showNotification(error, "error")
+      })
   }, [restaurantId])
 
   useEffect(() => {
@@ -51,7 +55,7 @@ const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
             key={food.id}
             foodData={food}
             getFoodForCart={getFoodForCart}
-						selectedFoodsId={selectedFoodsId}
+            selectedFoodsId={selectedFoodsId}
           />
         ))}
       </div>

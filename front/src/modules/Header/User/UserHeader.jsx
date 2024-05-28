@@ -34,13 +34,15 @@ const UserHeader = ({ user }) => {
 
   return (
     <header
-      className={`relative w-full h-full flex justify-between items-center font-poppins text-[20px] leading-[30px] max-lg:text-[16px] max-lg:leading-[20px]`}
+      className={`relative w-full h-full flex justify-between items-center 
+			font-poppins text-[20px] leading-[30px] 
+			max-lg:text-[16px] max-lg:leading-[20px]`}
     >
       <MenuIcon
         className="text-[25px] cursor-pointer hover:scale-105 md:hidden"
         onClick={() => setIsMobileNavOpen(true)}
       />
-      <div className=" flex items-center gap-[36px] max-xl:gap-[25px]">
+      <div className="flex items-center gap-[36px] max-xl:gap-[25px]">
         <Link to={ROUTERS.Home} className="h-full max-md:hidden">
           <img
             src={Logo}
@@ -52,7 +54,7 @@ const UserHeader = ({ user }) => {
           OrynAl - Сервис онлайн-заказов
         </h2>
       </div>
-      <ul className="flex items-center gap-[36px] min-w-min font-bold">
+      <ul className="flex items-center gap-[36px] min-w-min font-[600] font-poppins">
         <li className="cursor-pointer max-md:hidden">
           <Link
             to={`${removeWildcard(ROUTERS.Orders.root)}${
@@ -72,13 +74,16 @@ const UserHeader = ({ user }) => {
             Войти
           </Link>
         ) : (
-          <div
-            className="relative flex items-center"
-            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-          >
-            <ProfileMenuIcon className="text-[30px] hover:scale-105 cursor-pointer" />
+          <div className="profile-menu-dropdown relative flex items-center">
+            <ProfileMenuIcon
+              className="text-[38px] hover:scale-105 transition-all max-md:text-[30px] cursor-pointer"
+              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+            />
             {isProfileMenuOpen && (
-              <ProfileMenuDropdown close={() => setIsProfileMenuOpen(false)} />
+              <ProfileMenuDropdown
+                opened={isProfileMenuOpen}
+                close={() => setIsProfileMenuOpen(false)}
+              />
             )}
           </div>
         )}

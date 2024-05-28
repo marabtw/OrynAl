@@ -7,7 +7,6 @@ import Footer from "../Footer/Footer"
 import LocationInfo from "@components/LocationInfo/LocationInfo"
 
 const HomePage = () => {
-
 	const nextSectionRef = useRef(null)
 
   return (

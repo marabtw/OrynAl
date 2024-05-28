@@ -14,11 +14,11 @@ import artLightBlue from "@assets/svg/LoginPageArtLightBlue.svg"
 import artBlue from "@assets/svg/LoginPageArtBlue.svg"
 
 const Authorization = () => {
-  const { userRole } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const [authType, setAuthType] = useState("login")
 
   const redirectPath = useMemo(() => {
-    switch (userRole) {
+    switch (user.role) {
       case "user":
         return "/"
       case "company":
@@ -28,7 +28,7 @@ const Authorization = () => {
       default:
         return "/"
     }
-  }, [userRole])
+  }, [user.role])
 
   useEffect(() => {
     window.addEventListener("beforeunload", () => {

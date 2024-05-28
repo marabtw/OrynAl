@@ -1,21 +1,21 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import CreateOrder from "../CreateOrder/CreateOrder"
-import RestaurantDetails from "@components/RestaurantDetails/RestaurantDetails"
-import LocationInfo from "@components/LocationInfo/LocationInfo"
-import Loading from "@components/Loading"
-
-import { UIContext } from "@context/UIContext"
 import { getRestaurantRequest } from "../api"
+import { useHeaderHeight } from "@hooks"
+
+import CreateOrder from "../CreateOrder/CreateOrder"
+import RestaurantDetails from "../CreateOrder/components/RestaurantDetails/RestaurantDetails"
+import LocationInfo from "@components/LocationInfo/LocationInfo"
+
 
 const CreateOrderPage = () => {
-  const { isLoading } = useContext(UIContext)
+	const headerHeight = useHeaderHeight()
   const { restaurantId } = useParams()
   const [restaurant, setRestaurant] = useState({})
 
   useEffect(() => {
-    getRestaurantRequest({restaurantId})
+    getRestaurantRequest({ restaurantId })
       .then((res) => {
         setRestaurant(res.data)
       })
@@ -25,11 +25,12 @@ const CreateOrderPage = () => {
 
   return (
     <>
-      {isLoading && <Loading />}
-      <div className="mx-[50px] bg-white max-lg:mx-[10px]">
-        <LocationInfo text={restaurant.address} />
-        <RestaurantDetails restaurantData={restaurant} />
-        <CreateOrder restaurantId={restaurantId}/>
+      <div className="mx-[64px] bg-white max-lg:mx-[10px]">
+        <div className="" style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}>
+          <LocationInfo text={restaurant.address} />
+          <RestaurantDetails restaurantData={restaurant} />
+        </div>
+        <CreateOrder restaurantId={restaurantId} />
       </div>
     </>
   )

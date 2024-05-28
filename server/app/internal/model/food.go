@@ -6,7 +6,8 @@ type Food struct {
 	Type         string  `gorm:"not null" json:"type"`
 	Description  string  `json:"description"`
 	Price        float64 `gorm:"not null" json:"price"`
-	Available    bool  `gorm:"not null" json:"available"`
-	Photo        []byte  `gorm:"type:bytea" json:"photo,omitempty"`
+	Available    bool    `gorm:"not null" json:"available"`
+	PhotoID      uint    `json:"photo_id,omitempty"`
+	Photo        Photo   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"photo,omitempty"`
 	RestaurantID uint    `gorm:"not null" json:"restaurantId"`
 }

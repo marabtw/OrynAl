@@ -6,22 +6,28 @@ import (
 	"github.com/alibekabdrakhman1/orynal/config"
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"github.com/alibekabdrakhman1/orynal/internal/repository"
+	"github.com/alibekabdrakhman1/orynal/internal/service/infrastructure"
 	"github.com/alibekabdrakhman1/orynal/pkg/utils"
 	"go.uber.org/zap"
 )
 
 func NewMenuService(repository *repository.Manager, config *config.Config, logger *zap.SugaredLogger) *MenuService {
-	return &MenuService{repository: repository, config: config, logger: logger}
+	return &MenuService{repository: repository, config: config, logger: logger, FormatParams: infrastructure.NewFormatParams()}
 }
 
 type MenuService struct {
 	repository *repository.Manager
 	config     *config.Config
 	logger     *zap.SugaredLogger
+	FormatParams
 }
 
-func (s *MenuService) GetRestaurantMenu(ctx context.Context, restaurantID uint) (map[string][]model.Food, error) {
-	foods, err := s.repository.Food.GetRestaurantMenu(ctx, restaurantID)
+func (s *MenuService) GetMenuCategories(ctx context.Context, restaurantID uint) ([]string, error) {
+	return s.repository.Food.GetMenuCategories(ctx, restaurantID)
+}
+
+func (s *MenuService) GetRestaurantMenu(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error) {
+	foods, err := s.repository.Food.GetRestaurantMenu(ctx, restaurantID, params)
 	if err != nil {
 		return nil, err
 	}

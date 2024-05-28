@@ -1,7 +1,7 @@
 import CreateOwnerForm from "../Owners/CreateOwner/CreateOwner"
-import PageWrapper from "@components/PageWrapper"
+import PageWrapper from "@components/PageWrapper/PageWrapper"
 import PageHeading from "@ui/Heading/PageHeading"
-import CreateFormsWrapper from "@components/CreateFormsWrapper"
+import CreateFormsWrapper from "@components/CreateFormsWrapper/CreateFormsWrapper"
 
 const CreateOwner = () => {
   return (

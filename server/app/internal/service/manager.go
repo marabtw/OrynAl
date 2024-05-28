@@ -14,6 +14,7 @@ type Manager struct {
 	Table      services.ITableService
 	Menu       services.IMenuService
 	Order      services.IOrderService
+	Reviews    services.IReviewsService
 }
 
 func NewManager(repository *repository.Manager, config *config.Config, logger *zap.SugaredLogger) *Manager {
@@ -24,5 +25,6 @@ func NewManager(repository *repository.Manager, config *config.Config, logger *z
 		Table:      services.NewTableService(repository, config, logger),
 		Menu:       services.NewMenuService(repository, config, logger),
 		Order:      services.NewOrderService(repository, config, logger),
+		Reviews:    services.NewReviewsService(repository, config, logger),
 	}
 }

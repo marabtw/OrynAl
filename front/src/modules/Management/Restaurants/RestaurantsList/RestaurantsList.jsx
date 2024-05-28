@@ -7,12 +7,12 @@ import {
   deleteByAdminRestaurantRequest,
 } from "../../api"
 
-import { useLoading, useToast } from "@hooks"
+import { useLoading, useToast, useCloudinary } from "@hooks"
 import { removeWildcard } from "@helpers"
-import { isArraysEqualByIdWithSet } from "@utils/index"
+import { isArraysEqualByIdWithSet } from "@utils"
 
 import ListCategories from "@components/ListCategories"
-import ListItem from "@components/ListItem"
+import ListItem from "@components/ListItem/ListItem"
 import Pagination from "@components/Pagination/Pagination"
 
 const categories = [
@@ -28,6 +28,7 @@ const categories = [
 const RestaurantsList = () => {
   const setLoading = useLoading()
   const showNotification = useToast()
+  const { remove } = useCloudinary()
 
   const [restaurants, setRestaurants] = useState([])
   const [totalPage, setTotalPage] = useState(0)
@@ -57,10 +58,11 @@ const RestaurantsList = () => {
     }
   }, [params])
 
-  const deleteRestaurant = async (ownerId) => {
+  const deleteRestaurant = async (restaurantId, icon, photos) => {
     setLoading(true)
     try {
-      await deleteByAdminRestaurantRequest(ownerId)
+      await deleteByAdminRestaurantRequest(restaurantId)
+      // await remove("we9yxx3ehnvvx4mgpufa")
       showNotification("deleted", "success")
       const { data } = await getByAdminAllRestaurantsRequest(params)
       updateRestaurantsList(data)
@@ -92,11 +94,11 @@ const RestaurantsList = () => {
     if (totalPage !== newTotalPage) setTotalPage(newTotalPage)
   }
 
-  const getMenuActions = (restaurantId) => {
+  const getMenuActions = (restaurantId, icon, photos) => {
     return [
       {
         action: "Удалить",
-        onClick: () => deleteRestaurant(restaurantId),
+        onClick: () => deleteRestaurant(restaurantId, icon, photos),
       },
       {
         action: "Посмотреть",
@@ -120,7 +122,11 @@ const RestaurantsList = () => {
               key={restaurant.id}
               elementData={restaurant}
               index={index}
-              menuActions={getMenuActions(restaurant.id)}
+              menuActions={getMenuActions(
+                restaurant.id,
+                restaurant.icon,
+                restaurant.photos
+              )}
             />
           ))
         ) : (

@@ -22,7 +22,7 @@ import {
 } from "@utils"
 
 import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
-import UpdateFormsContainer from "@components/UpdateFormsContainer"
+import UpdateFormsContainer from "@components/UpdateFormsContainer/UpdateFormsContainer"
 import Form from "./components/Form"
 import RestaurantImagesSlider from "./components/RestaurantImagesSlider"
 import Button from "@ui/Button/Button"
@@ -83,9 +83,7 @@ const UpdateRestaurantForm = () => {
           restaurantId,
           cancelToken: cancelTokenSource2.token,
         })
-        console.log(data)
         if (!isObjectEqual(restaurantData, data)) {
-          console.log("object")
           setRestaurantData(data)
           setDataForUpdate(data)
         }
@@ -170,11 +168,14 @@ const UpdateRestaurantForm = () => {
 
   return (
     <UpdateFormsContainer>
-      <div className="flex flex-col justify-between gap-[30px] w-full max-md:gap-[15px]">
-        <h3 className="text-[20px] font-[600] max-md:text-center">
+      <div className="flex flex-col justify-between gap-[30px] w-full max-lg:gap-[10px]">
+        <h3 className="text-[20px] font-[600] max-md:text-center max-md:text-[16px]">
           Изменить ресторан
         </h3>
-        <div className="flex justify-between gap-[20px]">
+        <div
+          className="flex justify-between gap-[20px]
+					max-md:gap-[15px]"
+        >
           <div className="flex flex-col justify-between gap-[10px] w-full ">
             <PreviousDataDisplay label={"ID:"} value={restaurantData?.id} />
             <PreviousDataDisplay
@@ -201,7 +202,7 @@ const UpdateRestaurantForm = () => {
           label={"Описание:"}
           value={restaurantData.description}
         />
-        <div className="flex justify-between gap-[20px]">
+        <div className="flex justify-between gap-[20px] max-sm:flex-col max-sm:gap-[15px]">
           <PreviousDataDisplay
             label={"Режим работы:"}
             value={`${formatTimeString(

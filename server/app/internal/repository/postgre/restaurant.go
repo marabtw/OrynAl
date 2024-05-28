@@ -3,10 +3,8 @@ package postgre
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/alibekabdrakhman1/orynal/internal/model"
 	"gorm.io/gorm"
-	"strings"
 )
 
 func NewRestaurantRepository(db *gorm.DB) *RestaurantRepository {
@@ -23,6 +21,7 @@ func (r *RestaurantRepository) GetPopularRestaurants(ctx context.Context) (*mode
 	var restaurants []model.Restaurant
 
 	err := r.DB.Table("orders").
+		WithContext(ctx).
 		Select("restaurants.id, restaurants.name, restaurants.address, restaurants.description, restaurants.city, restaurants.status, restaurants.phone, restaurants.owner_id, restaurants.mode_from, restaurants.mode_to, restaurants.icon, count(orders.id) as order_count").
 		Joins("JOIN restaurants ON restaurants.id = orders.restaurant_id").
 		Group("restaurants.id").
@@ -49,7 +48,7 @@ func (r *RestaurantRepository) GetRestaurants(ctx context.Context, params *model
 
 	countQuery := r.DB.WithContext(ctx)
 	if params.Query != "" {
-		countQuery = countQuery.Where("name LIKE ?", "%"+params.Query+"%")
+		countQuery = countQuery.Where("LOWER(name) LIKE LOWER(?)", "%"+params.Query+"%")
 	}
 	if err := countQuery.Table("restaurants").Count(&totalItems).Error; err != nil {
 		return nil, err
@@ -64,7 +63,7 @@ func (r *RestaurantRepository) GetRestaurants(ctx context.Context, params *model
 		Offset(params.Offset)
 
 	if params.Query != "" {
-		query = query.Where("name LIKE ?", "%"+params.Query+"%")
+		query = query.Where("LOWER(name) LIKE LOWER(?)", "%"+params.Query+"%")
 	}
 
 	query = query.Find(&restaurants)
@@ -79,6 +78,11 @@ func (r *RestaurantRepository) GetRestaurants(ctx context.Context, params *model
 			return nil, err
 		}
 
+		var icon model.Photo
+		if err := r.DB.Table("photos").Where("id = ?", restaurants[i].IconID).First(&icon).Error; err != nil {
+			return nil, err
+		}
+
 		var services []model.Service
 		if err := r.DB.Raw("SELECT services.* FROM services JOIN restaurant_service ON services.id = restaurant_service.service_id WHERE restaurant_service.restaurant_id = ?", restaurants[i].ID).Scan(&services).Error; err != nil {
 			return nil, err
@@ -86,9 +90,8 @@ func (r *RestaurantRepository) GetRestaurants(ctx context.Context, params *model
 
 		restaurants[i].Owner = owner
 		restaurants[i].Services = services
-
+		restaurants[i].Icon = icon
 	}
-	fmt.Println(restaurants)
 
 	return &model.ListResponse{
 		Items:        restaurants,
@@ -98,12 +101,29 @@ func (r *RestaurantRepository) GetRestaurants(ctx context.Context, params *model
 	}, nil
 }
 
+func (r *RestaurantRepository) GetStatistics(ctx context.Context) (*model.Statistics, error) {
+	var countRestaurants int64
+	if err := r.DB.WithContext(ctx).Table("restaurants").Model(&model.Restaurant{}).Count(&countRestaurants).Error; err != nil {
+		return nil, err
+	}
+	var countOrders int64
+	if err := r.DB.WithContext(ctx).Table("orders").Model(&model.Order{}).Count(&countOrders).Error; err != nil {
+		return nil, err
+	}
+
+	return &model.Statistics{
+		OrderCount:       countOrders,
+		PeopleCount:      countOrders * 5,
+		RestaurantsCount: countRestaurants,
+	}, nil
+}
+
 func (r *RestaurantRepository) GetRestaurantByID(ctx context.Context, id uint) (*model.Restaurant, error) {
 	var restaurantResponse model.Restaurant
 
 	if err := r.DB.WithContext(ctx).
 		Table("restaurants").
-		Preload("Photos").
+		Preload("Photo").
 		First(&restaurantResponse, id).Error; err != nil {
 		return &model.Restaurant{}, err
 	}
@@ -113,21 +133,25 @@ func (r *RestaurantRepository) GetRestaurantByID(ctx context.Context, id uint) (
 		return nil, err
 	}
 
+	var icon model.Photo
+	if err := r.DB.Table("photos").Where("id = ?", restaurantResponse.IconID).First(&icon).Error; err != nil {
+		return nil, err
+	}
+
 	var services []model.Service
 	if err := r.DB.Raw("SELECT services.* FROM services JOIN restaurant_service ON services.id = restaurant_service.service_id WHERE restaurant_service.restaurant_id = ?", id).Scan(&services).Error; err != nil {
 		return nil, err
 	}
 
-	var photos []model.RestaurantPhoto
-	if err := r.DB.Table("restaurant_photos").Where("restaurant_id = ?", id).First(&photos).Error; err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
-		}
+	var photos []model.Photo
+	if err := r.DB.Raw("SELECT photos.* FROM photos JOIN restaurant_photos ON photos.id = restaurant_photos.photo_id WHERE restaurant_photos.restaurant_id = ?", id).Scan(&photos).Error; err != nil {
+		return nil, err
 	}
 
 	restaurantResponse.Owner = owner
 	restaurantResponse.Services = services
 	restaurantResponse.Photos = photos
+	restaurantResponse.Icon = icon
 
 	return &restaurantResponse, nil
 }
@@ -136,33 +160,41 @@ func (r *RestaurantRepository) GetRestaurantsByOwner(ctx context.Context, ownerI
 	var restaurants []model.Restaurant
 	var totalItems int64
 
-	countQuery := r.DB.WithContext(ctx).Where("owner_id = ?", ownerID)
+	countQuery := r.DB.WithContext(ctx)
 	if params.Query != "" {
-		countQuery = countQuery.Where("LOWER(name) LIKE ?", "%"+strings.ToLower(params.Query)+"%")
+		countQuery = countQuery.Where("LOWER(name) LIKE LOWER(?)", "%"+params.Query+"%")
 	}
-
 	if err := countQuery.Table("restaurants").Count(&totalItems).Error; err != nil {
 		return nil, err
 	}
 
 	if int(totalItems) <= params.Offset {
-		return nil, errors.New("offset exceeds total items")
+		return nil, errors.New("offset cannot be less than total items")
 	}
 
-	query := r.DB.WithContext(ctx).
-		Table("restaurants").
+	query := r.DB.WithContext(ctx).Table("restaurants").
 		Where("owner_id = ?", ownerID).
-		Find(&restaurants).
 		Limit(params.Limit).
 		Offset(params.Offset)
 
 	if params.Query != "" {
-		query = query.Where("LOWER(name) LIKE ?", "%"+strings.ToLower(params.Query)+"%")
+		query = query.Where("LOWER(name) LIKE LOWER(?)", "%"+params.Query+"%")
+	}
+
+	query = query.Find(&restaurants)
+
+	if err := query.Find(&restaurants).Error; err != nil {
+		return nil, err
 	}
 
 	for i := 0; i < len(restaurants); i++ {
 		var owner model.UserResponse
 		if err := r.DB.Table("users").Where("id = ?", restaurants[i].OwnerID).First(&owner).Error; err != nil {
+			return nil, err
+		}
+
+		var icon model.Photo
+		if err := r.DB.Table("photos").Where("id = ?", restaurants[i].IconID).First(&icon).Error; err != nil {
 			return nil, err
 		}
 
@@ -173,10 +205,7 @@ func (r *RestaurantRepository) GetRestaurantsByOwner(ctx context.Context, ownerI
 
 		restaurants[i].Owner = owner
 		restaurants[i].Services = services
-	}
-
-	if err := query.Error; err != nil {
-		return nil, err
+		restaurants[i].Icon = icon
 	}
 
 	return &model.ListResponse{
@@ -193,9 +222,16 @@ func (r *RestaurantRepository) GetFavoriteRestaurants(ctx context.Context, userI
 }
 
 func (r *RestaurantRepository) CreateRestaurant(ctx context.Context, restaurant *model.Restaurant) (*model.Restaurant, error) {
-	var restaurantResponse *model.Restaurant
-
 	tx := r.DB.WithContext(ctx).Begin()
+
+	if restaurant.Icon.Route != "" {
+		iconPhoto := model.Photo{Route: restaurant.Icon.Route}
+		if err := tx.Table("photos").Create(&iconPhoto).Error; err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+		restaurant.IconID = iconPhoto.ID
+	}
 
 	createRestaurant := model.Restaurant{
 		Name:        restaurant.Name,
@@ -206,7 +242,7 @@ func (r *RestaurantRepository) CreateRestaurant(ctx context.Context, restaurant 
 		OwnerID:     restaurant.OwnerID,
 		ModeFrom:    restaurant.ModeFrom,
 		ModeTo:      restaurant.ModeTo,
-		Icon:        restaurant.Icon,
+		IconID:      restaurant.IconID,
 	}
 
 	if err := tx.Table("restaurants").Create(&createRestaurant).Error; err != nil {
@@ -224,28 +260,26 @@ func (r *RestaurantRepository) CreateRestaurant(ctx context.Context, restaurant 
 			return nil, err
 		}
 	}
+
 	if len(restaurant.Photos) > 0 {
-		if err := tx.Table("restaurant_photos").Create(restaurant.Photos).Error; err != nil {
-			fmt.Println(err)
+		var photos []model.Photo
+		for _, photo := range restaurant.Photos {
+			photos = append(photos, model.Photo{Route: photo.Route})
+		}
+		if err := tx.Table("photos").Create(&photos).Error; err != nil {
 			tx.Rollback()
 			return nil, err
 		}
-	}
 
-	if err := tx.Table("restaurants").Preload("Owner").Preload("Photos").Where("id = ?", createRestaurant.ID).First(&restaurantResponse).Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	var owner model.UserResponse
-	if err := tx.Table("users").Where("id = ?", restaurant.OwnerID).First(&owner).Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	var photos []model.RestaurantPhoto
-	if err := tx.Table("restaurant_photos").Where("restaurant_id = ?", createRestaurant.ID).First(&photos).Error; err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
+		var restaurantPhotos []model.RestaurantPhoto
+		for _, photo := range photos {
+			restaurantPhoto := model.RestaurantPhoto{
+				PhotoID:      photo.ID,
+				RestaurantID: createRestaurant.ID,
+			}
+			restaurantPhotos = append(restaurantPhotos, restaurantPhoto)
+		}
+		if err := tx.Table("restaurant_photos").Create(&restaurantPhotos).Error; err != nil {
 			tx.Rollback()
 			return nil, err
 		}
@@ -255,11 +289,7 @@ func (r *RestaurantRepository) CreateRestaurant(ctx context.Context, restaurant 
 		return nil, err
 	}
 
-	restaurantResponse.Owner = owner
-	restaurantResponse.Services = restaurant.Services
-	restaurantResponse.Photos = photos
-
-	return restaurantResponse, nil
+	return r.GetRestaurantByID(ctx, createRestaurant.ID)
 }
 
 func (r *RestaurantRepository) DeleteRestaurant(ctx context.Context, restaurantID uint) error {
@@ -279,11 +309,6 @@ func (r *RestaurantRepository) UpdateRestaurant(ctx context.Context, restaurantI
 		return nil, err
 	}
 
-	var updatedRestaurant model.Restaurant
-	if err := r.DB.WithContext(ctx).Table("restaurants").Preload("Owner").Preload("Photos").First(&updatedRestaurant, restaurantID).Error; err != nil {
-		return nil, err
-	}
-
 	if err := r.UpdateRestaurantPhotos(ctx, restaurantID, restaurant.Photos); err != nil {
 		return nil, err
 	}
@@ -292,38 +317,43 @@ func (r *RestaurantRepository) UpdateRestaurant(ctx context.Context, restaurantI
 		return nil, err
 	}
 
-	var owner model.UserResponse
-	if err := r.DB.Table("users").Where("id = ?", updatedRestaurant.OwnerID).First(&owner).Error; err != nil {
-		return nil, err
-	}
-
-	var services []model.Service
-	if err := r.DB.Raw("SELECT services.* FROM services JOIN restaurant_service ON services.id = restaurant_service.service_id WHERE restaurant_service.restaurant_id = ?", restaurantID).Scan(&services).Error; err != nil {
-		return nil, err
-	}
-
-	var photos []model.RestaurantPhoto
-	if err := r.DB.Table("restaurant_photos").Where("restaurant_id = ?", restaurantID).First(&photos).Error; err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
-		}
-	}
-
-	updatedRestaurant.Owner = owner
-	updatedRestaurant.Services = services
-	updatedRestaurant.Photos = photos
-
-	return &updatedRestaurant, nil
+	return r.GetRestaurantByID(ctx, restaurantID)
 }
 
-func (r *RestaurantRepository) UpdateRestaurantPhotos(ctx context.Context, restaurantID uint, photos []model.RestaurantPhoto) error {
+func (r *RestaurantRepository) UpdateRestaurantPhotos(ctx context.Context, restaurantID uint, photos []model.Photo) error {
+	var existingPhotos []model.RestaurantPhoto
+	if err := r.DB.WithContext(ctx).Table("restaurant_photos").Where("restaurant_id = ?", restaurantID).Find(&existingPhotos).Error; err != nil {
+		return err
+	}
+
 	if err := r.DB.WithContext(ctx).Table("restaurant_photos").Where("restaurant_id = ?", restaurantID).Delete(&model.RestaurantPhoto{}).Error; err != nil {
 		return err
 	}
 
 	for _, photo := range photos {
-		if err := r.DB.WithContext(ctx).Table("restaurant_photos").Create(&photo).Error; err != nil {
+		newPhoto := model.Photo{Route: photo.Route}
+		if err := r.DB.WithContext(ctx).Table("photos").Create(&newPhoto).Error; err != nil {
 			return err
+		}
+
+		newRestaurantPhoto := model.RestaurantPhoto{
+			PhotoID:      newPhoto.ID,
+			RestaurantID: restaurantID,
+		}
+		if err := r.DB.WithContext(ctx).Table("restaurant_photos").Create(&newRestaurantPhoto).Error; err != nil {
+			return err
+		}
+	}
+
+	for _, oldPhoto := range existingPhotos {
+		var count int64
+		if err := r.DB.WithContext(ctx).Table("restaurant_photos").Where("photo_id = ?", oldPhoto.PhotoID).Count(&count).Error; err != nil {
+			return err
+		}
+		if count == 0 {
+			if err := r.DB.WithContext(ctx).Table("photos").Delete(&model.Photo{ID: oldPhoto.PhotoID}).Error; err != nil {
+				return err
+			}
 		}
 	}
 

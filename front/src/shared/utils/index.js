@@ -8,6 +8,17 @@ export const isArraysEqualByIdWithSet = (arr1, arr2) => {
   return [...idSet1].every((id) => idSet2.has(id))
 }
 
+// Функция на пустой объект
+export const isObjectEmpty = (object) => {
+  for (const prop in object) {
+    if (Object.hasOwn(object, prop)) {
+      return false
+    }
+  }
+
+  return true
+}
+
 // Функции для сравнения объектов
 export const isObjectEqual = (obj1, obj2) => {
   const keys1 = Object.keys(obj1)

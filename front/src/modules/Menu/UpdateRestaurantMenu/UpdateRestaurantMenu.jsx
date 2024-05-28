@@ -11,7 +11,7 @@ import {
 } from "../api"
 
 import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
-import UpdateFormsContainer from "@components/UpdateFormsContainer"
+import UpdateFormsContainer from "@components/UpdateFormsContainer/UpdateFormsContainer"
 import Button from "@ui/Button/Button"
 
 const UpdateRestaurantMenu = ({ restaurantId }) => {

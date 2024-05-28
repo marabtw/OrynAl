@@ -4,12 +4,9 @@ import SortByCategoryContainer from "@components/SortByCategoryContainer/SortByC
 import Pagination from "@components/Pagination/Pagination"
 
 const sortList = [
-  "Сортировать в этом разделе",
-  "Избранное",
-  "Тип Заведения",
-  "Кухня",
-  "Особенности",
-  "По расстоянию от меня",
+  // "Сортировать в этом разделе",
+  "Все рестораны",
+  "Избранное рестораны",
 ]
 
 const Restaurants = ({restaurants, totalPage, setParams}) => {

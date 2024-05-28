@@ -12,11 +12,11 @@ import {
 } from "../../api"
 
 import { removeWildcard, isValidPhone } from "@helpers"
-import { useLoading, useToast } from "@hooks"
-import { isArraysEqualByIdWithSet } from "@utils"
+import { useLoading, useToast, useCloudinary } from "@hooks"
+import { isArraysEqualByIdWithSet, isObjectEmpty } from "@utils"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
-import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
+import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
 import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
 
 import Button from "@ui/Button/Button"
@@ -27,6 +27,7 @@ const CreateRestaurantForm = () => {
   const navigate = useNavigate()
   const showNotification = useToast()
   const setLoading = useLoading()
+  const { upload, remove } = useCloudinary()
 
   const [dataForCreate, setDataForCreate] = useState({
     name: "",
@@ -39,12 +40,61 @@ const CreateRestaurantForm = () => {
     phone: "",
     status: true,
     services: [],
+    icon: {},
+    photos: [],
   })
   const [owners, setOwners] = useState([])
   const [services, setServices] = useState([])
 
+  const uploadImages = async () => {
+    if (!isFormValid()) {
+      showNotification("Форма невалидна", "warning")
+      return
+    }
+
+    setLoading(true)
+
+    const transformationSettings = {
+      width: 100,
+      height: 100,
+      crop: "fill",
+      gravity: "center",
+    }
+
+    try {
+      const uploadedPhotos = await upload(dataForCreate.photos)
+      const photos = uploadedPhotos.map((photo) => ({
+        // publicId: photo.public_id,
+        route: photo.secure_url,
+      }))
+
+      const uploadedIcon = await upload(
+        [dataForCreate.icon],
+      )
+      const icon = {
+        // publicId: uploadedIcon[0].public_id,
+        route: uploadedIcon[0].secure_url,
+      }
+
+      const updatedDataForCreate = {
+        ...dataForCreate,
+        photos,
+        icon,
+      }
+
+      await createRestaurant(updatedDataForCreate)
+    } catch (error) {
+      showNotification("Ошибка при создании ресторана", "error")
+      console.error("Error creating restaurant:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const isFormValid = () => {
     return (
+      isObjectEmpty(dataForCreate.icon) &&
+      dataForCreate.photos?.length > 0 &&
       dataForCreate.name &&
       dataForCreate.address &&
       dataForCreate.description &&
@@ -54,32 +104,6 @@ const CreateRestaurantForm = () => {
       dataForCreate.modeTo &&
       isValidPhone(dataForCreate.phone)
     )
-  }
-
-  const handleChange = (key, value) => {
-    setDataForCreate((prevState) => {
-      if (Array.isArray(dataForCreate[key]) && key === "services") {
-        const existingIndex = prevState[key].findIndex(
-          (item) => item.id === value.id
-        )
-        if (existingIndex !== -1) {
-          return {
-            ...prevState,
-            [key]: prevState[key].filter((_, index) => index !== existingIndex),
-          }
-        } else {
-          return {
-            ...prevState,
-            [key]: [...prevState[key], value],
-          }
-        }
-      } else {
-        return {
-          ...prevState,
-          [key]: value,
-        }
-      }
-    })
   }
 
   useEffect(() => {
@@ -140,16 +164,10 @@ const CreateRestaurantForm = () => {
     }
   }, [])
 
-  const createRestaurant = () => {
-    if (!isFormValid()) {
-      showNotification("Форма невалидна", "error")
-      return
-    }
-
-    setLoading(true)
-    сreateByAdminRestaurantRequest(dataForCreate)
+  const createRestaurant = (data) => {
+    сreateByAdminRestaurantRequest(data)
       .then(() => {
-        showNotification("Успешно создан", "success")
+        showNotification("Ресторан успешно создан", "success")
         navigate(
           `${removeWildcard(ROUTERS.Management.root)}${
             ROUTERS.Management.allRestaurants
@@ -157,14 +175,46 @@ const CreateRestaurantForm = () => {
         )
       })
       .catch((error) => showNotification(error.toString(), "error"))
-      .finally(() => setLoading(false))
+  }
+
+  const handleChange = (key, value) => {
+    setDataForCreate((prevState) => {
+      if (Array.isArray(dataForCreate[key]) && key === "services") {
+        const existingIndex = prevState[key].findIndex(
+          (item) => item.id === value.id
+        )
+        if (existingIndex !== -1) {
+          return {
+            ...prevState,
+            [key]: prevState[key].filter((_, index) => index !== existingIndex),
+          }
+        } else {
+          return {
+            ...prevState,
+            [key]: [...prevState[key], value],
+          }
+        }
+      } else if (key === "icon") {
+        return {
+          ...prevState,
+          [key]: value[0] || {},
+        }
+      } else {
+        return {
+          ...prevState,
+          [key]: value,
+        }
+      }
+    })
   }
 
   return (
     <div className="flex flex-col gap-[30px] w-full">
       <form
-        className="flex flex-col gap-[30px] w-full px-[20px] py-[40px] border-[3px] border-[#ebebeb] rounded-[20px] 
-			max-md:gap-[15px] max-md:py-[20px] max-sm:px-[10px]"
+        className="flex flex-col gap-[30px] w-full 
+				px-[20px] py-[40px] 
+				border-[3px] border-[#ebebeb] rounded-[20px] 
+				max-md:gap-[15px] max-md:py-[20px] max-sm:px-[10px]"
       >
         <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1 max-md:gap-[15px]">
           <FormInputTextWrapper
@@ -177,6 +227,9 @@ const CreateRestaurantForm = () => {
           <FormInputFileWrapper
             placeholder="Добавить логотип"
             label="Логотип:"
+            getFiles={(files) => {
+              handleChange("icon", files)
+            }}
           />
         </div>
         <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1 max-md:gap-[15px]">
@@ -190,6 +243,10 @@ const CreateRestaurantForm = () => {
           <FormInputFileWrapper
             placeholder="Добавить фото"
             label="Фотографии:"
+            multiple={true}
+            getFiles={(files) => {
+              handleChange("photos", files)
+            }}
           />
         </div>
         <FormInputTextWrapper
@@ -270,7 +327,7 @@ const CreateRestaurantForm = () => {
         text="Создать"
         spacingClass={"mx-auto px-[200px] py-[20px]"}
         gradient={true}
-        onClick={createRestaurant}
+        onClick={uploadImages}
       />
     </div>
   )

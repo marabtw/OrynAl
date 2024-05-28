@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 
-import UpdateRestaurantMenu from "../UpdateRestaurantMenu"
-import PageWrapper from "@components/PageWrapper"
+import UpdateRestaurantMenu from "../UpdateRestaurantMenu/UpdateRestaurantMenu"
+import PageWrapper from "@components/PageWrapper/PageWrapper"
 
 import PageHeading from "@ui/Heading/PageHeading"
 

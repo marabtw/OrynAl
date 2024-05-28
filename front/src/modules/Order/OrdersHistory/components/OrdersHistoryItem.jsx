@@ -1,5 +1,5 @@
 import { useState } from "react"
-import ContextMenu from "@components/ContextMenu"
+import ContextMenu from "@components/ContextMenu/ContextMenu"
 import { MoreVerticalIcon } from "@ui/icons/icons"
 
 const OrdersHistoryList = ({ order }) => {

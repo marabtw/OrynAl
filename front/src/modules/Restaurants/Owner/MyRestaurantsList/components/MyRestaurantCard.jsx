@@ -5,7 +5,7 @@ import { ROUTERS } from "@router/Router.config"
 import { useContextMenu } from "@hooks"
 import { removeWildcard } from "@helpers"
 
-import ContextMenu from "@components/ContextMenu"
+import ContextMenu from "@components/ContextMenu/ContextMenu"
 import { MoreHorizontalIcon } from "@ui/icons/icons"
 
 const getContextMenuItems = (id) => {

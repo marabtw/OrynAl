@@ -126,7 +126,7 @@ func (r *UserRepository) GetAllClients(ctx context.Context, params *model.Params
 
 	countQuery := r.DB.WithContext(ctx).Where("role = ?", enums.User)
 	if params.Query != "" {
-		countQuery = countQuery.Where("name LIKE ?", "%"+params.Query+"%")
+		countQuery = countQuery.Where("LOWER(name) LIKE LOWER(?)", "%"+params.Query+"%")
 	}
 	if err := countQuery.Model(&model.User{}).Count(&totalItems).Error; err != nil {
 		return nil, err
@@ -141,7 +141,7 @@ func (r *UserRepository) GetAllClients(ctx context.Context, params *model.Params
 		Offset(params.Offset)
 
 	if params.Query != "" {
-		query = query.Where("name LIKE ?", "%"+params.Query+"%")
+		query = query.Where("LOWER(name) LIKE LOWER(?)", "%"+params.Query+"%")
 	}
 
 	if params.Order != nil && params.SortVector != nil {
@@ -178,7 +178,7 @@ func (r *UserRepository) GetAllOwners(ctx context.Context, params *model.Params)
 
 	countQuery := r.DB.WithContext(ctx).Where("role = ?", enums.Owner)
 	if params.Query != "" {
-		countQuery = countQuery.Where("name LIKE ?", "%"+params.Query+"%")
+		countQuery = countQuery.Where("LOWER(name) LIKE LOWER(?)", "%"+params.Query+"%")
 	}
 	if err := countQuery.Model(&model.User{}).Count(&totalItems).Error; err != nil {
 		return nil, err
@@ -193,7 +193,7 @@ func (r *UserRepository) GetAllOwners(ctx context.Context, params *model.Params)
 		Offset(params.Offset)
 
 	if params.Query != "" {
-		query = query.Where("name LIKE ?", "%"+params.Query+"%")
+		query = query.Where("LOWER(name) LIKE LOWER(?)", "%"+params.Query+"%")
 	}
 
 	if params.Order != nil && params.SortVector != nil {

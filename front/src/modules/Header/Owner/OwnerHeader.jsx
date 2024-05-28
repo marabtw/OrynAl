@@ -27,16 +27,19 @@ const mobileMenuItems = [
 const OwnerHeader = ({ user }) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
+  const [selectedNavItem, setSelectedNavItem] = useState("Мои рестораны")
 
   return (
     <header
-      className={`relative w-full h-full flex justify-between items-center`}
+      className={`relative w-full h-full flex justify-between items-center 
+			font-ttcommon text-[18px] leading-[23px] font-[400]
+			max-lg:text-[16px] max-lg:leading-[20px]`}
     >
       <MenuIcon
-        className="text-[20px] cursor-pointer md:hidden"
+        className="text-[25px] cursor-pointer hover:scale-105 md:hidden"
         onClick={() => setIsMobileNavOpen(true)}
       />
-      <div className="h-[25%] flex gap-[36px] items-center">
+      <div className="flex items-center gap-[36px] max-xl:gap-[25px]">
         <Link
           to={`${removeWildcard(ROUTERS.Restaurant.root)}${
             ROUTERS.Restaurant.myRestaurants
@@ -46,19 +49,24 @@ const OwnerHeader = ({ user }) => {
           <img
             src={Logo}
             alt="logo"
-            className="bg-slate-500 h-full rounded-full cursor-pointer"
+            className="bg-[#4476fb] h-[42px] rounded-full cursor-pointer"
           />
         </Link>
         <Link
           to={`${removeWildcard(ROUTERS.Restaurant.root)}${
             ROUTERS.Restaurant.myRestaurants
           }`}
-          className="max-md:hidden"
+          className={`max-md:hidden ${
+            selectedNavItem === "Мои рестораны"
+              ? "relative font-[600] after:absolute after:w-[28%] after:h-[5px] after:top-full after:left-0 after:bg-[#6AA7FC] after:rounded-full"
+              : ""
+          }`}
+          onClick={() => setSelectedNavItem("Мои рестораны")}
         >
           Мои рестораны
         </Link>
       </div>
-      <div className="flex items-center gap-[50px]">
+      <div className="flex items-center gap-[50px] max-md:gap-[25px] max-sm:gap-[15px]">
         <SearchRestaurant />
         {user?.role === "guest" || !user?.role ? (
           <Link
@@ -70,11 +78,11 @@ const OwnerHeader = ({ user }) => {
             Войти
           </Link>
         ) : (
-          <div
-            className="relative flex items-center cursor-pointer"
-            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-          >
-            <ProfileMenuIcon className="text-[30px]" />
+          <div className="profile-menu-dropdown relative flex items-center">
+            <ProfileMenuIcon
+              className="text-[38px] hover:scale-105 transition-all max-md:text-[30px] cursor-pointer"
+              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+            />
             {isProfileMenuOpen && (
               <ProfileMenuDropdown close={() => setIsProfileMenuOpen(false)} />
             )}

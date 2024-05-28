@@ -11,7 +11,7 @@ export {
   deleteByAdminRestaurantRequest,
   getAllCities,
   getTimes,
-	getAllServicesRequest,
+  getAllServicesRequest,
 }
 
 export const getAllRestaurantsRequest = async ({ params, cancelToken }) => {
@@ -22,6 +22,23 @@ export const getAllRestaurantsRequest = async ({ params, cancelToken }) => {
       }
     : {}
   const response = await myApi.get(`/api/restaurants`, {
+    params: queryParams,
+    cancelToken: cancelToken ? cancelToken : undefined,
+  })
+  return response.data
+}
+
+export const getAllPopularRestaurantsRequest = async ({
+  params,
+  cancelToken,
+}) => {
+  const queryParams = params
+    ? {
+        page: params.pageIndex,
+        limit: params.limit,
+      }
+    : {}
+  const response = await myApi.get(`/api/restaurants/popular`, {
     params: queryParams,
     cancelToken: cancelToken ? cancelToken : undefined,
   })

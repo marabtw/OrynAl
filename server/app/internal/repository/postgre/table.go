@@ -18,11 +18,38 @@ type TableRepository struct {
 	DB *gorm.DB
 }
 
+func (r *TableRepository) GetTableCategories(ctx context.Context, restaurantID uint) ([]string, error) {
+	var types []string
+
+	if err := r.DB.WithContext(ctx).Table("tables").
+		Select("DISTINCT type").
+		Where("restaurant_id = ?", restaurantID).
+		Pluck("type", &types).Error; err != nil {
+		return nil, err
+	}
+
+	return types, nil
+}
+
 func (r *TableRepository) GetRestaurantTables(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error) {
 	var tables []model.Table
 	var totalItems int64
 
-	countQuery := r.DB.WithContext(ctx).Model(&model.Table{}).Where("restaurant_id = ?", restaurantID)
+	countQuery := r.DB.WithContext(ctx).
+		Model(&model.Table{}).
+		Table("tables").
+		Where("restaurant_id = ?", restaurantID)
+
+	if params.Query != "" {
+		countQuery = countQuery.Where("LOWER(type) = LOWER(?)", params.Query)
+	}
+
+	if params.Date != nil {
+		countQuery = countQuery.
+			Joins("LEFT JOIN orders ON tables.id = orders.table_id AND orders.date::date = ?", params.Date.Format("2006-01-02")).
+			Where("orders.id IS NULL")
+	}
+
 	if err := countQuery.Count(&totalItems).Error; err != nil {
 		return nil, err
 	}
@@ -31,17 +58,32 @@ func (r *TableRepository) GetRestaurantTables(ctx context.Context, restaurantID 
 		return nil, errors.New("offset exceeds total items")
 	}
 
-	query := r.DB.WithContext(ctx).Where("restaurant_id = ?", restaurantID).
-		Limit(params.Limit).
+	query := r.DB.WithContext(ctx).
+		Table("tables").
+		Select("tables.*").
+		Where("restaurant_id = ?", restaurantID)
+
+	if params.Query != "" {
+		query = query.Where("LOWER(type) = LOWER(?)", params.Query)
+	}
+
+	if params.Date != nil {
+		query = query.
+			Joins("LEFT JOIN orders ON tables.id = orders.table_id AND orders.date::date = ?", params.Date.Format("2006-01-02")).
+			Where("orders.id IS NULL")
+	}
+
+	query = query.Limit(params.Limit).
 		Offset(params.Offset)
 
 	if params.Order != nil && params.SortVector != nil {
-		query.Order(params.Order.(string) + " " + params.SortVector.(string))
+		query = query.Order(params.Order.(string) + " " + params.SortVector.(string))
 	}
 
 	if err := query.Find(&tables).Error; err != nil {
 		return nil, err
 	}
+
 	return &model.ListResponse{
 		Items:        tables,
 		ItemsPerPage: params.Limit,

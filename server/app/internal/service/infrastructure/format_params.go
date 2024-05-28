@@ -9,6 +9,7 @@ import (
 	"github.com/samber/lo"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type FormatParams struct{}
@@ -22,6 +23,20 @@ func (obj *FormatParams) RestaurantsSearchFormatting(params *model.Params, ctx e
 	}
 
 	err = obj.LimitFormat(params, ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = obj.PageIndexFormat(params, ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return params, nil
+}
+
+func (obj *FormatParams) ReviewsSearchFormatting(params *model.Params, ctx echo.Context) (*model.Params, error) {
+	err := obj.LimitFormat(params, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +65,17 @@ func (obj *FormatParams) TablesSearchFormatting(params *model.Params, ctx echo.C
 		return nil, err
 	}
 
+	err = obj.SearchFormat(params, ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	err = obj.PageIndexFormat(params, ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = obj.DateFormat(params, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -94,6 +119,25 @@ func (obj *FormatParams) OrderSearchFormatting(params *model.Params, ctx echo.Co
 	}
 
 	err = obj.OrderVectorFormat(params, ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = obj.LimitFormat(params, ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = obj.PageIndexFormat(params, ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return params, nil
+}
+
+func (obj *FormatParams) MenuSearchFormatting(params *model.Params, ctx echo.Context) (*model.Params, error) {
+	err := obj.SearchFormat(params, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -227,6 +271,23 @@ func (obj *FormatParams) SearchFormat(paramsModel *model.Params, ctx echo.Contex
 
 	if q != "" {
 		paramsModel.Query = q
+	}
+
+	return nil
+}
+
+func (obj *FormatParams) DateFormat(paramsModel *model.Params, ctx echo.Context) error {
+	date := ctx.QueryParam("date")
+
+	if date != "" {
+		layout := "2006-01-02T15:04:05"
+		t, err := time.Parse(layout, date)
+
+		if err != nil {
+			return fmt.Errorf("error parsing date string: %w", err)
+		}
+
+		paramsModel.Date = &t
 	}
 
 	return nil

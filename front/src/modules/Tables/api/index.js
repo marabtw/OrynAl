@@ -9,6 +9,7 @@ export const getAllTablesRequest = async ({
     ? {
         page: params.pageIndex,
         limit: params.limit,
+				q: "",
       }
     : {}
   const response = await myApi.get(`/api/restaurants/${restaurantId}/tables`, {
@@ -32,7 +33,21 @@ export const getByOwnerTableRequest = async ({
   return response.data
 }
 
-export const createByOwnerTableRequest = async (restaurantId, body) => {
+export const getByOwnerTableCategoriesRequest = async ({
+  restaurantId,
+  cancelToken,
+}) => {
+  const response = await myApi.get(
+    `/api/restaurants/${restaurantId}/tables/categories`,
+    {
+      cancelToken: cancelToken ? cancelToken.token : undefined,
+    }
+  )
+  return response.data
+}
+
+export const createByOwnerTableRequest = async ({restaurantId, body}) => {
+	console.log("body: ",body)
   const response = await myApi.post(
     `/api/restaurants/${restaurantId}/tables`,
     body
@@ -59,16 +74,6 @@ export const deleteByOwnerTableRequest = async ({ restaurantId, tableId }) => {
   return response.data
 }
 
-export const getTableCapacity = () => {
-  return [
-    { label: "5 человек", value: 5 },
-    { label: "10 человек", value: 10 },
-    { label: "15 человек", value: 15 },
-    { label: "20 человек", value: 20 },
-    { label: "25 человек", value: 25 },
-    { label: "30 человек", value: 30 },
-  ]
-}
 export const getTableType = () => {
   return [
     { label: "Тапчан", value: "Тапчан" },

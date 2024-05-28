@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { axios } from "@lib/axios"
 import Select from "react-select"
@@ -8,10 +8,12 @@ import { searchRestaurants } from "../../api"
 
 import { removeWildcard } from "@helpers"
 import { useToast } from "@hooks"
+import { AuthContext } from "@context/AuthContext"
 
 const Search = () => {
   const navigate = useNavigate()
   const showNotification = useToast()
+  const { isAuthed } = useContext(AuthContext)
 
   const [searchQuery, setSearchQuery] = useState("")
   const [options, setOptions] = useState([])
@@ -74,8 +76,8 @@ const Search = () => {
         backgroundColor: "#f2f3f6",
       },
     }),
-    indicatorSeparator: (provided, state) => ({ display: "none" }), // Убираем разделитель
-    dropdownIndicator: (provided, state) => ({ display: "none" }), // Убираем стрелку
+    indicatorSeparator: (provided, state) => ({ display: "none" }),
+    dropdownIndicator: (provided, state) => ({ display: "none" }),
     placeholder: (provided, state) => ({
       ...provided,
       color: "#447AFB",
@@ -95,12 +97,17 @@ const Search = () => {
         placeholder={`${"Введите название Ресторана"}`}
         value={searchQuery}
         onChange={(e) => {
-          navigate(
-            `${removeWildcard(
-              ROUTERS.Orders.root
-            )}${ROUTERS.Orders.createOrder.replace(":restaurantId", e.value)}`
-          )
+          if (isAuthed) {
+            navigate(
+              `${removeWildcard(
+                ROUTERS.Orders.root
+              )}${ROUTERS.Orders.createOrder.replace(":restaurantId", e.value)}`
+            )
+          } else {
+            showNotification("Вы не авторизованы", "info")
+          }
           setSearchQuery("")
+					setOptions([])
         }}
         onInputChange={(e) => {
           setSearchQuery(e.trim())

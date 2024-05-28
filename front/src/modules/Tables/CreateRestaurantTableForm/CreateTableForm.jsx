@@ -1,21 +1,20 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { ROUTERS } from "@router/Router.config"
-import {
-  createByOwnerTableRequest,
-  getTableType,
-} from "../api"
+import { createByOwnerTableRequest, getTableType } from "../api"
 
 import { removeWildcard } from "@helpers"
-import { useLoading, useToast } from "@hooks"
+import { useCloudinary, useLoading, useToast } from "@hooks"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
-import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper"
+import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
 import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
 import Button from "@ui/Button/Button"
+import { isObjectEmpty } from "@utils/index"
 
 const CreateTableForm = ({ restaurantId }) => {
+  const { upload } = useCloudinary()
   const navigate = useNavigate()
   const setLoading = useLoading()
   const showNotification = useToast()
@@ -25,10 +24,12 @@ const CreateTableForm = ({ restaurantId }) => {
     type: "",
     description: "",
     capacity: 0,
+    photo: {},
   })
 
   const isFormValid = () => {
     return (
+      isObjectEmpty(dataForCreate.photo) &&
       dataForCreate.name &&
       dataForCreate.type &&
       dataForCreate.description &&
@@ -36,14 +37,59 @@ const CreateTableForm = ({ restaurantId }) => {
     )
   }
 
-  const createTable = () => {
+  const uploadImages = async () => {
     if (!isFormValid()) {
       showNotification("Форма невалидна", "warning")
       return
     }
 
     setLoading(true)
-    createByOwnerTableRequest(restaurantId, dataForCreate)
+
+    const transformationSettings = {
+      width: 100,
+      height: 100,
+      crop: "fill",
+      gravity: "center",
+    }
+
+    try {
+      const uploadedIcon = await upload(
+        [dataForCreate.photo],
+        // transformationSettings
+      )
+      const photo = {
+        // publicId: uploadedIcon[0].public_id,
+        route: uploadedIcon[0].secure_url,
+      }
+
+      const updatedDataForCreate = {
+        ...dataForCreate,
+        photo,
+      }
+
+			console.log(updatedDataForCreate)
+
+      await createTable(updatedDataForCreate)
+    } catch (error) {
+      showNotification("Ошибка при создании ресторана", "error")
+      console.error("Error creating restaurant:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const createTable = async (data) => {
+		const testData = {
+			name: "table",
+			type: "Round",
+			description: "sersdfa sdf asf",
+			capacity: 10,
+			photo: {
+				route: "cc/dd/dd"
+			}
+		}
+		console.log(testData)
+    createByOwnerTableRequest({ restaurantId, body: data })
       .then(() => {
         showNotification("Успешно создан", "success")
         navigate(
@@ -53,7 +99,37 @@ const CreateTableForm = ({ restaurantId }) => {
         )
       })
       .catch((err) => showNotification(err.toString(), "error"))
-      .finally(() => setLoading(false))
+  }
+
+  const handleChange = (key, value) => {
+    setDataForCreate((prevState) => {
+      if (Array.isArray(dataForCreate[key]) && key === "services") {
+        const existingIndex = prevState[key].findIndex(
+          (item) => item.id === value.id
+        )
+        if (existingIndex !== -1) {
+          return {
+            ...prevState,
+            [key]: prevState[key].filter((_, index) => index !== existingIndex),
+          }
+        } else {
+          return {
+            ...prevState,
+            [key]: [...prevState[key], value],
+          }
+        }
+      } else if (key === "photo") {
+        return {
+          ...prevState,
+          [key]: value[0] || {},
+        }
+      } else {
+        return {
+          ...prevState,
+          [key]: value,
+        }
+      }
+    })
   }
 
   return (
@@ -63,33 +139,30 @@ const CreateTableForm = ({ restaurantId }) => {
           label="Название столика:"
           placeholder="Столик #1"
           onChange={(value) => {
-            setDataForCreate((prevState) => ({
-              ...prevState,
-              name: value,
-            }))
+            handleChange("name", value)
           }}
         />
-        <FormInputFileWrapper label="Фотографии:" placeholder="Добавить фото" />
+        <FormInputFileWrapper
+          label="Фотографии:"
+          placeholder="Добавить фото"
+          getFiles={(files) => {
+            handleChange("photo", files)
+          }}
+        />
       </div>
       <FormSelectWrapper
         label={"Тип столика:"}
         placeholder={"Тапчан"}
         options={getTableType()}
         onChange={(value) => {
-          setDataForCreate((prevState) => ({
-            ...prevState,
-            type: value,
-          }))
+          handleChange("type", value)
         }}
       />
       <FormInputTextWrapper
         label="Описание:"
         placeholder="Напишите краткое описание меню...."
         onChange={(value) => {
-          setDataForCreate((prevState) => ({
-            ...prevState,
-            description: value,
-          }))
+          handleChange("description", value)
         }}
       />
       <FormInputTextWrapper
@@ -97,17 +170,14 @@ const CreateTableForm = ({ restaurantId }) => {
         placeholder={"10 человек"}
         type={"number"}
         onChange={(value) => {
-          setDataForCreate((prevState) => ({
-            ...prevState,
-            capacity: +value,
-          }))
+          handleChange("capacity", +value)
         }}
       />
       <Button
         text="Создать"
         gradient={true}
         spacingClass={"mx-auto px-[120px] py-[20px]"}
-        onClick={createTable}
+        onClick={uploadImages}
       />
     </form>
   )

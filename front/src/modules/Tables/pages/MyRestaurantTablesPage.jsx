@@ -4,7 +4,7 @@ import { removeWildcard } from "@helpers"
 import { ROUTERS } from "@router/Router.config"
 
 import MyRestaurantTablesList from "../MyRestaurantTablesList/MyRestaurantTablesList"
-import PageWrapper from "@components/PageWrapper"
+import PageWrapper from "@components/PageWrapper/PageWrapper"
 import PageHeading from "@ui/Heading/PageHeading"
 
 const MyRestaurantTablesPage = () => {

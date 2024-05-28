@@ -20,6 +20,11 @@ CREATE TABLE IF NOT EXISTS user_tokens (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE if not exists photos (
+    id SERIAL primary key,
+    route varchar not null
+);
+
 CREATE OR REPLACE FUNCTION update_user_token_updated_at()
     RETURNS TRIGGER AS $$
 BEGIN
@@ -45,15 +50,17 @@ CREATE TABLE IF NOT EXISTS restaurants (
     owner_id INTEGER NOT NULL,
     mode_from TIMESTAMP NOT NULL,
     mode_to TIMESTAMP NOT NULL,
-    icon VARCHAR,
-    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+    icon_id integer,
+    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE,
+    foreign key (icon_id) references photos(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS restaurant_photos (
      id SERIAL PRIMARY KEY,
-     photo VARCHAR NOT NULL,
+    photo_id integer not null,
      restaurant_id INTEGER NOT NULL,
-     FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
+     FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE,
+    foreign key (photo_id) references photos(id) on delete cascade
 );
 
 CREATE table if not exists services (
@@ -69,13 +76,13 @@ create table if not exists restaurant_service (
     foreign key (restaurant_id) references restaurants(id) on DELETE cascade
 );
 
--- CREATE TABLE IF NOT EXISTS favorite_restaurants (
---     id SERIAL PRIMARY KEY,
---     user_id INTEGER NOT NULL,
---     restaurant_id INTEGER NOT NULL,
---     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
---     FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) on delete cascade
--- );
+CREATE TABLE IF NOT EXISTS favorite_restaurants (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    restaurant_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) on delete cascade
+);
 
 CREATE TABLE IF NOT EXISTS tables (
      id SERIAL PRIMARY KEY,
@@ -83,9 +90,10 @@ CREATE TABLE IF NOT EXISTS tables (
      type VARCHAR(100) NOT NULL,
      description TEXT,
      capacity INTEGER NOT NULL,
-     photo VARCHAR,
+     photo_id integer,
      restaurant_id INTEGER NOT NULL,
-     FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
+     FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE,
+    FOREIGN KEY (photo_id) references photos(id) on delete set null
 );
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -108,9 +116,10 @@ CREATE TABLE IF NOT EXISTS foods (
       description TEXT,
       price FLOAT NOT NULL,
       available BOOLEAN NOT NULL DEFAULT TRUE,
-      photo VARCHAR,
+      photo_id integer,
       restaurant_id INTEGER NOT NULL,
-      FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
+      FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE,
+    foreign key (photo_id) references photos(id) on delete set null
 );
 
 CREATE TABLE IF NOT EXISTS order_foods (

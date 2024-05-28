@@ -63,7 +63,7 @@ func (r *OrderRepository) CreateOrder(ctx context.Context, order *model.Order) (
 }
 
 func (r *OrderRepository) DeleteOrder(ctx context.Context, id uint) error {
-	if err := r.DB.WithContext(ctx).Delete(&model.Order{}, id).Error; err != nil {
+	if err := r.DB.WithContext(ctx).Table("orders").Delete(&model.Order{}, id).Error; err != nil {
 		return err
 	}
 
@@ -72,17 +72,18 @@ func (r *OrderRepository) DeleteOrder(ctx context.Context, id uint) error {
 
 func (r *OrderRepository) UpdateOrder(ctx context.Context, order *model.Order) (*model.OrderResponse, error) {
 	var or model.Order
-	if err := r.DB.WithContext(ctx).First(&or, order.ID).Error; err != nil {
+	if err := r.DB.WithContext(ctx).Table("orders").First(&or, order.ID).Error; err != nil {
 		return nil, err
 	}
 
-	if err := r.DB.WithContext(ctx).Model(&or).Updates(order).Error; err != nil {
+	if err := r.DB.WithContext(ctx).Model(&or).Table("orders").Updates(order).Error; err != nil {
 		return nil, err
 	}
 
 	var orderResponse model.OrderResponse
 
 	if err := r.DB.WithContext(ctx).
+		Table("orders").
 		Preload("Restaurant").
 		Preload("Table").
 		Preload("User").
@@ -98,6 +99,7 @@ func (r *OrderRepository) GetOrder(ctx context.Context, userID, id uint) (*model
 	var order model.OrderResponse
 
 	if err := r.DB.WithContext(ctx).
+		Table("orders").
 		Preload("Restaurant").
 		Preload("Table").
 		Preload("User").
@@ -113,7 +115,7 @@ func (r *OrderRepository) GetAllOrders(ctx context.Context, userID uint, params 
 	var orders []model.OrderResponse
 	var totalItems int64
 
-	query := r.DB.WithContext(ctx).Where("user_id = ?", userID)
+	query := r.DB.WithContext(ctx).Table("orders").Where("user_id = ?", userID)
 
 	if err := query.Model(&model.OrderResponse{}).Count(&totalItems).Error; err != nil {
 		return nil, err
@@ -141,7 +143,7 @@ func (r *OrderRepository) GetRestaurantOrders(ctx context.Context, restaurantID 
 	var orders []model.OrderResponse
 	var totalItems int64
 
-	query := r.DB.WithContext(ctx).Where("restaurant_id = ?", restaurantID)
+	query := r.DB.WithContext(ctx).Table("orders").Where("restaurant_id = ?", restaurantID)
 
 	if err := query.Model(&model.OrderResponse{}).Count(&totalItems).Error; err != nil {
 		return nil, err

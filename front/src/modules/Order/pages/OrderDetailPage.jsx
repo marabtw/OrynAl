@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom"
-import PageWrapper from "@components/PageWrapper"
+import PageWrapper from "@components/PageWrapper/PageWrapper"
 import OrderDetail from "../OrderDetail"
 
 const OrderDetailsPage = () => {

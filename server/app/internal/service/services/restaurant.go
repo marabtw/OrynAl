@@ -25,6 +25,10 @@ type RestaurantService struct {
 	FormatParams
 }
 
+func (s *RestaurantService) GetStatistics(ctx context.Context) (*model.Statistics, error) {
+	return s.repository.Restaurant.GetStatistics(ctx)
+}
+
 func (s *RestaurantService) PopularRestaurants(ctx context.Context) (*model.ListResponse, error) {
 	return s.repository.Restaurant.GetPopularRestaurants(ctx)
 }
@@ -48,8 +52,7 @@ func (s *RestaurantService) UpdateService(ctx context.Context, service *model.Se
 func (s *RestaurantService) GetRestaurants(ctx context.Context, params *model.Params) (*model.ListResponse, error) {
 	role, err := utils.GetRoleFromContext(ctx)
 	if err != nil {
-		s.logger.Error(err)
-		return nil, err
+		return s.repository.Restaurant.GetRestaurants(ctx, params)
 	}
 
 	if role == enums.Owner {

@@ -111,7 +111,7 @@ const ServicesList = () => {
     <>
 
       <div className="flex flex-col gap-[20px]">
-        <div className="w-1/2 flex gap-[10px] h-[40px]">
+        <div className="w-1/2 flex gap-[10px] h-[40px] max-lg:w-full">
           <input
             value={inputValue}
             placeholder={"Новый сервис"}
@@ -131,7 +131,7 @@ const ServicesList = () => {
             }}
           />
         </div>
-        <div className="grid grid-cols-2 gap-x-[20px] gap-y-[10px] justify-between">
+        <div className="grid grid-cols-2 gap-x-[20px] gap-y-[10px] justify-between max-lg:grid-cols-1">
           {services?.map((service, index) => (
             <ServiceItem
               service={service}

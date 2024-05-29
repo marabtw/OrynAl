@@ -11,6 +11,7 @@ import TableReservation from "./components/TableReservation/TableReservation"
 import SelectMenu from "./components/SelectMenu/SelectMenu"
 import Cart from "./components/Cart/Cart"
 import { CartIcon } from "@ui/icons/icons"
+import { isObjectEmpty } from "@utils/index"
 
 const CreateOrder = ({ restaurantId }) => {
   const navigate = useNavigate()
@@ -23,8 +24,20 @@ const CreateOrder = ({ restaurantId }) => {
     foods: [],
     totalSum: 0,
     restaurantId: +restaurantId,
-    status: "Завершен",
+    status: "booked",
   })
+
+  useEffect(() => {
+    const totalSum = dataForCreateOrder.foods.reduce(
+      (acc, item) => acc + item.itemTotalPrice,
+      0
+    )
+
+    setDataForCreateOrder((prev) => ({
+      ...prev,
+      totalSum,
+    }))
+  }, [dataForCreateOrder.foods])
 
   const getTableId = (id) => {
     setDataForCreateOrder((prev) => {
@@ -38,12 +51,17 @@ const CreateOrder = ({ restaurantId }) => {
       return
     }
 
-		const formattedDataForCreateOrder = {
-			...dataForCreateOrder,
-			foods: dataForCreateOrder.foods.map(food => food.id),
-		};
+		setLoading(true)
 
-    setLoading(true)
+    const currentDate = new Date()
+    const formattedDate = currentDate.toISOString().split(".")[0] + "Z"
+
+    const formattedDataForCreateOrder = {
+      ...dataForCreateOrder,
+      foods: dataForCreateOrder.foods.map((food) => food.id),
+      date: formattedDate,
+    }
+
     createByUserOrder(formattedDataForCreateOrder)
       .then(() => {
         showNotification("Успешно создан", "success")
@@ -58,7 +76,7 @@ const CreateOrder = ({ restaurantId }) => {
   }
 
   const getFoodForCart = (food) => {
-    if (!food) {
+    if (!food || isObjectEmpty(food)) {
       showNotification("Такой еды нету в меню", "warning")
       return
     }
@@ -82,9 +100,8 @@ const CreateOrder = ({ restaurantId }) => {
   const isOrderValid = () => {
     return (
       dataForCreateOrder.restaurantId &&
-      dataForCreateOrder.tableId &&
-      dataForCreateOrder.tableId >= 0 &&
-      dataForCreateOrder.foods.length > 0
+      dataForCreateOrder?.tableId >= 0 &&
+      dataForCreateOrder?.foods.length > 0
     )
   }
 
@@ -101,14 +118,14 @@ const CreateOrder = ({ restaurantId }) => {
               : []
           }
         />
-        <Cart
+        {/* <Cart
           show={showCart}
           foodsInCart={
             dataForCreateOrder?.foods.length > 0 ? dataForCreateOrder.foods : []
           }
           updateCart={setDataForCreateOrder}
           createOrder={createOrder}
-        />
+        /> */}
       </div>
       <div
         className="fixed z-[99999] w-[70px] h-[70px] bottom-[1%] right-[5%] p-[15px] border border-transparent rounded-full cursor-pointer bg-gray-800

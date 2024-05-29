@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react"
 
-import { getRestaurantMenuRequest } from "../../../api"
+import { axios } from "@lib/axios"
 
-import FoodCategories from "./components/FoodCategories"
+import {
+  getRestaurantMenuRequest,
+  getByOwnerMenuCategoriesRequest,
+} from "../../../api"
+
+import FoodCategoriesSlider from "./components/FoodCategoriesSlider"
 import FoodCard from "./components/FoodCard"
 import { useToast } from "@hooks"
 
@@ -10,47 +15,71 @@ const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
   const showNotification = useToast()
   const [menu, setMenu] = useState([])
   const [currentCategory, setCurrentCategory] = useState("")
-  const [menuCategories, setMenuCategories] = useState([])
-  const [filteredMenu, setFilteredMenu] = useState([])
+  const [categories, setCategories] = useState([])
+
+  const [params, setParams] = useState({
+    pageIndex: 0,
+    limit: 8,
+    q: "",
+  })
 
   useEffect(() => {
-    getRestaurantMenuRequest({ restaurantId })
-      .then((res) => {
-        setMenu(res.data)
-        setMenuCategories(Object.keys(res.data))
-        setCurrentCategory(Object.keys(res.data)[0])
+    const cancelTokenSource = axios.CancelToken.source()
+    getByOwnerMenuCategoriesRequest({
+      restaurantId,
+      cancelToken: cancelTokenSource,
+    })
+      .then(({ data }) => {
+        setCategories(data)
+        showNotification("Успешно", "success")
       })
-      .catch((error) => {
-        showNotification(error, "error")
-      })
-  }, [restaurantId])
-
-  useEffect(() => {
-    setFilteredMenu(
-      menu[currentCategory]?.map(
-        ({ id, image, name, type, description, price, status }) => {
-          return {
-            id,
-            image,
-            name,
-            type,
-            description,
-            price,
-            foodStatus: status,
-          }
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err.toString(), "error")
         }
-      )
-    )
-  }, [currentCategory])
+      })
+
+    return () => {
+      cancelTokenSource.cancel()
+    }
+  }, [])
+
+  useEffect(() => {
+    const cancelTokenSource = axios.CancelToken.source()
+    getRestaurantMenuRequest({
+      restaurantId,
+      params,
+      cancelToken: cancelTokenSource.token,
+    })
+      .then(({ data }) => {
+        setMenu(data.items)
+        showNotification("Успешно", "success")
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification("Запрос был отменен", "warning")
+        } else {
+          showNotification(err.toString(), "error")
+        }
+      })
+
+    return () => {
+      cancelTokenSource.cancel()
+    }
+  }, [params])
 
   return (
     <div className="">
-      <FoodCategories
-        categories={menuCategories}
-        selectCategory={setCurrentCategory}
+      <FoodCategoriesSlider
+        categories={categories}
+        getCategory={(type) => {
+          setParams((prev) => ({ ...prev, q: type }))
+        }}
       />
       <div className="grid grid-cols-3 gap-y-[100px] gap-x-[20px] mt-[100px] max-xl:grid-cols-2 max-md:grid-cols-1">
-        {filteredMenu?.map((food) => (
+        {menu?.map((food) => (
           <FoodCard
             key={food.id}
             foodData={food}

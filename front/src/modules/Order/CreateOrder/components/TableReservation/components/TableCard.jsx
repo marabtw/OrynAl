@@ -9,8 +9,8 @@ const TableCard = ({ tableData, getTableId, selectedTableId }) => {
         }`}
       ></div>
       <div className="w-[180px] aspect-square rounded-full overflow-hidden">
-        {tableData.image ? (
-          <img src={tableData.image} alt="icon" className="w-full" />
+        {tableData.photo ? (
+          <img src={tableData.photo.route} alt="icon" className="w-full" />
         ) : (
           <div className="w-full h-full bg-slate-100"></div>
         )}

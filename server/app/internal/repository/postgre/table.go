@@ -84,6 +84,15 @@ func (r *TableRepository) GetRestaurantTables(ctx context.Context, restaurantID 
 		return nil, err
 	}
 
+	for i := 0; i < len(tables); i++ {
+		var photo model.Photo
+		if err := r.DB.Table("photos").Where("id = ?", tables[i].PhotoID).First(&photo).Error; err != nil {
+			continue
+		}
+
+		tables[i].Photo = photo
+	}
+
 	return &model.ListResponse{
 		Items:        tables,
 		ItemsPerPage: params.Limit,
@@ -97,6 +106,14 @@ func (r *TableRepository) GetRestaurantTable(ctx context.Context, restaurantID u
 	if err := r.DB.WithContext(ctx).Where("restaurant_id = ? AND id = ?", restaurantID, tableID).First(&table).Error; err != nil {
 		return nil, err
 	}
+
+	var photo model.Photo
+	if err := r.DB.Table("photos").Where("id = ?", table.PhotoID).First(&photo).Error; err != nil {
+		return nil, err
+	}
+
+	table.Photo = photo
+
 	return &table, nil
 }
 

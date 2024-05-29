@@ -3,7 +3,6 @@ import { formatTimeString } from "@utils"
 import icon from "@assets/images/icons/workIcon.png"
 
 const RestaurantBriefInfo = ({ data, className }) => {
-	console.log(data)
   const getService = (name) => {
     return (
       <div className="flex py-[10px] px-[20px] gap-x-[10px] h-[53px] items-center shadow-[0px_4px_10px_-2px_rgba(0,0,0,.2)] rounded-[20px]">

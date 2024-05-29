@@ -8,7 +8,6 @@ import FormCheckbox from "@ui/Field/FormCheckbox"
 import FormSelect from "@ui/Select/FormSelect"
 
 const Form = ({ services, restaurantData, setDataForUpdate }) => {
-	
   const handleChange = (key, value) => {
     setDataForUpdate((prevState) => {
       if (Array.isArray(restaurantData[key]) && key === "services") {
@@ -25,6 +24,11 @@ const Form = ({ services, restaurantData, setDataForUpdate }) => {
             ...prevState,
             [key]: [...prevState[key], value],
           }
+        }
+      } else if (key === "icon") {
+        return {
+          ...prevState,
+          [key]: value[0] || {},
         }
       } else if (typeof value === "boolean") {
         return {
@@ -51,7 +55,10 @@ const Form = ({ services, restaurantData, setDataForUpdate }) => {
         <FormInputFileWrapper
           placeholder="Добавить логотип"
           label="Логотип:"
-          onChange={(value) => handleChange("logo", value)}
+          currentPhoto={restaurantData.icon}
+          getFiles={(files) => {
+            handleChange("icon", files)
+          }}
         />
       </div>
       <div className="grid grid-cols-2 gap-[30px] max-md:grid-cols-1">
@@ -63,7 +70,11 @@ const Form = ({ services, restaurantData, setDataForUpdate }) => {
         <FormInputFileWrapper
           placeholder="Добавить фото"
           label="Фотографии:"
-          onChange={(value) => handleChange("photos", value)}
+          currentPhoto={restaurantData.photos}
+          multiple={true}
+          getFiles={(files) => {
+            handleChange("photo", files)
+          }}
         />
       </div>
       <FormInputTextWrapper
@@ -100,16 +111,24 @@ const Form = ({ services, restaurantData, setDataForUpdate }) => {
           options={getAllCities()}
           onChange={(value) => handleChange("city", value)}
         />
+        <FormInputTextWrapper
+          placeholder="+0 (000) 000 00 00"
+          type={"tel"}
+          label="Номер телефона:"
+          onChange={(value) => {
+            handleChange("phone", value)
+          }}
+        />
+        <FormSelectWrapper
+          label={"Статус русторана"}
+          options={[
+            { label: "Активный", value: true },
+            { label: "Не активный", value: false },
+          ]}
+          onChange={(value) => handleChange("status", value)}
+          defaultValueIndex={restaurantData.status ? 1 : 0}
+        />
       </div>
-      <FormSelectWrapper
-        label={"Статус русторана"}
-        options={[
-          { label: "Активный", value: true },
-          { label: "Не активный", value: false },
-        ]}
-        onChange={(value) => handleChange("status", value)}
-        defaultValueIndex={restaurantData.status ? 1 : 0}
-      />
       <div className="grid grid-cols-2 gap-[10px] max-md:grid-cols-1">
         {services?.map((service) => (
           <FormCheckbox

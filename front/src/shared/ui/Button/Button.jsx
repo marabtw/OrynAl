@@ -18,7 +18,7 @@ const Button = ({
 			${rounded ? rounded : "rounded-[10px]"} 
 			${uppercase ? "uppercase" : ""} 
 			${spacingClass ? spacingClass : "px-[16px] py-[10px]"} 
-			max-sm:mx-0 max-sm:px-0
+			max-sm:mx-0 max-sm:px-[10px]
 			transition-all duration-150
 			hover:scale-105
 			`}

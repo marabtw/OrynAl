@@ -14,13 +14,13 @@ const Slider = ({ images = [] }) => {
         spaceBetween={30}
         loop={false}
         pagination={false}
-        navigation={true}
+        navigation={false}
         modules={[Navigation]}
         className="h-[300px]"
       >
         {images.length > 0
           ? images.map((image) => (
-              <SwiperSlide className="min-w-[300px] aspect-square border, ">
+              <SwiperSlide className="min-w-[300px] aspect-square border">
                 <img
                   src={image.route}
                   alt={image.route}

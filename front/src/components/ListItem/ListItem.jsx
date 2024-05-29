@@ -33,10 +33,10 @@ const ListItem = ({ elementData, menuActions, index }) => {
         <div
           className={`w-[38px] aspect-square rounded-full overflow-hidden border-none`}
         >
-          <img alt="a" src={value.route} className="h-full rounded-full "/>
+          <img alt="" src={value.route} className="h-full aspect-square rounded-full object-cover object-center"/>
         </div>
       ) : (
-        <div></div>
+        <div className="w-[38px] aspect-square rounded-full overflow-hidden bg-slate-400"></div>
       )
     } else if (key === "restaurantStatus") {
       return statusMap[value]

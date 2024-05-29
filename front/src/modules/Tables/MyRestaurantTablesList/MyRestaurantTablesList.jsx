@@ -118,6 +118,7 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
       <TableCategoriesSlider
         restaurantId={restaurantId}
         getCategory={(type) => {
+					if(type === params.q) return
           setParams((prev) => ({ ...prev, q: type }))
         }}
       />

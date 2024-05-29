@@ -1,17 +1,37 @@
 
-const FoodCategories = ({ categories, selectCategory }) => {
+const FoodCategoriesSlider = ({ categories, getCategory }) => {
   const getImageByCategory = () => {
     return ""
   }
   return (
     <div className="font-poppins">
       <div className="flex gap-[10px]">
+			<div
+            className="flex flex-col justify-center items-center gap-[10px] min-w-[181px] h-[193px] border border-[#c4c4c4] rounded-[20px] cursor-pointer
+						shadow-[0px_4px_12px_-2px_rgba(0,0,0,.2) hover:border-[#8ab8ff]"
+            onClick={() => getCategory("")}
+          >
+            <div
+              className={`flex justify-center items-center w-[100px] aspect-square rounded-full overflow-hidden ${
+                !getImageByCategory("Все") && "bg-green-400"
+              }`}
+            >
+              <img
+                src={getImageByCategory("Все")}
+                alt=""
+                className="w-full rounded-full"
+              />
+            </div>
+            <h4 className="text-[16px] font-[800] leading-[24px]">
+              {"Все"}
+            </h4>
+          </div>
         {categories?.map((category) => (
           <div
             key={category}
             className="flex flex-col justify-center items-center gap-[10px] min-w-[181px] h-[193px] border border-[#c4c4c4] rounded-[20px] cursor-pointer
 						shadow-[0px_4px_12px_-2px_rgba(0,0,0,.2) hover:border-[#8ab8ff]"
-            onClick={() => selectCategory(category)}
+            onClick={() => getCategory(category)}
           >
             <div
               className={`flex justify-center items-center w-[100px] aspect-square rounded-full overflow-hidden ${
@@ -34,4 +54,4 @@ const FoodCategories = ({ categories, selectCategory }) => {
   )
 }
 
-export default FoodCategories
+export default FoodCategoriesSlider

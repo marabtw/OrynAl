@@ -17,15 +17,17 @@ const RestaurantImagesSlider = ({ images }) => {
         navigation={false}
         className=""
       >
-        {images?.lenght > 0
+        {images?.length > 0
           ? images.map((image, index) => (
-              <SwiperSlide key={image}>
-                <img src={image} alt="" />
+              <SwiperSlide key={image.route}>
+                <div className="h-[180px] w-[180px] rounded-xl overflow-hidden">
+                  <img src={image.route} alt="" className="" />
+                </div>
               </SwiperSlide>
             ))
           : [1, 2, 3].map((i) => (
               <SwiperSlide key={i}>
-                <div className="h-[180px] w-[180px] border-2 box-border rounded-xl"></div>
+                <div className="h-[180px] w-[180px] border bg-slate-200 rounded-xl"></div>
               </SwiperSlide>
             ))}
       </Swiper>

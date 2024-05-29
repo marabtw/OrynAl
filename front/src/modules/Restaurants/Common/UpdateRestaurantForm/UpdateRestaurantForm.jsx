@@ -44,8 +44,11 @@ const UpdateRestaurantForm = () => {
     city: "",
     modeFrom: "",
     modeTo: "",
+    phone: "",
     services: [],
     status: true,
+    icon: {},
+    photos: [],
   })
 
   useEffect(() => {
@@ -144,7 +147,7 @@ const UpdateRestaurantForm = () => {
       .finally(() => {
         setLoading(false)
       })
-  }, [restaurantId, user.role, dataForUpdate])
+  }, [user.role, dataForUpdate])
 
   const handleDeleteRestaurantData = useCallback(() => {
     setLoading(true)
@@ -164,7 +167,7 @@ const UpdateRestaurantForm = () => {
       .finally(() => {
         setLoading(false)
       })
-  }, [restaurantId])
+  }, [])
 
   return (
     <UpdateFormsContainer>
@@ -188,16 +191,16 @@ const UpdateRestaurantForm = () => {
             />
           </div>
           <div className="max-w-[50%] w-[350px] rounded-[20px] border overflow-hidden">
-            {restaurantData.image && (
+            {restaurantData.icon && (
               <img
-                src={restaurantData?.image}
+                src={restaurantData?.icon.route}
                 alt=""
                 className="w-[100%] h-full bg-cover"
               />
             )}
           </div>
         </div>
-        <RestaurantImagesSlider images={restaurantData.images} />
+        <RestaurantImagesSlider images={restaurantData?.photos} />
         <PreviousDataDisplay
           label={"Описание:"}
           value={restaurantData.description}
@@ -211,6 +214,10 @@ const UpdateRestaurantForm = () => {
           />
           <PreviousDataDisplay label={"Город:"} value={restaurantData.city} />
         </div>
+        <PreviousDataDisplay
+          label={"Номер телефона:"}
+          value={restaurantData.phone}
+        />
         <PreviousDataDisplay
           label={"Сервис:"}
           value={

@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from "react"
+import { axios } from "@lib/axios"
 
 import TableCard from "./components/TableCard"
 import SortByCategoryContainer from "@components/SortByCategoryContainer/SortByCategoryContainer"
@@ -6,34 +7,53 @@ import ChooseTime from "./components/ChooseTime"
 
 import Pagination from "@components/Pagination/Pagination"
 
-import { getAllTablesRequest } from "../../../api"
+import { getAllTablesRequest, getTableCategoriesRequest } from "../../../api"
 import { UIContext } from "src/shared/context/UIContext"
-
-const sortLists = [
-  "Сортировать в этом разделе",
-  "Все",
-  "Малый зал",
-  "Банкетный зал",
-  "Основной зал",
-  "Терраса",
-]
 
 const TableReservation = ({ restaurantId, getTableId }) => {
   const { setIsLoading } = useContext(UIContext)
-  const [timeFilter, setTimeFilter] = useState({ from: "", to: "" })
   const [tables, setTables] = useState([])
   const [selectedTableId, setSelectedTableId] = useState("")
+  const [categories, setCategories] = useState([])
 
   const [totalItems, setTotalItems] = useState(0)
+
+  const [filter, setFilter] = useState({
+    date: "",
+  })
 
   const [params, setParams] = useState({
     pageIndex: 1,
     limit: 8,
+    q: "",
   })
 
   useEffect(() => {
     setIsLoading(true)
-    getAllTablesRequest({restaurantId, params})
+    const cancelTokenSource = axios.CancelToken.source()
+    getTableCategoriesRequest({
+      restaurantId,
+      cancelToken: cancelTokenSource.token,
+    })
+      .then(({ data }) => {
+        setCategories(data)
+      })
+      .catch((error) => console.log(error))
+      .finally(setIsLoading(false))
+
+    return () => {
+      cancelTokenSource.cancel()
+    }
+  }, [])
+
+  useEffect(() => {
+    setIsLoading(true)
+    const cancelTokenSource = axios.CancelToken.source()
+    getAllTablesRequest({
+      restaurantId,
+      params,
+      cancelToken: cancelTokenSource.token,
+    })
       .then((res) => {
         if (res.data === null) setTables([])
         else {
@@ -48,15 +68,22 @@ const TableReservation = ({ restaurantId, getTableId }) => {
       })
       .catch((error) => console.log(error))
       .finally(setIsLoading(false))
-  }, [params])
+
+    return () => {
+      cancelTokenSource.cancel()
+    }
+  }, [params, filter])
 
   return (
     <>
-      <ChooseTime />
+      <ChooseTime getFilter={() => {}}/>
       <div className="px-[180px] max-2xl:px-[80px] max-lg:px-[20px]">
         <SortByCategoryContainer
-          sortList={sortLists}
+          categories={categories}
           className={"mt-[50px] px-0"}
+          getCategory={(value) => {
+            setParams((prev) => ({ ...prev, q: value }))
+          }}
         />
         <div className="grid grid-cols-4 justify-between gap-[30px] mt-[50px] max-2xl:grid-cols-3 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1">
           {tables.map((table) => (
@@ -64,10 +91,10 @@ const TableReservation = ({ restaurantId, getTableId }) => {
               key={table.id}
               tableData={table}
               getTableId={(id) => {
-								setSelectedTableId(id)
+                setSelectedTableId(id)
                 getTableId(id)
               }}
-							selectedTableId={selectedTableId}
+              selectedTableId={selectedTableId}
             />
           ))}
         </div>

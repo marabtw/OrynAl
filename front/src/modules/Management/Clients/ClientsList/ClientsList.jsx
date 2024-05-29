@@ -36,6 +36,7 @@ const ClientsList = () => {
       })
       .catch((err) => {
         if (axios.isCancel(err)) {
+					setClients([])
           showNotification("Запрос был отменен", "warning")
         } else {
           showNotification(err.toString(), "error")

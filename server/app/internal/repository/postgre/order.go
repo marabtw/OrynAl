@@ -46,10 +46,22 @@ func (r *OrderRepository) CreateOrder(ctx context.Context, order *model.Order) (
 		return nil, err
 	}
 
+	var rest model.Restaurant
+	if err := r.DB.WithContext(ctx).Table("restaurants").Where("id = ?", order.RestaurantID).First(&rest).Error; err != nil {
+		return nil, err
+	}
+	orderResponse.Restaurant = rest
+
+	var table model.Table
+	if err := r.DB.WithContext(ctx).Table("tables").Where("id = ?", order.TableID).First(&table).Error; err != nil {
+		return nil, err
+	}
+	orderResponse.Table = table
+
 	var orderFoods []model.OrderFoodResponse
 	for _, foodID := range order.OrderFoods {
 		var food model.Food
-		if err := r.DB.WithContext(ctx).Where("id = ?", foodID).First(&food).Error; err != nil {
+		if err := r.DB.WithContext(ctx).Table("foods").Where("id = ?", foodID).First(&food).Error; err != nil {
 			continue
 		}
 		orderFoods = append(orderFoods, model.OrderFoodResponse{
@@ -129,6 +141,21 @@ func (r *OrderRepository) GetAllOrders(ctx context.Context, userID uint, params 
 
 	if err := query.Find(&orders).Error; err != nil {
 		return nil, err
+	}
+
+	for i := 0; i < len(orders); i++ {
+		var rest model.Restaurant
+		if err := r.DB.WithContext(ctx).Table("restaurants").Where("id = ?", orders[i].RestaurantID).First(&rest).Error; err != nil {
+			return nil, err
+		}
+		orders[i].Restaurant = rest
+
+		var table model.Table
+		if err := r.DB.WithContext(ctx).Table("tables").Where("id = ?", orders[i].TableID).First(&table).Error; err != nil {
+			return nil, err
+		}
+		orders[i].Table = table
+
 	}
 
 	return &model.ListResponse{

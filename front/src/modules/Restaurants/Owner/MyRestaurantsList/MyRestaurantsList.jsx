@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { axios } from "@lib/axios"
 
 import { getAllRestaurantsRequest } from "../../api"
@@ -9,11 +9,8 @@ import { isArraysEqualByIdWithSet } from "@utils/index"
 import Pagination from "@components/Pagination/Pagination"
 import RestaurantCard from "./components/MyRestaurantCard"
 import { Grid1x2Icon, Grid2x2Icon } from "@ui/icons/icons"
-import { AuthContext } from "@context/AuthContext"
 
 const MyRestaurantsList = () => {
-  const { isAuthed,user } = useContext(AuthContext)
-	console.log(user)
   const setLoading = useLoading()
   const showNotification = useToast()
 
@@ -49,6 +46,7 @@ const MyRestaurantsList = () => {
         if (axios.isCancel(err)) {
           showNotification("Запрос был отменен", "warning")
         } else {
+					setMyRestaurants([])
           showNotification(err.toString(), "error")
         }
       })
@@ -57,7 +55,7 @@ const MyRestaurantsList = () => {
     return () => {
       cancelTokenSource.cancel()
     }
-  }, [params, isAuthed])
+  }, [params])
 
   return (
     <>

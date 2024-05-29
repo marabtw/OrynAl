@@ -37,6 +37,7 @@ const OwnersList = () => {
       })
       .catch((err) => {
         if (axios.isCancel(err)) {
+					setOwners([])
           showNotification("Запрос был отменен", "warning")
         } else {
           showNotification(err.toString(), "error")

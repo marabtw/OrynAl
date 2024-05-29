@@ -67,6 +67,7 @@ const RestaurantsList = () => {
       const { data } = await getByAdminAllRestaurantsRequest(params)
       updateRestaurantsList(data)
     } catch (error) {
+			setRestaurants([])
       showNotification(error.toString(), "error")
     } finally {
       setLoading(false)

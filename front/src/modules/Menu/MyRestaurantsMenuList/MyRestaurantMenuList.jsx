@@ -29,8 +29,8 @@ const MyRestaurantMenuList = ({ restaurantId }) => {
   const showNotification = useToast()
 
   const [menu, setMenu] = useState([])
-  const [currentCategory, setCurrentCategory] = useState("")
 
+  const [totalPage, setTotalPage] = useState(0)
   const [params, setParams] = useState({
     pageIndex: 1,
     limit: 10,
@@ -56,6 +56,8 @@ const MyRestaurantMenuList = ({ restaurantId }) => {
             })
           )
         )
+        const newTotalPage = Math.ceil(data?.totalItems / params.limit) || 0
+        if (totalPage !== newTotalPage) setTotalPage(newTotalPage)
         showNotification("Данные успешно загружены", "success")
       })
       .catch((err) => {
@@ -122,10 +124,19 @@ const MyRestaurantMenuList = ({ restaurantId }) => {
           />
         ))
       ) : (
-        <div className="flex justify-center items-center text-[#b0b0b0]">
+        <p className="flex justify-center items-center text-[#b0b0b0]">
           No menu items
-        </div>
+        </p>
       )}
+      <Pagination
+        totalPage={totalPage}
+        getCurrentPage={(index) => {
+          if (params.pageIndex === index) return
+          setParams((prev) => {
+            return { ...prev, pageIndex: index }
+          })
+        }}
+      />
     </ul>
   )
 }

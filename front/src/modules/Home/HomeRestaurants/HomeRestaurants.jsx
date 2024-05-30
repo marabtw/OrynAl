@@ -3,7 +3,7 @@ import { axios } from "@lib/axios"
 
 import {
   getAllRestaurantsRequest,
-  getAllPopularRestaurantsRequest
+  getAllPopularRestaurantsRequest,
 } from "../api/index"
 
 import { useLoading, useToast } from "@hooks"
@@ -24,6 +24,7 @@ const HomeRestaurants = React.forwardRef((props, ref) => {
   const [restaurantsParams, setRestaurantsParams] = useState({
     pageIndex: 1,
     limit: 6,
+    q: "",
   })
   const [popularRestaurantsParams, setPopularRestaurantsParams] = useState({
     pageIndex: 1,
@@ -76,13 +77,10 @@ const HomeRestaurants = React.forwardRef((props, ref) => {
   }, [restaurantsParams])
 
   useEffect(() => {
-    loadRestaurants(
-      getAllPopularRestaurantsRequest,
-      popularRestaurantsParams,
-      setPopularRestaurants,
-      setPopularRestaurantsTotalPage
-    )
-  }, [popularRestaurantsParams])
+    getAllPopularRestaurantsRequest({})
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err))
+  }, [])
 
   return (
     <div ref={ref} className="mt-[70px] px-[100px] max-xl:px-[20px]">

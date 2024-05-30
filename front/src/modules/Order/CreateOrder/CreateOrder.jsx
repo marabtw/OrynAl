@@ -29,7 +29,7 @@ const CreateOrder = ({ restaurantId }) => {
 
   useEffect(() => {
     const totalSum = dataForCreateOrder.foods.reduce(
-      (acc, item) => acc + item.itemTotalPrice,
+      (acc, item) => acc + item?.itemTotalPrice,
       0
     )
 
@@ -113,19 +113,19 @@ const CreateOrder = ({ restaurantId }) => {
           restaurantId={restaurantId}
           getFoodForCart={getFoodForCart}
           selectedFoodsId={
-            dataForCreateOrder?.foods.length > 0
-              ? dataForCreateOrder.foods.map((food) => food.id)
+            dataForCreateOrder?.foods?.length > 0
+              ? dataForCreateOrder.foods.map((food) => food?.id)
               : []
           }
         />
-        {/* <Cart
+        <Cart
           show={showCart}
           foodsInCart={
             dataForCreateOrder?.foods.length > 0 ? dataForCreateOrder.foods : []
           }
           updateCart={setDataForCreateOrder}
           createOrder={createOrder}
-        /> */}
+        />
       </div>
       <div
         className="fixed z-[99999] w-[70px] h-[70px] bottom-[1%] right-[5%] p-[15px] border border-transparent rounded-full cursor-pointer bg-gray-800

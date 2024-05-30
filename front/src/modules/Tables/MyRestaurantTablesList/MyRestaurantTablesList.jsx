@@ -45,7 +45,6 @@ const MyRestaurantTablesList = ({ restaurantId }) => {
     })
       .then(({ data }) => {
         updateTablesList(data)
-        showNotification("getted", "success")
       })
       .catch((err) => {
         if (axios.isCancel(err)) {

@@ -2,7 +2,7 @@ import { getAllCities, getTimes } from "../../../api"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
 import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
-import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
+import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/FormSelectWrapper"
 
 import FormCheckbox from "@ui/Field/FormCheckbox"
 import FormSelect from "@ui/Select/FormSelect"
@@ -10,36 +10,51 @@ import FormSelect from "@ui/Select/FormSelect"
 const Form = ({ services, restaurantData, setDataForUpdate }) => {
   const handleChange = (key, value) => {
     setDataForUpdate((prevState) => {
-      if (Array.isArray(restaurantData[key]) && key === "services") {
-        const existingIndex = prevState[key].findIndex(
-          (item) => item.id === value.id
-        )
-        if (existingIndex !== -1) {
-          return {
-            ...prevState,
-            [key]: prevState[key].filter((_, index) => index !== existingIndex),
-          }
-        } else {
-          return {
-            ...prevState,
-            [key]: [...prevState[key], value],
-          }
-        }
-      } else if (key === "icon") {
+      // Обработка иконки
+      if (key === "icon") {
         return {
           ...prevState,
           [key]: value[0] || {},
         }
-      } else if (typeof value === "boolean") {
+      }
+
+      // Обработка фотографий
+      if (key === "photos") {
+        return {
+          ...prevState,
+          [key]: value?.length > 0 ? value : [],
+        }
+      }
+
+      // Обработка булевых значений
+      if (typeof value === "boolean") {
         return {
           ...prevState,
           [key]: value,
         }
-      } else {
+      }
+
+      // Обработка сервисов
+      if (key === "services") {
+        const existingService = prevState[key]?.some(
+          (item) => item.id === value.id
+        )
+        const updatedServices = existingService
+          ? prevState[key].filter((item) => item.id !== value.id)
+          : prevState[key]
+          ? [...prevState[key], value]
+          : [value]
+
         return {
           ...prevState,
-          [key]: value ? value : restaurantData[key],
+          [key]: updatedServices.length > 0 ? updatedServices : null,
         }
+      }
+
+      // Обработка всех остальных случаев
+      return {
+        ...prevState,
+        [key]: value ? value : restaurantData[key],
       }
     })
   }
@@ -73,7 +88,7 @@ const Form = ({ services, restaurantData, setDataForUpdate }) => {
           currentPhoto={restaurantData.photos}
           multiple={true}
           getFiles={(files) => {
-            handleChange("photo", files)
+            handleChange("photos", files)
           }}
         />
       </div>

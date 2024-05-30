@@ -31,7 +31,6 @@ const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
     })
       .then(({ data }) => {
         setCategories(data)
-        showNotification("Успешно", "success")
       })
       .catch((err) => {
         if (axios.isCancel(err)) {
@@ -55,7 +54,6 @@ const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
     })
       .then(({ data }) => {
         setMenu(data.items)
-        showNotification("Успешно", "success")
       })
       .catch((err) => {
         if (axios.isCancel(err)) {

@@ -10,7 +10,7 @@ const TableCard = ({ tableData, getTableId, selectedTableId }) => {
       ></div>
       <div className="w-[180px] aspect-square rounded-full overflow-hidden">
         {tableData.photo ? (
-          <img src={tableData.photo.route} alt="icon" className="w-full" />
+          <img src={tableData.photo.route} alt="icon" className="h-full aspect-square object-cover" />
         ) : (
           <div className="w-full h-full bg-slate-100"></div>
         )}

@@ -13,12 +13,13 @@ import {
   getAllServicesRequest,
 } from "../../api"
 
-import { useLoading, useToast } from "@hooks"
+import { useCloudinary, useLoading, useToast } from "@hooks"
 import { removeWildcard } from "@helpers"
 import {
   isObjectEqual,
   formatTimeString,
   isArraysEqualByIdWithSet,
+  isObjectEmpty,
 } from "@utils"
 
 import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
@@ -28,6 +29,7 @@ import RestaurantImagesSlider from "./components/RestaurantImagesSlider"
 import Button from "@ui/Button/Button"
 
 const UpdateRestaurantForm = () => {
+  const { upload } = useCloudinary()
   const { restaurantId } = useParams()
   const navigate = useNavigate()
   const setLoading = useLoading()
@@ -112,11 +114,19 @@ const UpdateRestaurantForm = () => {
       cancelTokenSource1.cancel()
       cancelTokenSource2.cancel()
     }
-  }, [restaurantId])
+  }, [])
 
-  const handleUpdateRestaurantData = useCallback(() => {
+  const handleUpdateRestaurantData = async () => {
     if (isObjectEqual(dataForUpdate, restaurantData)) {
       showNotification("Данные не изменились", "info")
+      return
+    }
+    if (isObjectEmpty(dataForUpdate.icon)) {
+      showNotification("Нету иконки", "warning")
+      return
+    }
+    if (dataForUpdate?.photos?.length < 1) {
+      showNotification("Нету фотографий", "warning")
       return
     }
 
@@ -136,18 +146,43 @@ const UpdateRestaurantForm = () => {
             ROUTERS.Restaurant.myRestaurants
           }`
 
-    updateRequest(restaurantId, dataForUpdate)
-      .then(() => {
-        showNotification("Успешно обновлено", "success")
-        navigate(navigateAfter)
-      })
-      .catch((err) => {
-        showNotification(err.toString(), "error")
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [user.role, dataForUpdate])
+    try {
+      const photosForUpload = dataForUpdate?.photos?.filter(
+        (photo) => photo.file
+      )
+
+      let photos = null
+      if (photosForUpload.length > 0) {
+        const uploadedPhotos = await upload(photosForUpload)
+        photos = uploadedPhotos.map((photo) => ({
+          route: photo.secure_url,
+        }))
+      }
+
+      let icon = null
+      if (!isObjectEqual(dataForUpdate.icon, restaurantData.icon)) {
+        const uploadedIcon = await upload([dataForUpdate.icon])
+        icon = {
+          route: uploadedIcon[0].secure_url,
+        }
+      }
+
+      const status = (
+        await updateRequest(restaurantId, {
+          ...dataForUpdate,
+          photos: photos || dataForUpdate.photos,
+          icon: icon || dataForUpdate.icon,
+        })
+      ).status
+
+      status === 201 && showNotification("Успешно обновлено", "success")
+      navigate(navigateAfter)
+    } catch (err) {
+      showNotification(err.toString(), "error")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleDeleteRestaurantData = useCallback(() => {
     setLoading(true)
@@ -195,7 +230,7 @@ const UpdateRestaurantForm = () => {
               <img
                 src={restaurantData?.icon.route}
                 alt=""
-                className="w-[100%] h-full bg-cover"
+                className="w-[100%] h-full object-cover"
               />
             )}
           </div>

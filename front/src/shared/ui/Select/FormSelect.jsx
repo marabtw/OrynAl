@@ -5,18 +5,18 @@ const SelectItems = ({
   options = [],
   placeholderIcon = false,
   onChange,
-	defaultValueIndex
+  defaultValueIndex,
 }) => {
   const customStyles = {
     container: (provided, state) => ({
       ...provided,
       width: "100%",
-			height: "100%",
+      height: "100%",
     }),
     control: (provided, state) => ({
       ...provided,
       width: "100%",
-			height: "100%",
+      height: "100%",
       border: "3px solid #EBEBEB",
       borderRadius: "20px",
       cursor: "pointer",
@@ -44,6 +44,8 @@ const SelectItems = ({
     }),
   }
 
+  const defaultValue = options[defaultValueIndex] || null
+
   return (
     <div className="h-[80px] max-md:h-[60px] max-sm:h-[50px] max-md:text-[14px]">
       <Select
@@ -51,7 +53,7 @@ const SelectItems = ({
         styles={customStyles}
         placeholder={`${placeholder} ${placeholderIcon ? "▼" : ""}`}
         onChange={(e) => onChange(e.value)}
-				defaultValue={defaultValueIndex !== undefined ? options[defaultValueIndex] : ""}
+        defaultValue={defaultValue}
       />
     </div>
   )

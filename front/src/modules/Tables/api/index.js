@@ -40,7 +40,7 @@ export const getByOwnerTableRequest = async ({
   const response = await myApi.get(
     `/api/restaurants/${restaurantId}/tables/${tableId}`,
     {
-      cancelToken: cancelToken ? cancelToken.token : undefined,
+      cancelToken: cancelToken ? cancelToken : undefined,
     }
   )
   return response.data

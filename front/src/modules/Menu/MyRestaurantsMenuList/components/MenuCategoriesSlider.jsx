@@ -52,17 +52,31 @@ const MenuCategoriesSlider = ({ restaurantId, getCategory = () => {} }) => {
           loop={false}
           className="h-[40px]"
         >
+          <SwiperSlide
+            onClick={() => {
+              setActiveIndex(0)
+              getCategory("")
+            }}
+          >
+            <div
+              className={`flex justify-center items-center w-full h-full px-[20px] text-center text-[16px] font-semibold rounded-xl ${
+                0 === activeIndex ? "bg-[#6aa7fc] text-white" : ""
+              }`}
+            >
+              {"Все"}
+            </div>
+          </SwiperSlide>
           {categories?.map((category, index) => (
             <SwiperSlide
               key={category}
               onClick={() => {
-                setActiveIndex(index)
+                setActiveIndex(index + 1)
                 getCategory(category)
               }}
             >
               <div
                 className={`flex justify-center items-center w-full h-full px-[20px] text-center text-[16px] font-semibold rounded-xl ${
-                  index === activeIndex ? "bg-[#6aa7fc] text-white" : ""
+                  index + 1 === activeIndex ? "bg-[#6aa7fc] text-white" : ""
                 }`}
               >
                 {category}

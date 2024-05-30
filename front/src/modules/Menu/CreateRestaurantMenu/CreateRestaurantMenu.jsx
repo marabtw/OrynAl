@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { ROUTERS } from "@router/Router.config"
@@ -9,7 +9,7 @@ import { removeWildcard } from "@helpers"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
 import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
-import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
+import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/FormSelectWrapper"
 import Button from "@ui/Button/Button"
 import { isObjectEmpty } from "@utils/index"
 
@@ -28,44 +28,13 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
     photo: {},
   })
 
-  const handleChange = (key, value) => {
-    setDataForCreate((prevState) => {
-      if (Array.isArray(dataForCreate[key]) && key === "services") {
-        const existingIndex = prevState[key].findIndex(
-          (item) => item.id === value.id
-        )
-        if (existingIndex !== -1) {
-          return {
-            ...prevState,
-            [key]: prevState[key].filter((_, index) => index !== existingIndex),
-          }
-        } else {
-          return {
-            ...prevState,
-            [key]: [...prevState[key], value],
-          }
-        }
-      } else if (key === "photo") {
-        return {
-          ...prevState,
-          [key]: value[0] || {},
-        }
-      } else {
-        return {
-          ...prevState,
-          [key]: value,
-        }
-      }
-    })
-  }
-
   const isFormValid = () => {
     return (
-      isObjectEmpty(dataForCreate.photo) &&
+      !isObjectEmpty(dataForCreate.photo) &&
       dataForCreate.name &&
       dataForCreate.type &&
       dataForCreate.description &&
-      dataForCreate.price > 0
+      dataForCreate?.price > 0
     )
   }
 
@@ -85,12 +54,8 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
     }
 
     try {
-      const uploadedIcon = await upload(
-        [dataForCreate.photo]
-        // transformationSettings
-      )
+      const uploadedIcon = await upload([dataForCreate.photo.file])
       const photo = {
-        // publicId: uploadedIcon[0].public_id,
         route: uploadedIcon[0].secure_url,
       }
 
@@ -99,17 +64,17 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
         photo,
       }
 
-      await createMenuFood(updatedDataForCreate)
-    } catch (error) {
-      showNotification("Ошибка при создании ресторана", "error")
-      console.error("Error creating restaurant:", error)
+      const status = (await createMenuFood(updatedDataForCreate)).status
+      status === 201 && showNotification("Ресторан успешно создан", "success")
+    } catch (err) {
+      showNotification(`Ошибка при создании ресторана: ${err}`, "error")
     } finally {
       setLoading(false)
     }
   }
 
   const createMenuFood = async (data) => {
-    createByOwnerMenuItemRequest(restaurantId, data)
+    createByOwnerMenuItemRequest({ restaurantId, body: data })
       .then(() => {
         showNotification("Успешно создан", "success")
         navigate(
@@ -119,7 +84,32 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
         )
       })
       .catch((err) => showNotification(err.toString(), "error"))
-      .finally(() => setLoading(false))
+  }
+
+  const handleChange = (key, value) => {
+    setDataForCreate((prevState) => {
+      // Обработка иконки
+      if (key === "photo") {
+        return {
+          ...prevState,
+          [key]: value[0] || {},
+        }
+      }
+
+      // Обработка булевых значений
+      if (typeof value === "boolean") {
+        return {
+          ...prevState,
+          [key]: value,
+        }
+      }
+
+      // Обработка всех остальных случаев
+      return {
+        ...prevState,
+        [key]: value,
+      }
+    })
   }
 
   return (
@@ -168,8 +158,8 @@ const CreateRestaurantMenu = ({ restaurantId }) => {
           label={"Доступность"}
           placeholder={"Доступен"}
           options={[
-            { label: "Доступен", value: "Доступен" },
-            { label: "Не доступен", value: "Не доступен" },
+            { label: "Доступен", value: true },
+            { label: "Не доступен", value: false },
           ]}
           onChange={(value) => {
             handleChange("available", value)

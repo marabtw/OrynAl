@@ -40,6 +40,8 @@ const Search = () => {
           }
           if (options?.length > 0) setOptions([])
         })
+    } else {
+      setOptions([])
     }
 
     return () => {
@@ -107,7 +109,7 @@ const Search = () => {
             showNotification("Вы не авторизованы", "info")
           }
           setSearchQuery("")
-					setOptions([])
+          setOptions([])
         }}
         onInputChange={(e) => {
           setSearchQuery(e.trim())

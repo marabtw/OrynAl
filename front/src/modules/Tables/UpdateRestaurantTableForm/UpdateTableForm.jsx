@@ -9,8 +9,8 @@ import {
   deleteByOwnerTableRequest,
 } from "../api"
 
-import { useLoading, useToast } from "@hooks"
-import { isObjectEqual } from "@utils/index"
+import { useCloudinary, useLoading, useToast } from "@hooks"
+import { isObjectEmpty, isObjectEqual } from "@utils/index"
 import { removeWildcard } from "@helpers"
 
 import PreviousDataDisplay from "@components/PreviousDataDisplay/PreviousDataDisplay"
@@ -19,8 +19,9 @@ import Form from "./components/Form"
 import Button from "@ui/Button/Button"
 
 const UpdateTableForm = ({ restaurantId }) => {
-  const navigate = useNavigate()
   const { tableId } = useParams()
+  const { upload } = useCloudinary()
+  const navigate = useNavigate()
   const setLoading = useLoading()
   const showNotification = useToast()
 
@@ -30,16 +31,17 @@ const UpdateTableForm = ({ restaurantId }) => {
     type: "",
     description: "",
     capacity: 0,
+    photo: {},
   })
 
   useEffect(() => {
     setLoading(true)
-    const cancelToken = axios.CancelToken.source()
+    const cancelTokenSource = axios.CancelToken.source()
 
-    getByOwnerTableRequest({ restaurantId, tableId, cancelToken })
+    getByOwnerTableRequest({ restaurantId, tableId, cancelToken: cancelTokenSource.token })
       .then(({ data }) => {
         setTableData(data)
-        showNotification("getted", "success")
+        setDataForUpdate(data)
       })
       .catch((err) => {
         if (axios.isCancel(err)) {
@@ -53,49 +55,60 @@ const UpdateTableForm = ({ restaurantId }) => {
       })
 
     return () => {
-      cancelToken.cancel()
+      cancelTokenSource.cancel()
     }
-  }, [tableId])
+  }, [])
 
-  const updateTableData = () => {
-    const updatedData = {
-      ...tableData,
-      ...Object.entries(dataForUpdate).reduce((acc, [key, value]) => {
-        if (value !== "") {
-          acc[key] = value
-        }
-        return acc
-      }, {}),
-    }
-    if (isObjectEqual(updatedData, tableData)) {
+  const handleUpdateTable = async () => {
+    if (isObjectEqual(dataForUpdate, tableData)) {
       showNotification("Данные не изменились", "info")
+      return
+    }
+    if (isObjectEmpty(dataForUpdate.photo)) {
+      showNotification("Нету иконки", "warning")
       return
     }
 
     setLoading(true)
 
-    updateByOwnerTableRequest({ restaurantId, tableId, updatedData })
-      .then(() => {
-        showNotification("Успешно обновлено", "success")
-        navigate(
-          `${removeWildcard(
-            ROUTERS.RestaurantTable.root.replace(":restaurantId", restaurantId)
-          )}${ROUTERS.RestaurantTable.myRestaurantTables}`
-        )
-      })
-      .catch((err) => {
-        showNotification(err.toString(), "error")
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    try {
+      let photo = null
+      if (!isObjectEqual(dataForUpdate.photo, tableData.photo)) {
+        const uploadedPhoto = await upload([dataForUpdate.photo])
+        photo = {
+          route: uploadedPhoto[0].secure_url,
+        }
+      }
+
+      const status = (
+        await updateByOwnerTableRequest({
+          restaurantId,
+          tableId,
+          body: {
+            ...dataForUpdate,
+            photo: photo || dataForUpdate.photo,
+          },
+        })
+      ).status
+
+      status === 201 && showNotification("Успешно обновлено", "success")
+      navigate(
+        `${removeWildcard(
+          ROUTERS.RestaurantTable.root.replace(":restaurantId", restaurantId)
+        )}${ROUTERS.RestaurantTable.myRestaurantTables}`
+      )
+    } catch (err) {
+      showNotification(err.toString(), "error")
+    } finally {
+      setLoading(false)
+    }
   }
 
   const deleteTableData = () => {
     setLoading(true)
     deleteByOwnerTableRequest({ restaurantId, tableId })
       .then(() => {
-        showNotification("deleted", "success")
+        showNotification("Успешно удалено", "success")
         navigate(
           `${removeWildcard(
             ROUTERS.RestaurantTable.root.replace(":restaurantId", restaurantId)
@@ -126,11 +139,11 @@ const UpdateTableForm = ({ restaurantId }) => {
             />
           </div>
           <div className="max-w-[50%] w-[350px] rounded-[20px] border overflow-hidden">
-            {tableData.image ? (
+            {tableData?.photo?.route ? (
               <img
-                src={tableData.image}
+                src={tableData.photo.route}
                 alt=""
-                className="w-[100%] h-full bg-cover"
+                className="w-[100%] h-full object-cover"
               />
             ) : (
               <div className="w-[350px] border rounded-[20px]"></div>
@@ -153,7 +166,7 @@ const UpdateTableForm = ({ restaurantId }) => {
         />
       </div>
       <Form
-        update={updateTableData}
+        handleUpdateButton={handleUpdateTable}
         tableData={tableData}
         setDataForUpdate={setDataForUpdate}
       />

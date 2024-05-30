@@ -38,7 +38,7 @@ const TableReservation = ({ restaurantId, getTableId }) => {
       .then(({ data }) => {
         setCategories(data)
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {})
       .finally(setIsLoading(false))
 
     return () => {
@@ -66,7 +66,7 @@ const TableReservation = ({ restaurantId, getTableId }) => {
           setTotalItems(res.data.totalItems)
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {})
       .finally(setIsLoading(false))
 
     return () => {

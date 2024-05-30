@@ -17,7 +17,7 @@ import { isArraysEqualByIdWithSet, isObjectEmpty } from "@utils"
 
 import FormInputTextWrapper from "@components/FormComponents/FormInputTextWrapper/FormInputTextWrapper"
 import FormInputFileWrapper from "@components/FormComponents/FormInputFileWrapper/FormInputFileWrapper"
-import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper"
+import FormSelectWrapper from "@components/FormComponents/FormSelectWrapper/FormSelectWrapper"
 
 import Button from "@ui/Button/Button"
 import FormSelect from "@ui/Select/FormSelect"
@@ -46,13 +46,17 @@ const CreateRestaurantForm = () => {
   const [owners, setOwners] = useState([])
   const [services, setServices] = useState([])
 
+  useEffect(() => {
+    console.log(dataForCreate)
+  }, [dataForCreate])
+
   const uploadImages = async () => {
     if (!isFormValid()) {
       showNotification("Форма невалидна", "warning")
       return
     }
 
-    setLoading(true)
+		setLoading(true)
 
     const transformationSettings = {
       width: 100,
@@ -62,17 +66,15 @@ const CreateRestaurantForm = () => {
     }
 
     try {
-      const uploadedPhotos = await upload(dataForCreate.photos)
+      const uploadedPhotos = await upload(
+        dataForCreate.photos.map((photo) => photo.file)
+      )
       const photos = uploadedPhotos.map((photo) => ({
-        // publicId: photo.public_id,
         route: photo.secure_url,
       }))
 
-      const uploadedIcon = await upload(
-        [dataForCreate.icon],
-      )
+      const uploadedIcon = await upload([dataForCreate.icon.file])
       const icon = {
-        // publicId: uploadedIcon[0].public_id,
         route: uploadedIcon[0].secure_url,
       }
 
@@ -82,7 +84,8 @@ const CreateRestaurantForm = () => {
         icon,
       }
 
-      await createRestaurant(updatedDataForCreate)
+      const status = (await createRestaurant(updatedDataForCreate)).status
+      status === 201 && showNotification("Ресторан успешно создан", "success")
     } catch (error) {
       showNotification("Ошибка при создании ресторана", "error")
       console.error("Error creating restaurant:", error)
@@ -93,7 +96,7 @@ const CreateRestaurantForm = () => {
 
   const isFormValid = () => {
     return (
-      isObjectEmpty(dataForCreate.icon) &&
+      !isObjectEmpty(dataForCreate.icon) &&
       dataForCreate.photos?.length > 0 &&
       dataForCreate.name &&
       dataForCreate.address &&
@@ -164,7 +167,7 @@ const CreateRestaurantForm = () => {
     }
   }, [])
 
-  const createRestaurant = (data) => {
+  const createRestaurant = async (data) => {
     сreateByAdminRestaurantRequest(data)
       .then(() => {
         showNotification("Ресторан успешно создан", "success")
@@ -179,31 +182,51 @@ const CreateRestaurantForm = () => {
 
   const handleChange = (key, value) => {
     setDataForCreate((prevState) => {
-      if (Array.isArray(dataForCreate[key]) && key === "services") {
-        const existingIndex = prevState[key].findIndex(
-          (item) => item.id === value.id
-        )
-        if (existingIndex !== -1) {
-          return {
-            ...prevState,
-            [key]: prevState[key].filter((_, index) => index !== existingIndex),
-          }
-        } else {
-          return {
-            ...prevState,
-            [key]: [...prevState[key], value],
-          }
-        }
-      } else if (key === "icon") {
+      // Обработка иконки
+      if (key === "icon") {
         return {
           ...prevState,
           [key]: value[0] || {},
         }
-      } else {
+      }
+
+      // Обработка фотографий
+      if (key === "photos") {
+        return {
+          ...prevState,
+          [key]: value?.length > 0 ? value : [],
+        }
+      }
+
+      // Обработка булевых значений
+      if (typeof value === "boolean") {
         return {
           ...prevState,
           [key]: value,
         }
+      }
+
+      // Обработка сервисов
+      if (key === "services") {
+        const existingService = prevState[key]?.some(
+          (item) => item.id === value.id
+        )
+        const updatedServices = existingService
+          ? prevState[key].filter((item) => item.id !== value.id)
+          : prevState[key]
+          ? [...prevState[key], value]
+          : [value]
+
+        return {
+          ...prevState,
+          [key]: updatedServices.length > 0 ? updatedServices : null,
+        }
+      }
+
+      // Обработка всех остальных случаев
+      return {
+        ...prevState,
+        [key]: value,
       }
     })
   }

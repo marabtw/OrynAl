@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react"
 
 import "swiper/css"
 import "swiper/css/pagination"
+import { useToast } from "@hooks"
 
 //always return array
 const FormInputFile = ({
@@ -13,51 +14,57 @@ const FormInputFile = ({
   multiple,
   getFiles = () => console.log("Didn't give a function"),
   currentPhoto,
+  fileSizeLimit = 1,
 }) => {
+  const showNotification = useToast()
   const id = uuidv4()
-  // const [selectedFiles, setSelected]
   const [temporaryFilesForShow, setTemporaryFilesForShow] = useState([])
-  const [filesForExport, setFilesForExport] = useState([])
-
-  console.log(currentPhoto)
 
   useEffect(() => {
-    console.log(temporaryFilesForShow)
+    setTemporaryFilesForShow(
+			Array.isArray(currentPhoto) ? currentPhoto : currentPhoto ? [currentPhoto] : []
+    )
+  }, [currentPhoto])
+
+  useEffect(() => {
+    getFiles(temporaryFilesForShow)
   }, [temporaryFilesForShow])
-
-  useEffect(() => {
-    getFiles(filesForExport)
-  }, [filesForExport])
 
   const handleFileChange = (event) => {
     const files = event.target.files
     const newTemporaryFilesForShow = []
-    const newFilesForExport = []
 
     for (let i = 0; i < files.length; i++) {
-      if (files[i].size <= 5000000 && files[i].type.startsWith("image/")) {
-        newTemporaryFilesForShow.push(URL.createObjectURL(files[i]))
-        newFilesForExport.push(files[i])
+      if (
+        files[i].size <= fileSizeLimit * 1000000 &&
+        files[i].type.startsWith("image/")
+      ) {
+        newTemporaryFilesForShow.push({
+          id: uuidv4(),
+          route: URL.createObjectURL(files[i]),
+          file: files[i],
+        })
       } else {
-        console.log(
-          `File ${files[i].name} is either not an image or exceeds the size limit of 5MB`
+        showNotification(
+          `Размер файла: ${files[i].name} превышает ${fileSizeLimit}MB`,
+          "warning"
         )
       }
     }
 
-    setTemporaryFilesForShow(newTemporaryFilesForShow)
-    setFilesForExport(newFilesForExport)
+    setTemporaryFilesForShow(
+      multiple
+        ? [...temporaryFilesForShow, ...newTemporaryFilesForShow]
+        : newTemporaryFilesForShow
+    )
   }
 
   const deleteTemporaryFile = (index) => {
     if (index === null) return
     const newTemporaryFilesForShow = [...temporaryFilesForShow]
-    URL.revokeObjectURL(newTemporaryFilesForShow[index])
+    URL.revokeObjectURL(newTemporaryFilesForShow[index.route])
     newTemporaryFilesForShow.splice(index, 1)
     setTemporaryFilesForShow(newTemporaryFilesForShow)
-    const newFilesForExport = [...filesForExport]
-    newFilesForExport.splice(index, 1)
-    setFilesForExport(newFilesForExport)
   }
 
   return (
@@ -78,7 +85,7 @@ const FormInputFile = ({
 			border-dashed border-[3px] border-[#ebebeb] rounded-[20px] text-[#C6C6C6] select-none cursor-pointer
 			hover:border-[#60aafc] hover:text-[#60aafc] max-md:text-[14px]"
         >
-          <span className="">+</span>
+          <span>+</span>
           <span>{placeholder}</span>
         </div>
       </label>
@@ -92,7 +99,7 @@ const FormInputFile = ({
           >
             {temporaryFilesForShow.map((file, index) => (
               <SwiperSlide
-                key={index}
+                key={file?.id}
                 style={{
                   overflow: "visible",
                   transition: "z-index 0s ease 0.05s",
@@ -119,7 +126,7 @@ const FormInputFile = ({
                     <CrossIcon />
                   </div>
                   <img
-                    src={file}
+                    src={file?.route}
                     alt={""}
                     className="hover:scale-[5] transition-all duration-150 rounded-lg"
                   />

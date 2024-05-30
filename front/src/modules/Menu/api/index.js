@@ -18,9 +18,16 @@ export const getRestaurantMenuRequest = async ({
   })
   return response.data
 }
-export const getByOwnerMenuItemRequest = async (restaurantId, foodId) => {
+export const getByOwnerMenuItemRequest = async ({
+  restaurantId,
+  foodId,
+  cancelToken,
+}) => {
   const response = await myApi.get(
-    `/api/restaurants/${restaurantId}/menu/${foodId}`
+    `/api/restaurants/${restaurantId}/menu/${foodId}`,
+    {
+      cancelToken: cancelToken ? cancelToken : undefined,
+    }
   )
   return response.data
 }
@@ -36,18 +43,18 @@ export const getByOwnerMenuCategoriesRequest = async ({
   )
   return response.data
 }
-export const createByOwnerMenuItemRequest = async (restaurantId, body) => {
+export const createByOwnerMenuItemRequest = async ({ restaurantId, body }) => {
   const response = await myApi.post(
     `/api/restaurants/${restaurantId}/menu`,
     body
   )
   return response.data
 }
-export const updateByOwnerMenuItemRequest = async (
+export const updateByOwnerMenuItemRequest = async ({
   restaurantId,
   foodId,
-  body
-) => {
+  body,
+}) => {
   const response = await myApi.put(
     `/api/restaurants/${restaurantId}/menu/${foodId}`,
     body
@@ -55,7 +62,10 @@ export const updateByOwnerMenuItemRequest = async (
   return response.data
 }
 
-export const deleteByOwnerMenuItemRequest = async (restaurantId, foodId) => {
+export const deleteByOwnerMenuItemRequest = async ({
+  restaurantId,
+  foodId,
+}) => {
   const response = await myApi.delete(
     `/api/restaurants/${restaurantId}/menu/${foodId}`
   )

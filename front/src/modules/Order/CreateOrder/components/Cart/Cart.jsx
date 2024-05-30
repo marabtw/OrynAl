@@ -34,8 +34,8 @@ const Cart = ({ show, foodsInCart = [], updateCart, createOrder }) => {
         ...prev,
         foods:
           prev.foods?.length > 0
-            ? prev.foods.map((food) => {
-                if (food.id === foodId) {
+            ? prev.foods?.map((food) => {
+                if (food?.id === foodId) {
                   const newAmount = food.amount + 1
                   return {
                     ...food,

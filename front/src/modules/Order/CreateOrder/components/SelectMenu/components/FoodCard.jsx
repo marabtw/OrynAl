@@ -11,7 +11,7 @@ const FoodCard = ({ foodData = {}, getFoodForCart, selectedFoodsId = [] }) => {
           <img
             src={foodData.photo.route}
             alt={foodData.name}
-            className="w-full"
+            className="h-full aspect-square object-cover"
           />
         )}
       </div>

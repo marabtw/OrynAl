@@ -1,8 +1,57 @@
-import RestaurantItemCard from "./RestaurantItemCard"
+import { useEffect, useState } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
+import { axios } from "@lib/axios"
+
+import { useLoading, useToast } from "@hooks"
+
+import { getAllPopularRestaurantsRequest } from "../../api/index"
+import { isArraysEqualDeep } from "@utils/index"
+
+import RestaurantItemCard from "./RestaurantItemCard"
 import LinearGradientText from "@ui/LinearGradientText/LinearGradienText"
 
-const PopularRestaurants = ({ restaurants, totalPage, setParams }) => {
+const PopularRestaurants = () => {
+  const setLoading = useLoading()
+  const showNotification = useToast()
+
+  const [popularRestaurants, setPopularRestaurants] = useState([])
+
+  useEffect(() => {
+    const cancelTokenSource = axios.CancelToken.source()
+
+    fetchData(cancelTokenSource.token)
+
+    return () => {
+      cancelTokenSource.cancel()
+    }
+  }, [])
+
+  const fetchData = async (cancelToken) => {
+    setLoading(true)
+    try {
+      const { data } = await getAllPopularRestaurantsRequest({
+        cancelToken,
+      })
+
+      if (!data.items || data.items.length === 0) {
+        setPopularRestaurants([])
+        showNotification("Популярные рестораны не найдены", "info")
+      } else {
+        if (!isArraysEqualDeep(popularRestaurants, data)) {
+          setPopularRestaurants(data)
+        }
+      }
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        showNotification("Запрос был отменен", "warning")
+      } else {
+        showNotification(err.toString(), "error")
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="mt-[50px] py-[50px] flex flex-col gap-[80px] font-poppins max-md:gap-[20px] max-md:mt-[20px] max-lg:gap-[40px]">
       <div className="flex flex-col text-center gap-[30px] max-md:gap-[10px] max-xl:gap-[20px]">
@@ -25,17 +74,15 @@ const PopularRestaurants = ({ restaurants, totalPage, setParams }) => {
         navigation={false}
         className=""
       >
-        {restaurants?.lenght > 0
-          ? restaurants.map((restaurant) => (
-              <SwiperSlide key={restaurant.id}>
-                <RestaurantItemCard data={restaurant} />
-              </SwiperSlide>
-            ))
-          : [1, 2, 3, 4, 5, 6].map((i) => (
-              <SwiperSlide key={i}>
-                <div className="w-[350px] aspect-[4/5] border-2 box-border rounded-xl max-xl:w-[250px] max-md:w-[200px] max-sm:w-[130px]"></div>
-              </SwiperSlide>
-            ))}
+        {popularRestaurants?.lenght > 0 ? (
+          popularRestaurants.map((restaurant) => (
+            <SwiperSlide key={restaurant.id}>
+              <RestaurantItemCard data={restaurant} />
+            </SwiperSlide>
+          ))
+        ) : (
+          <div className="col-span-3 text-center">Популярные рестораны не найдены</div>
+        )}
       </Swiper>
     </div>
   )

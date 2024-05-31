@@ -20,13 +20,24 @@ const TableReservation = ({ restaurantId, getTableId }) => {
 
   const [filter, setFilter] = useState({
     date: "",
+    time: "",
   })
 
   const [params, setParams] = useState({
     pageIndex: 1,
     limit: 8,
     q: "",
+    date: "",
   })
+
+  useEffect(() => {
+    if (!filter.date || !filter.time) return
+    const formattedData = `${filter.date}T${filter.time}:00`
+    setParams((prev) => ({
+      ...prev,
+      date: formattedData,
+    }))
+  }, [filter])
 
   useEffect(() => {
     setIsLoading(true)
@@ -36,10 +47,21 @@ const TableReservation = ({ restaurantId, getTableId }) => {
       cancelToken: cancelTokenSource.token,
     })
       .then(({ data }) => {
-        setCategories(data)
+        setCategories([
+          {
+            forShow: "Все",
+            value: "",
+          },
+          ...data.map((item) => ({
+            forShow: item,
+            value: item,
+          })),
+        ])
       })
-      .catch((error) => {})
-      .finally(setIsLoading(false))
+      .catch((err) => {})
+      .finally(() => {
+        setIsLoading(false)
+      })
 
     return () => {
       cancelTokenSource.cancel()
@@ -54,16 +76,16 @@ const TableReservation = ({ restaurantId, getTableId }) => {
       params,
       cancelToken: cancelTokenSource.token,
     })
-      .then((res) => {
-        if (res.data === null) setTables([])
+      .then(({ data }) => {
+        if (data === null) setTables([])
         else {
           setTables(
-            res.data.items.map((owner) => {
+            data.items.map((owner) => {
               const { role, ...rest } = owner
               return rest
             })
           )
-          setTotalItems(res.data.totalItems)
+          setTotalItems(data.totalItems)
         }
       })
       .catch((error) => {})
@@ -72,30 +94,36 @@ const TableReservation = ({ restaurantId, getTableId }) => {
     return () => {
       cancelTokenSource.cancel()
     }
-  }, [params, filter])
+  }, [params])
 
   return (
     <>
-      <ChooseTime getFilter={() => {}}/>
+      <ChooseTime getFilter={setFilter} />
       <div className="px-[180px] max-2xl:px-[80px] max-lg:px-[20px]">
         <SortByCategoryContainer
           categories={categories}
-          className={"mt-[50px] px-0"}
+          className={"mt-[50px] px-0 max-lg:mt-[20px]"}
           getCategory={(value) => {
             setParams((prev) => ({ ...prev, q: value }))
           }}
         />
-        <div className="grid grid-cols-4 justify-between gap-[30px] mt-[50px] max-2xl:grid-cols-3 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1">
-          {tables.map((table) => (
-            <TableCard
-              key={table.id}
-              tableData={table}
-              getTableId={(id) => {
-                setSelectedTableId(id)
-                getTableId(id)
-              }}
-              selectedTableId={selectedTableId}
-            />
+        <div
+          className="grid grid-cols-4 gap-[30px] max-xl:grid-cols-3 max-lg:grid-cols-3 max-md:grid-cols-2
+				justify-between 
+				mt-[50px] max-lg:mt-[20px]"
+        >
+          {tables?.map((table) => (
+            <div className="flex justify-center items-center">
+              <TableCard
+                key={table.id}
+                tableData={table}
+                getTableId={(id) => {
+                  setSelectedTableId(id)
+                  getTableId(id)
+                }}
+                selectedTableId={selectedTableId}
+              />
+            </div>
           ))}
         </div>
         <Pagination

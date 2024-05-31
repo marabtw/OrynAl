@@ -1,31 +1,31 @@
 import { useState } from "react"
 import ContextMenu from "@components/ContextMenu/ContextMenu"
 import { MoreVerticalIcon } from "@ui/icons/icons"
+import { removeWildcard } from "@helpers/index"
+import { ROUTERS } from "@router/Router.config"
 
 const OrdersHistoryList = ({ order }) => {
   const [showActions, setShowActions] = useState(false)
-
-	console.log(order)
 
   const getStatus = (status) => (
     <div className="flex items-center gap-[10px] w-[50%] min-w-max">
       {(() => {
         switch (status) {
-          case "Забронирован":
+          case "booked":
             return (
               <>
                 <div className="w-[12px] h-[12px] bg-[#31A24C] rounded-full"></div>
                 <h5>Забронирован</h5>
               </>
             )
-          case "Отменен":
+          case "canceled":
             return (
               <>
                 <div className="w-[12px] h-[12px] bg-[#FF0000] rounded-full"></div>
                 <h5>Отменен</h5>
               </>
             )
-          case "Завершен":
+          case "end":
             return (
               <>
                 <div className="w-[12px] h-[12px] bg-[#070707] rounded-full"></div>
@@ -61,7 +61,15 @@ const OrdersHistoryList = ({ order }) => {
             {showActions && (
               <ContextMenu
                 menuActions={[
-                  { action: "Посмотреть", to: `/order-history/${order.id}` },
+                  {
+                    action: "Посмотреть",
+                    to: `${removeWildcard(
+                      ROUTERS.Orders.root
+                    )}${ROUTERS.Orders.orderDetail.replace(
+                      ":orderId",
+                      order.id
+                    )}`,
+                  },
                   {
                     action: "Отменить",
                     onClick: () => console.log("Отменить"),

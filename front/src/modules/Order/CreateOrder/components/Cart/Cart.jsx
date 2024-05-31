@@ -3,7 +3,13 @@ import logo from "@assets/svg/orderLogo.svg"
 import Button from "@ui/Button/Button"
 import { CrossIcon, MinusIcon, PlusIcon } from "@ui/icons/icons"
 
-const Cart = ({ show, foodsInCart = [], updateCart, createOrder }) => {
+const Cart = ({
+  show,
+  foodsInCart = [],
+  updateCart,
+  toggleCreateButton,
+  closeCart,
+}) => {
   const [totalSum, setTotalSum] = useState(0)
 
   useEffect(() => {
@@ -43,8 +49,8 @@ const Cart = ({ show, foodsInCart = [], updateCart, createOrder }) => {
                     itemTotalPrice: food.price * newAmount,
                   }
                 } else {
-									console.log("food not found in cart")
-								}
+                  console.log("food not found in cart")
+                }
               })
             : [],
       }
@@ -82,14 +88,19 @@ const Cart = ({ show, foodsInCart = [], updateCart, createOrder }) => {
   }
 
   return (
-    <div
-      className={`fixed top-0 right-0 max-2xl: h-full max-2xl:flex justify-end font-poppins max-2xl:z-[9999] 2xl:relative ${
-        show ? "max-2xl:bg-[rgba(0,0,0,.6)] backdrop-blur-[5px]" : ""
-      }`}
-    >
+    <div className="max-2xl:absolute">
       <div
-        className={`relative w-[528px] max-2xl:translate-x-[100%] duration-200 ${
-          show ? "max-2xl:translate-x-0" : ""
+        className={`2xl:hidden pointer-events-none fixed top-0 left-0 w-full h-full duration-100 z-[66] ${
+          show &&
+          "pointer-events-auto max-2xl:bg-[rgba(0,0,0,.2)] backdrop-blur-[5px]"
+        }`}
+        onClick={() => {
+          closeCart()
+        }}
+      ></div>
+      <div
+        className={`w-[528px] h-full duration-300 ease-in-out max-2xl:fixed max-2xl:left-full max-2xl:top-0 max-2xl:z-[66] ${
+          show && "max-2xl:translate-x-[-100%]"
         }`}
       >
         <div className="flex justify-between items-center w-full h-[137px] px-[30px] py-[20px] text-white font-poppins shadow-[0px 4px 21px rgba(0,0,0,.1) rounded-tr-[50px] rounded-tl-[50px] bg-gradient-to-r from-[#62ADFC] to-[#447BFB]">
@@ -106,10 +117,12 @@ const Cart = ({ show, foodsInCart = [], updateCart, createOrder }) => {
                   <li key={cartItem?.id}>
                     <div className="flex items-center gap-[20px]">
                       <div className="w-[50px] h-[50px] rounded-full overflow-hidden border bg-slate-100">
-                        {cartItem?.image ? (
-                          <img src={cartItem.icon} alt="" className="w-full" />
-                        ) : (
-                          <div></div>
+                        {cartItem?.photo && (
+                          <img
+                            src={cartItem.photo.route}
+                            alt=""
+                            className="w-full aspect-square object-cover"
+                          />
                         )}
                       </div>
                       <h4 className="flex flex-1 items-center">
@@ -168,7 +181,7 @@ const Cart = ({ show, foodsInCart = [], updateCart, createOrder }) => {
                 gradient={true}
                 rounded={"rounded-[10px]"}
                 spacingClass={"px-[80px] py-[20px] w-full"}
-                onClick={createOrder}
+                onClick={() => toggleCreateButton()}
               />
             </div>
           </div>

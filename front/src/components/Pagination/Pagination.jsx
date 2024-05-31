@@ -6,6 +6,10 @@ const Pagination = ({ totalPage = 0, getCurrentPage = () => {} }) => {
   useEffect(() => {
     getCurrentPage(currentPage)
   }, [currentPage])
+  
+	useEffect(() => {
+    setCurrentPage(1)
+  }, [totalPage])
 
   if (totalPage < 1) return
 

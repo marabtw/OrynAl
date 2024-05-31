@@ -14,7 +14,6 @@ import { useToast } from "@hooks"
 const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
   const showNotification = useToast()
   const [menu, setMenu] = useState([])
-  const [currentCategory, setCurrentCategory] = useState("")
   const [categories, setCategories] = useState([])
 
   const [params, setParams] = useState({
@@ -69,7 +68,7 @@ const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
   }, [params])
 
   return (
-    <div className="">
+    <div className="flex-1">
       <FoodCategoriesSlider
         categories={categories}
         getCategory={(type) => {

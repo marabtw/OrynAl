@@ -1,10 +1,37 @@
-import { useState } from "react"
-import { dataSiteStatistics } from "@data/mainData"
-import logo from "@assets/images/logo.png"
+import { useEffect, useState } from "react"
+import { axios } from "@lib/axios"
+
 import LinearGradientText from "@ui/LinearGradientText/LinearGradienText"
 
+import logo from "@assets/images/logo.png"
+
+import { getStatisctics } from "../api"
+import { useLoading, useToast } from "@hooks"
+
 const Footer = () => {
-  const [statistics, setStatistics] = useState(dataSiteStatistics)
+  const setLoading = useLoading()
+  const showNotification = useToast()
+  const [statistics, setStatistics] = useState({})
+
+  useEffect(() => {
+    const cancelTokenSource = axios.CancelToken.source()
+    setLoading(true)
+    getStatisctics({ cancelToken: cancelTokenSource.token })
+      .then(({ data }) => {
+        setStatistics(data)
+      })
+      .catch((err) => {
+        setStatistics({
+          reserved_count: 0,
+          people_count: 0,
+          restaurants_count: 0,
+        })
+        showNotification(err, "error")
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [])
 
   return (
     <footer className="px-[30px] py-[100px] flex flex-col gap-[150px] max-lg:py-[75px] max-lg:gap-[75px] max-md:py-[50px] max-md:gap-[50px]">
@@ -12,7 +39,7 @@ const Footer = () => {
         <div className="text-center mx-auto">
           <LinearGradientText
             tag="h2"
-            text={statistics.booking}
+            text={statistics.reserved_count}
             from={"#6AA7FC"}
             to={"#3D6FFB"}
             className="font-[600] text-[100px] leading-[100px] max-lg:text-[70px] max-lg:leading-[80px] max-md:text-[40px] max-md:leading-[45px]"
@@ -24,7 +51,7 @@ const Footer = () => {
         <div className="text-center mx-auto">
           <LinearGradientText
             tag="h2"
-            text={statistics.people}
+            text={statistics.people_count}
             from={"#6AA7FC"}
             to={"#3D6FFB"}
             className="font-[600] text-[100px] leading-[100px] max-lg:text-[70px] max-lg:leading-[80px] max-md:text-[40px] max-md:leading-[45px]"
@@ -36,7 +63,7 @@ const Footer = () => {
         <div className="text-center mx-auto">
           <LinearGradientText
             tag="h2"
-            text={statistics.establishments}
+            text={statistics.restaurants_count}
             from={"#6AA7FC"}
             to={"#3D6FFB"}
             className="font-[600] text-[100px] leading-[100px] max-lg:text-[70px] max-lg:leading-[80px] max-md:text-[40px] max-md:leading-[45px]"
@@ -61,7 +88,10 @@ const Footer = () => {
           <h5>Стать портнером</h5>
           <h5>Мы в социальных сетях</h5>
         </div>
-        <label htmlFor="footerInput" className="relative w-[585px] max-lg:w-full">
+        <label
+          htmlFor="footerInput"
+          className="relative w-[585px] max-lg:w-full"
+        >
           <input
             id="footerInput"
             type="text"

@@ -28,14 +28,7 @@ export const getAllRestaurantsRequest = async ({ params, cancelToken }) => {
   return response.data
 }
 
-export const getAllPopularRestaurantsRequest = async ({
-}) => {
-  // const queryParams = params
-  //   ? {
-  //       page: params.pageIndex,
-  //       limit: params.limit,
-  //     }
-  //   : {}
+export const getAllPopularRestaurantsRequest = async () => {
   const response = await myApi.get(`/api/restaurants/popular`)
   return response.data
 }
@@ -67,5 +60,12 @@ export const updateByAdminRestaurantRequest = async (restaurantId, body) => {
 
 export const updateByOwnerRestaurantRequest = async (restaurantId, body) => {
   const response = await myApi.put(`/api/restaurants/${restaurantId}`, body)
+  return response.data
+}
+
+export const getRestaurantReviewsRequest = async ({ restaurantId, cancelToken }) => {
+  const response = await myApi.get(`/api/restaurants/${restaurantId}/reviews`, {
+    cancelToken: cancelToken ? cancelToken : undefined,
+  })
   return response.data
 }

@@ -3,8 +3,13 @@ import { CircleAddIcon, TrashIcon } from "@ui/icons/icons"
 const FoodCard = ({ foodData = {}, getFoodForCart, selectedFoodsId = [] }) => {
   return (
     <div
-      className="relative flex flex-col items-center justify-between w-full h-[362px] px-[30px] py-[40px] font-poppins transition-all duration-200 
-		 border border-[#c4c4c4] shadow-[0px_4px_4px_rgba(0,0,0,.25)] rounded-[50px] hover:border-[#447bfb] min-w-[300px]"
+      className="relative px-[30px] py-[40px]
+				flex flex-col items-center justify-between 
+				w-full h-[362px]  
+				font-poppins 
+				transition-all duration-200 
+			border border-[#c4c4c4] rounded-[50px] hover:border-[#447bfb]
+			shadow-[0px_4px_4px_rgba(0,0,0,.25)]"
     >
       <div className="absolute top-0 translate-y-[-50%] w-[150px] aspect-square rounded-full bg-slate-100 overflow-hidden">
         {foodData.photo && (

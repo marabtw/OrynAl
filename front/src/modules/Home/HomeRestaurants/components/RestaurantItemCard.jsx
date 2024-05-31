@@ -34,7 +34,11 @@ const RestaurantItemCard = ({ data }) => {
       )}
       <div className="rounded-full overflow-hidden w-[65%]">
         {data.icon ? (
-          <img src={data.icon.route} alt="restaurant" className="w-full" />
+          <img
+            src={data.icon.route}
+            alt="restaurant"
+            className="w-full h-full aspect-square object-cover"
+          />
         ) : (
           <div className="w-full aspect-square rounded-full border bg-slate-100"></div>
         )}

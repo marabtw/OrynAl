@@ -18,7 +18,7 @@ const CreateOrder = ({ restaurantId }) => {
   const setLoading = useLoading()
   const showNotification = useToast()
 
-  const [showCart, setShowCart] = useState(false)
+  const [showCart, setShowCart] = useState(true)
   const [dataForCreateOrder, setDataForCreateOrder] = useState({
     tableId: -1,
     foods: [],
@@ -51,7 +51,7 @@ const CreateOrder = ({ restaurantId }) => {
       return
     }
 
-		setLoading(true)
+    setLoading(true)
 
     const currentDate = new Date()
     const formattedDate = currentDate.toISOString().split(".")[0] + "Z"
@@ -106,9 +106,9 @@ const CreateOrder = ({ restaurantId }) => {
   }
 
   return (
-    <div className="py-[100px]">
+    <div className="py-[100px] max-xl:py-[25px]">
       <TableReservation restaurantId={restaurantId} getTableId={getTableId} />
-      <div className="relative flex justify-between gap-[50px] mx-[180px] mt-[200px] max-2xl:mx-[80px] max-lg:mx-[20px]">
+      <div className="relative flex justify-between gap-[50px] mx-[100px] mt-[200px] max-2xl:mx-[60px] max-lg:mx-[20px]">
         <SelectMenu
           restaurantId={restaurantId}
           getFoodForCart={getFoodForCart}
@@ -121,16 +121,21 @@ const CreateOrder = ({ restaurantId }) => {
         <Cart
           show={showCart}
           foodsInCart={
-            dataForCreateOrder?.foods.length > 0 ? dataForCreateOrder.foods : []
+            dataForCreateOrder?.foods?.length > 0
+              ? dataForCreateOrder.foods
+              : []
           }
           updateCart={setDataForCreateOrder}
-          createOrder={createOrder}
+          toggleCreateButton={createOrder}
+          closeCart={() => setShowCart(false)}
         />
       </div>
       <div
-        className="fixed z-[99999] w-[70px] h-[70px] bottom-[1%] right-[5%] p-[15px] border border-transparent rounded-full cursor-pointer bg-gray-800
-				2xl:hidden
-				"
+        className="fixed z-[55] 2xl:hidden
+				w-[70px] h-[70px] 
+				bottom-[1%] right-[5%] 
+				p-[15px] 
+				border border-transparent rounded-full cursor-pointer bg-gray-800"
         onClick={() => setShowCart(!showCart)}
       >
         <CartIcon className="w-full h-full text-white" />

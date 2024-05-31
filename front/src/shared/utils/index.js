@@ -99,3 +99,18 @@ export const formatTimeString = (timeString) => {
   const minutes = date.getMinutes().toString().padStart(2, "0")
   return `${hours}:${minutes}`
 }
+
+export const generateTimeOptions = () => {
+  let times = []
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      const formattedHour = hour.toString().padStart(2, "0")
+      const formattedMinute = minute.toString().padStart(2, "0")
+      times.push({
+        value: `${formattedHour}:${formattedMinute}`,
+        label: `${formattedHour}:${formattedMinute}`,
+      })
+    }
+  }
+  return times
+}

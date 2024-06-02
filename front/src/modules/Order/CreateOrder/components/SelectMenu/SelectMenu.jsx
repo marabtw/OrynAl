@@ -75,7 +75,7 @@ const SelectMenu = ({ restaurantId, getFoodForCart, selectedFoodsId }) => {
           setParams((prev) => ({ ...prev, q: type }))
         }}
       />
-      <div className="grid grid-cols-3 gap-y-[100px] gap-x-[20px] mt-[100px] max-xl:grid-cols-2 max-md:grid-cols-1">
+      <div className="grid grid-cols-3 gap-y-[100px] gap-x-[20px] mt-[100px] max-xl:grid-cols-3 max-md:grid-cols-3 max-sm:grid-cols-2 max-sm:gap-y-[20px]">
         {menu?.map((food) => (
           <FoodCard
             key={food.id}

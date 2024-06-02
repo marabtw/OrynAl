@@ -114,7 +114,7 @@ const UpdateRestaurantForm = () => {
       cancelTokenSource1.cancel()
       cancelTokenSource2.cancel()
     }
-  }, [])
+  }, [restaurantId])
 
   const handleUpdateRestaurantData = async () => {
     if (isObjectEqual(dataForUpdate, restaurantData)) {

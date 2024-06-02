@@ -5,7 +5,6 @@ import { ROUTERS } from "@router/Router.config"
 import { getRestaurantMenuRequest, deleteByOwnerMenuItemRequest } from "../api"
 
 import { useLoading, useToast } from "@hooks"
-import { isArraysEqualByIdWithSet } from "@utils/index"
 import { removeWildcard } from "@helpers"
 
 import ListItem from "@components/ListItem/ListItem"

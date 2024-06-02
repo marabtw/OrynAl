@@ -13,16 +13,6 @@ const Cart = ({
   const [totalSum, setTotalSum] = useState(0)
 
   useEffect(() => {
-    // console.log(totalSum)
-    // updateCart((prev) => {
-    //   return {
-    //     ...prev,
-    //     totalSum: totalSum,
-    //   }
-    // })
-  }, [totalSum])
-
-  useEffect(() => {
     if (!foodsInCart || foodsInCart.length === 0) {
       setTotalSum(0)
       return
@@ -35,26 +25,26 @@ const Cart = ({
   }, [foodsInCart])
 
   const increase = (foodId) => {
-    updateCart((prev) => {
-      return {
+    const isFoodInCart = foodsInCart.some((item) => item.id === foodId)
+    if (isFoodInCart) {
+      updateCart((prev) => ({
         ...prev,
-        foods:
-          prev.foods?.length > 0
-            ? prev.foods?.map((food) => {
-                if (food?.id === foodId) {
-                  const newAmount = food.amount + 1
-                  return {
-                    ...food,
-                    amount: newAmount,
-                    itemTotalPrice: food.price * newAmount,
-                  }
-                } else {
-                  console.log("food not found in cart")
-                }
-              })
-            : [],
-      }
-    })
+        foods: prev.foods.map((food) => {
+          if (food.id === foodId) {
+            const newAmount = food.amount + 1
+            return {
+              ...food,
+              amount: newAmount,
+              itemTotalPrice: food.price * newAmount,
+            }
+          } else {
+            return { ...food }
+          }
+        }),
+      }))
+    } else {
+      console.log("food not found in cart")
+    }
   }
 
   const decrease = (foodId) => {

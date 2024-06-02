@@ -2,6 +2,7 @@ import { useHeaderHeight } from "@hooks"
 
 import LinkButton from "@ui/Button/LinkButton"
 import LinearGradientText from "@ui/LinearGradientText/LinearGradienText"
+import LocationInfo from "@components/LocationInfo/LocationInfo"
 
 import laptop from "@assets/images/laptop.png"
 
@@ -19,9 +20,10 @@ const HeroSection = ({ nextSectionRef }) => {
 
   return (
     <div
-      className={`grid grid-cols-2 max-lg:grid-cols-1 font-poppins transition-all duration-150`}
+      className={`relative grid grid-cols-2 max-lg:grid-cols-1 font-poppins transition-all duration-150`}
       style={{ height: `calc(100vh - ${headerHeight}px)` }}
     >
+			<LocationInfo text="Алматы" top="78%" left="-65px"/>
       <div className="flex flex-col w-full mt-[160px] px-[40px] max-lg:justify-center max-lg:mt-0">
         <h1 className="flex flex-col">
           <LinearGradientText

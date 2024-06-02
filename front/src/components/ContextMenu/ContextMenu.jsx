@@ -12,32 +12,40 @@ const ContextMenu = ({ menuActions = [], position }) => {
     <div
       className={`absolute ${
         position ? position : "top-full right-full"
-      }  flex flex-col gap-[5px] min-w-max p-[10px] border-2 border-[#ebebeb] rounded-[5px] bg-white z-50
-			max-md:py-[5px] max-md:text-[14px]`}
+      }  flex flex-col justify-center items-center gap-[5px] 
+			min-w-max p-[10px] z-50 max-md:py-[5px]
+			border-2 border-[#ebebeb] rounded-[5px] 
+			bg-white 
+			 max-md:text-[14px]`}
     >
-      {menuActions.map((action) =>
-        action.hasOwnProperty("to") ? (
-          <Link
-            key={action.action + `${Math.random() * 99999999}`}
-            to={action.to}
-            className="hover:text-[#FF0000]"
-            onClick={() => closeContextMenuFunction()}
-          >
-            {action.action}
-          </Link>
-        ) : (
-          <h4
-            key={action.action + `${Math.random() * 99999999}`}
-            className="hover:text-[#FF0000] cursor-pointer"
-            onClick={() => {
-              action.onClick()
-              closeContextMenuFunction()
-            }}
-          >
-            {action.action}
-          </h4>
-        )
-      )}
+      {menuActions.map((action) => {
+        if (action.hasOwnProperty("to")) {
+          return (
+            <Link
+              key={action.action + `${Math.random() * 99999999}`}
+              to={action.to}
+              className="hover:text-[#FF0000] w-full h-full "
+              onClick={() => closeContextMenuFunction()}
+            >
+              {action.action}
+            </Link>
+          )
+        }
+        if (action.hasOwnProperty("onClick")) {
+          return (
+            <h4
+              key={action.action + `${Math.random() * 99999999}`}
+              className="hover:text-[#FF0000] cursor-pointer w-full h-full"
+              onClick={() => {
+                action.onClick()
+                closeContextMenuFunction()
+              }}
+            >
+              {action.action}
+            </h4>
+          )
+        }
+      })}
     </div>
   )
 }

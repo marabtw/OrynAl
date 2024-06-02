@@ -20,7 +20,7 @@ const RestaurantBriefInfo = ({ data, className }) => {
         <div className="min-w-[140px] w-[140px]">
           {data?.icon ? (
             <img
-              src={data.icon.route}
+              src={data?.icon?.route}
               alt=""
               className="w-full aspect-square rounded-full object-cover"
             />
@@ -31,10 +31,10 @@ const RestaurantBriefInfo = ({ data, className }) => {
         <div className="flex flex-col gap-[10px]">
           <div className="max-md:text-center">
             <h1 className="text-[35px] font-[600] leading-[52.5px] max-lg:text-[25px] max-lg:leading-[30px]">
-              {data.name}
+              {data?.name}
             </h1>
             <p className="text-[20px] leading-[30px] font-[500] max-lg:text-[16px] max-lg:leading-[20px]">
-              {data.description}
+              {data?.description}
             </p>
           </div>
           <div className="flex gap-[15px] flex-wrap max-md:justify-center">
@@ -47,7 +47,7 @@ const RestaurantBriefInfo = ({ data, className }) => {
 						"
             >
               <CallIcon />
-              <span>{data.phone ? data.phone : "+0 (000) 000 00 00"}</span>
+              <span>{data?.phone ? data.phone : "+0 (000) 000 00 00"}</span>
             </div>
             <div
               className="flex items-center gap-[10px] 
@@ -58,8 +58,8 @@ const RestaurantBriefInfo = ({ data, className }) => {
             >
               <ClockIcon />
               <span className="flex items-center text-center">{`${formatTimeString(
-                data.modeFrom
-              )} - ${formatTimeString(data.modeTo)}`}</span>
+                data?.modeFrom
+              )} - ${formatTimeString(data?.modeTo)}`}</span>
             </div>
           </div>
         </div>
@@ -73,14 +73,14 @@ const RestaurantBriefInfo = ({ data, className }) => {
 							shadow-[0px_4px_10px_-2px_rgba(0,0,0,.2)] rounded-[20px] max-md:shadow-[0px_1px_5px_-1px_rgba(0,0,0,.2)]
 						"
           >
-            {service.image && (
+            {service?.image && (
               <img
                 src={service.image}
                 alt=""
                 className="h-full aspect-square rounded-full bg-slate-100 object-cover"
               />
             )}
-            <p>{service.name}</p>
+            <p>{service?.name}</p>
           </div>
         ))}
       </div>

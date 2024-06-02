@@ -1,26 +1,35 @@
 const OrderReceipt = ({ id }) => {
   return (
-    <div className="min-w-[647px] px-[60px] py-[60px] font-poppins rounded-[20px] bg-white max-md:w-full max-md:min-w-0 max-md:p-[15px]">
-      <div className="">
-        <h2 className="font-[700] text-[32px] leading-[48px]">Ваш столик, дата и время</h2>
-        <div className="w-[70%] h-[3px] bg-black rounded-full"></div>
+    <div
+      className="w-full max-lg:w-2/3 max-sm:w-full
+			px-[60px] py-[60px] max-xl:px-[30px] max-xl:py-[30px] max-lg:px-[30px] max-lg:py-[30px]
+			font-poppins rounded-[20px] bg-white "
+    >
+      <div>
+        <h2 className="font-[700] text-[32px] leading-[48px] max-xl:text-[24px] max-xl:leading-[30px] max-md:text-[20px] max-md:leading-[24px]">
+          Ваш столик, дата и время
+        </h2>
+        <div className="w-[70%] h-[3px] bg-black rounded-full max-xl:mt-[5px] max-xl:h-[2px]"></div>
       </div>
-			<div className="flex mt-[30px]">
-				<div className="w-[50%] text-[20px] font-[700] leading-[30px]">
-					<h4>ID столика:</h4>
-					<h4>Название столика:</h4>
-					<h4>Вместимость:</h4>
-					<h4>Дата:</h4>
-					<h4>Время:</h4>
-				</div>
-				<div className="w-[50%] text-[20px] leading-[30px]">
-					<h4>#101</h4>
-					<h4>Столик #1</h4>
-					<h4>10</h4>
-					<h4>10.01.22</h4>
-					<h4>19:00</h4>
-				</div>
-			</div>
+      <div
+        className="flex mt-[30px] text-[20px] leading-[30px] 
+				max-xl:mt-[15px] max-xl:text-[16px] max-xl:leading-[20px] max-md:text-[14px] max-md:leading-[16px]"
+      >
+        <div className="w-[50%] font-[700]">
+          <h4>ID столика:</h4>
+          <h4>Название столика:</h4>
+          <h4>Вместимость:</h4>
+          <h4>Дата:</h4>
+          <h4>Время:</h4>
+        </div>
+        <div className="w-[50%] ">
+          <h4>#101</h4>
+          <h4>Столик #1</h4>
+          <h4>10</h4>
+          <h4>10.01.22</h4>
+          <h4>19:00</h4>
+        </div>
+      </div>
     </div>
   )
 }

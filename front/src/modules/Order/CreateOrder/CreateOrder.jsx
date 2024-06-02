@@ -18,13 +18,13 @@ const CreateOrder = ({ restaurantId }) => {
   const setLoading = useLoading()
   const showNotification = useToast()
 
-  const [showCart, setShowCart] = useState(true)
+  const [isCartVisible, setIsCartVisible] = useState(false)
   const [dataForCreateOrder, setDataForCreateOrder] = useState({
     tableId: -1,
     foods: [],
     totalSum: 0,
     restaurantId: +restaurantId,
-    status: "booked",
+    status: "completed",
   })
 
   useEffect(() => {
@@ -119,7 +119,7 @@ const CreateOrder = ({ restaurantId }) => {
           }
         />
         <Cart
-          show={showCart}
+          show={isCartVisible}
           foodsInCart={
             dataForCreateOrder?.foods?.length > 0
               ? dataForCreateOrder.foods
@@ -127,7 +127,7 @@ const CreateOrder = ({ restaurantId }) => {
           }
           updateCart={setDataForCreateOrder}
           toggleCreateButton={createOrder}
-          closeCart={() => setShowCart(false)}
+          closeCart={() => setIsCartVisible(false)}
         />
       </div>
       <div
@@ -136,7 +136,7 @@ const CreateOrder = ({ restaurantId }) => {
 				bottom-[1%] right-[5%] 
 				p-[15px] 
 				border border-transparent rounded-full cursor-pointer bg-gray-800"
-        onClick={() => setShowCart(!showCart)}
+        onClick={() => setIsCartVisible(!isCartVisible)}
       >
         <CartIcon className="w-full h-full text-white" />
       </div>

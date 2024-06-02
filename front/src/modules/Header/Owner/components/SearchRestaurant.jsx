@@ -44,6 +44,8 @@ const SearchRestaurant = () => {
           }
           if (options?.length > 0) setOptions([])
         })
+    } else {
+      setOptions([])
     }
 
     return () => {
@@ -88,13 +90,13 @@ const SearchRestaurant = () => {
   }
 
   return (
-    <div className="relative w-[323px] h-full overflow-hidden font-ttcommon font-[500] text-[15px] leading-[17.5px] max-md:w-[250px] max-sm:w-[180px]">
+    <div className="relative w-[323px] h-full font-ttcommon font-[500] text-[15px] leading-[17.5px] max-md:w-[250px] max-sm:w-[180px]">
       <SearchIcon className="absolute top-[50%] left-[18px] text-[14px] text-[#c4c4c4] translate-y-[-50%] z-30 pointer-events-none" />
       <Select
         options={options}
         styles={customStyles}
         placeholder={`${"Поиск ресторана"}`}
-        // value={null}
+        value={null}
         onChange={(e) => {
           navigate(
             `${removeWildcard(
@@ -105,6 +107,7 @@ const SearchRestaurant = () => {
             )}`
           )
           setSearchQuery("")
+          // setOptions([])
         }}
         onInputChange={(e) => {
           setSearchQuery(e)

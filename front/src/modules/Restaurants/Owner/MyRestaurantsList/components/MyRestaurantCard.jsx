@@ -53,7 +53,7 @@ const MyRestaurantCard = ({ data = [], displayType, index }) => {
       <div className="flex gap-[20px]">
         <div className="w-[100px] h-[100px] border rounded-[20px] overflow-hidden">
           {data?.icon && (
-            <img src={data.icon.route} alt="" className="w-full h-full" />
+            <img src={data.icon.route} alt="" className="w-full h-full object-cover" />
           )}
         </div>
         <div className="mt-[10px]">

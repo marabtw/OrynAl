@@ -7,7 +7,6 @@ import Button from "@ui/Button/Button"
 import { getMenuTypes } from "../../api"
 
 const Form = ({ handleUpdateButton, menuItemData, setDataForUpdate }) => {
-  // console.log(menuItemData.available)
   const handleChange = (key, value) => {
     setDataForUpdate((prevState) => {
       // Обработка фотографии

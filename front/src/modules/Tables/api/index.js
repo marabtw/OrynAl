@@ -5,14 +5,14 @@ export const getAllTablesRequest = async ({
   params,
   cancelToken,
 }) => {
-  const quetyParams = params
-    ? {
-        page: params.pageIndex,
-        limit: params.limit,
-        q: params.q,
-				date: params.date
-      }
-    : {}
+	const quetyParams = params
+	? {
+		page: params.pageIndex,
+		limit: params.limit,
+		q: params.q,
+		date: params.date,
+	}
+	: {}
   const response = await myApi.get(`/api/restaurants/${restaurantId}/tables`, {
     params: quetyParams,
     cancelToken: cancelToken ? cancelToken.token : undefined,
@@ -61,7 +61,6 @@ export const getByOwnerTableCategoriesRequest = async ({
 }
 
 export const createByOwnerTableRequest = async ({ restaurantId, body }) => {
-  console.log("body: ", body)
   const response = await myApi.post(
     `/api/restaurants/${restaurantId}/tables`,
     body

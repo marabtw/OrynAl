@@ -41,13 +41,13 @@ const MyProfile = () => {
   }
 
   const deleteUser = () => {
-    deleteProfileRequest()
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    // deleteProfileRequest()
+    //   .then((res) => {
+    //     console.log(res)
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
   }
 
   return (

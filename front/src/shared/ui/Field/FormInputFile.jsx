@@ -12,7 +12,7 @@ import { useToast } from "@hooks"
 const FormInputFile = ({
   placeholder = "didn't give a placeholder",
   multiple,
-  getFiles = () => console.log("Didn't give a function"),
+  getFiles = () => {},
   currentPhoto,
   fileSizeLimit = 1,
 }) => {
@@ -22,7 +22,11 @@ const FormInputFile = ({
 
   useEffect(() => {
     setTemporaryFilesForShow(
-			Array.isArray(currentPhoto) ? currentPhoto : currentPhoto ? [currentPhoto] : []
+      Array.isArray(currentPhoto)
+        ? currentPhoto
+        : currentPhoto
+        ? [currentPhoto]
+        : []
     )
   }, [currentPhoto])
 

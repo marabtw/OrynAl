@@ -160,6 +160,12 @@ func (r *OrderRepository) GetOrder(ctx context.Context, id uint) (*model.OrderRe
 		foods = append(foods, food)
 	}
 
+	var user model.UserResponse
+	if err := r.DB.Table("users").Where("id = ?", order.UserID).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	order.User = user
 	order.Foods = foods
 
 	return &order, nil

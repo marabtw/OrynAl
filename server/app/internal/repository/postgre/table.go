@@ -38,7 +38,7 @@ func (r *TableRepository) GetRestaurantTables(ctx context.Context, restaurantID 
 	countQuery := r.DB.WithContext(ctx).
 		Model(&model.Table{}).
 		Table("tables").
-		Where("restaurant_id = ?", restaurantID)
+		Where("tables.restaurant_id = ?", restaurantID)
 
 	if params.Query != "" {
 		countQuery = countQuery.Where("LOWER(type) = LOWER(?)", params.Query)
@@ -46,8 +46,8 @@ func (r *TableRepository) GetRestaurantTables(ctx context.Context, restaurantID 
 
 	if params.Date != nil {
 		countQuery = countQuery.
-			Joins("LEFT JOIN orders ON tables.id = orders.table_id AND orders.date::date = ?", params.Date.Format("2006-01-02")).
-			Where("orders.id IS NULL")
+			Joins("LEFT JOIN orders o ON tables.id = o.table_id AND o.date::date = ? AND tables.restaurant_id = ?", params.Date, restaurantID).
+			Where("o.id IS NULL")
 	}
 
 	if err := countQuery.Count(&totalItems).Error; err != nil {
@@ -60,8 +60,7 @@ func (r *TableRepository) GetRestaurantTables(ctx context.Context, restaurantID 
 
 	query := r.DB.WithContext(ctx).
 		Table("tables").
-		Select("tables.*").
-		Where("restaurant_id = ?", restaurantID)
+		Where("tables.restaurant_id = ?", restaurantID)
 
 	if params.Query != "" {
 		query = query.Where("LOWER(type) = LOWER(?)", params.Query)
@@ -69,8 +68,8 @@ func (r *TableRepository) GetRestaurantTables(ctx context.Context, restaurantID 
 
 	if params.Date != nil {
 		query = query.
-			Joins("LEFT JOIN orders ON tables.id = orders.table_id AND orders.date::date = ?", params.Date.Format("2006-01-02")).
-			Where("orders.id IS NULL")
+			Joins("LEFT JOIN orders o ON tables.id = o.table_id AND o.date::date = ? AND tables.restaurant_id = ?", params.Date, restaurantID).
+			Where("o.id IS NULL")
 	}
 
 	query = query.Limit(params.Limit).

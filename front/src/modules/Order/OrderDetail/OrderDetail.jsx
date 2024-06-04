@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import { axios } from "@lib/axios"
 
 import { getOrder } from "../api"
 
@@ -9,18 +10,38 @@ import OrderMenu from "./components/OrderMenu"
 import Location from "./components/Location"
 import CreateReview from "./components/CreateReview"
 import { AuthContext } from "@context/AuthContext"
+import { useLoading, useToast } from "@hooks"
 
 const OrderDetail = () => {
+  const setLoading = useLoading()
+  const showNotification = useToast()
   const { user } = useContext(AuthContext)
   const { orderId } = useParams()
   const [details, setDetails] = useState({})
 
   useEffect(() => {
-    getOrder({ orderId })
-      .then((res) => {
-        setDetails(res.data)
+    const cancelTokenSource = axios.CancelToken.source()
+    setLoading(true)
+
+    getOrder({ orderId, cancelToken: cancelTokenSource.token })
+      .then(({ data }) => {
+        if (!data) setDetails({})
+        else setDetails(data)
       })
-      .catch((err) => console.log("error"))
+      .catch((err) => {
+        if (axios.isCancel(err))
+          showNotification(`Запрос был отменен`, "warning")
+        else {
+          showNotification(`Не удалось получить данные: ${err}`, "error")
+        }
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+
+    return () => {
+      cancelTokenSource.cancel()
+    }
   }, [])
 
   return (

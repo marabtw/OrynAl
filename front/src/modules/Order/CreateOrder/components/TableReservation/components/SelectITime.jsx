@@ -14,13 +14,11 @@ const generateTimeOptions = () => {
 
 const SelectTime = ({ getValue = () => {} }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedOption, setSelectedOption] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
   const options = generateTimeOptions()
   const containerRef = useRef(null)
 
   const handleSelect = (option) => {
-    setSelectedOption(option)
     setIsOpen(false)
     setSearchTerm(option.label)
     getValue(option.value)
@@ -28,7 +26,7 @@ const SelectTime = ({ getValue = () => {} }) => {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value)
-    setIsOpen(true) // Открыть меню при вводе в поле поиска
+    setIsOpen(true)
   }
 
   const filteredOptions = options.filter((option) =>

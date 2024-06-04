@@ -17,10 +17,6 @@ const PopularRestaurants = () => {
   const [popularRestaurants, setPopularRestaurants] = useState([])
 
   useEffect(() => {
-    console.log(popularRestaurants)
-  }, [popularRestaurants])
-
-  useEffect(() => {
     const cancelTokenSource = axios.CancelToken.source()
 
     fetchData(cancelTokenSource.token)

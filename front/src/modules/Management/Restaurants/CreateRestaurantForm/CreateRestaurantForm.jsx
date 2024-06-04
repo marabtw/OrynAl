@@ -46,10 +46,6 @@ const CreateRestaurantForm = () => {
   const [owners, setOwners] = useState([])
   const [services, setServices] = useState([])
 
-  useEffect(() => {
-    console.log(dataForCreate)
-  }, [dataForCreate])
-
   const uploadImages = async () => {
     if (!isFormValid()) {
       showNotification("Форма невалидна", "warning")

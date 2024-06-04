@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import logo from "@assets/svg/orderLogo.svg"
 import Button from "@ui/Button/Button"
 import { CrossIcon, MinusIcon, PlusIcon } from "@ui/icons/icons"
+import { useToast } from "@hooks"
 
 const Cart = ({
   show,
@@ -10,6 +11,7 @@ const Cart = ({
   toggleCreateButton,
   closeCart,
 }) => {
+  const showNotification = useToast()
   const [totalSum, setTotalSum] = useState(0)
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const Cart = ({
         }),
       }))
     } else {
-      console.log("food not found in cart")
+      showNotification("Не найден в корзине", "warning")
     }
   }
 
@@ -89,18 +91,53 @@ const Cart = ({
         }}
       ></div>
       <div
-        className={`w-[528px] h-full duration-300 ease-in-out max-2xl:fixed max-2xl:left-full max-2xl:top-0 max-2xl:z-[66] ${
-          show && "max-2xl:translate-x-[-100%]"
-        }`}
+        className={`max-2xl:fixed 
+				flex flex-col
+				w-[528px] h-[1200px] max-md:w-full max-2xl:h-full
+				duration-300 ease-in-out 
+				max-2xl:left-full max-2xl:top-0 
+				max-2xl:z-[66] 
+				${show && "max-2xl:translate-x-[-100%]"}`}
       >
-        <div className="flex justify-between items-center w-full h-[137px] px-[30px] py-[20px] text-white font-poppins shadow-[0px 4px 21px rgba(0,0,0,.1) rounded-tr-[50px] rounded-tl-[50px] bg-gradient-to-r from-[#62ADFC] to-[#447BFB]">
-          <h4 className="relative text-[30px] font-[800] leading-[24px] before:w-[47px] before:h-[5px] before:absolute before:top-[120%] before:left-0 before:translate-y-[100%] before:bg-white before:rounded-[10px]">
+        <div
+          className="
+						flex justify-between items-center 
+						w-full h-[137px] max-2xl:h-[80px] max-md:h-[60px]
+						px-[30px]
+						text-white font-poppins
+						rounded-tr-[50px] rounded-tl-[50px] max-2xl:rounded-tr-[0px] max-2xl:rounded-tl-[25px] max-md:rounded-tl-[0px]
+						bg-gradient-to-r from-[#62ADFC] to-[#447BFB] shadow-[0px 4px 21px rgba(0,0,0,.1) "
+        >
+          <h4
+            className="
+						relative 
+						text-[30px] font-[800] leading-[24px] max-2xl:text-[20px] max-2xl:leading-[24px]
+						before:absolute before:top-[120%] before:left-0 
+						before:w-[47px] before:h-[5px] max-2xl:before:h-[3px]
+						before:translate-y-[100%] before:rounded-[10px]
+						before:bg-white "
+          >
             Мой заказ
           </h4>
-          <img src={logo} alt="" className="w-[85px] aspect-square" />
+          <img
+            src={logo}
+            alt=""
+            className="w-[85px] aspect-square object-cover max-2xl:w-[50px]"
+          />
         </div>
-        <div className="w-full h-[1104px] p-[5px] rounded-bl-[50px] rounded-br-[50px] bg-gradient-to-r from-[#62ADFC] to-[#447BFB] max-2xl:h-[calc(100%-137px)]">
-          <div className="flex flex-col justify-between w-full h-full px-[30px] py-[40px] bg-white rounded-bl-[50px] rounded-br-[50px]">
+        <div
+          className="w-full max-2xl:h-[calc(100%-100px)] flex-1
+					p-[5px] 
+					rounded-bl-[50px] rounded-br-[50px] max-2xl:rounded-bl-[25px] max-2xl:rounded-br-[0] max-md:rounded-bl-[0]
+					bg-gradient-to-r from-[#62ADFC] to-[#447BFB] "
+        >
+          <div
+            className="flex flex-col justify-between 
+						w-full h-full 
+						px-[30px] py-[40px] max-2xl:px-[10px] max-2xl:py-[10px]
+						bg-white 
+						rounded-bl-[50px] rounded-br-[50px] max-2xl:rounded-bl-[25px] max-2xl:rounded-br-[0] max-md:rounded-bl-[0] max-2xl:rounded-tl-[10px] max-2xl:rounded-tr-[10px] "
+          >
             <ul className="flex-1 overflow-auto px-[10px]">
               {foodsInCart?.length > 0 ? (
                 foodsInCart.map((cartItem, index) => (
@@ -153,24 +190,20 @@ const Cart = ({
                 <p className="text-center text-[#c4c4c4]">Пустая корзина :(</p>
               )}
             </ul>
-            <div className="mt-[30px]">
-              <div className="px-[40px] mb-[20px]">
-                <div className="flex justify-between">
-                  <h4 className="text-[32px] font-[600] leading-[24px]">
-                    Итого{" "}
-                  </h4>
-                  <h4 className="text-[32px] font-[600] leading-[24px] text-[#487AFB]">
-                    {totalSum}
-                  </h4>
+            <div className="mt-[30px] mx-[10px]">
+              <div className="px-[40px] mb-[20px] max-2xl:mb-[10px]">
+                <div className="flex justify-between text-[32px] font-[600] leading-[24px] max-2xl:text-[24px] max-md:text-[20px]">
+                  <h4 className="">Итого</h4>
+                  <h4 className=" text-[#487AFB]">{totalSum}</h4>
                 </div>
-                <div className="w-full h-[6px] mt-[15px] bg-[#447AFB] rounded-[10px]"></div>
+                <div className="w-full h-[6px] mt-[15px] bg-[#447AFB] rounded-[10px] max-2xl:h-[4px] max-2xl:mt-[10px]"></div>
               </div>
               <Button
                 textStyles={"text-[18px] font-[800] leading-[24px]"}
                 text="Подтвердить"
                 gradient={true}
                 rounded={"rounded-[10px]"}
-                spacingClass={"px-[80px] py-[20px] w-full"}
+                spacingClass={"px-[10px] py-[20px] w-full max-2xl:py-[15px]"}
                 onClick={() => toggleCreateButton()}
               />
             </div>

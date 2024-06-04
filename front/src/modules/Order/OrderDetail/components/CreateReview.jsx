@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useState } from "react"
 import { axios } from "@lib/axios"
 
 import { useLoading, useToast } from "@hooks"
@@ -14,24 +14,11 @@ const CreateReview = ({ restaurantId }) => {
   const [isSend, setIsSend] = useState(false)
   const [reviewData, setReviewData] = useState({
     stars: 0,
-    review: "",
-    restaurantId: "",
-    date: "",
+    description: "",
   })
 
-	useEffect(() => {
-		console.log(reviewData)
-	},[reviewData])
-
-  useEffect(() => {
-    setReviewData((prev) => ({
-      ...prev,
-      restaurantId,
-    }))
-  }, [restaurantId])
-
   const isValid = () => {
-    return reviewData.stars > 0 && reviewData.review && reviewData.restaurantId
+    return reviewData.stars > 0 && reviewData.description
   }
 
   const handleSubmit = (e) => {
@@ -41,11 +28,11 @@ const CreateReview = ({ restaurantId }) => {
       return
     }
 
-    // setLoading(true)
+    setLoading(true)
 
     const updatedReviewData = {
       ...reviewData,
-			review: reviewData.review.replace("\n", " "),
+      review: reviewData.description.replace("\n", " "),
       date: new Date().toISOString(),
     }
 
@@ -53,14 +40,12 @@ const CreateReview = ({ restaurantId }) => {
       .then((res) => {
         setReviewData({
           stars: 0,
-          review: "",
-          restaurantId: restaurantId,
-          date: "",
+          description: "",
         })
         setIsSend(true)
       })
       .catch((err) => {
-        showNotification(err, "error")
+        showNotification(`Не удалось отправить комментарию: ${err}`, "error")
       })
       .finally(() => {
         setLoading(false)
@@ -85,10 +70,13 @@ const CreateReview = ({ restaurantId }) => {
             <textarea
               className="flex-1 w-full outline-none resize-none"
               placeholder="Отзыв..."
-              value={reviewData.review}
+              value={reviewData.description}
               multiple={true}
               onChange={(e) =>
-                setReviewData((prev) => ({ ...prev, review: e.target.value }))
+                setReviewData((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
               }
             />
             <SetRating

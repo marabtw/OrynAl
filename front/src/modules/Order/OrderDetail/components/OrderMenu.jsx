@@ -41,11 +41,11 @@ const OrderMenu = ({ foods, totalPrice }) => {
                 <li key={el.id}>
                   <div className="flex items-center gap-[20px]">
                     <div className="w-[50px] h-[50px] rounded-full overflow-hidden bg-slate-100">
-                      {el.icon && (
+                      {el.photo && (
                         <img
-                          src={el.icon}
+                          src={el.photo.route}
                           alt=""
-                          className="w-full object-cover"
+                          className="w-full aspect-square object-cover"
                         />
                       )}
                     </div>

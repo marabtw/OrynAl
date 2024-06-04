@@ -35,7 +35,7 @@ const OrdersHistoryList = ({ order, index, handleUpdateOrder }) => {
         ROUTERS.Orders.root
       )}${ROUTERS.Orders.orderDetail.replace(":orderId", id)}`,
     },
-    mappedOrder.status === "booked" && {
+    mappedOrder.status === "reserved" && {
       action: "Отменить",
       onClick: () => handleUpdateOrder(order, "canceled"),
     },
@@ -144,7 +144,7 @@ const getStatus = (status) => (
   <div className="flex items-center gap-[10px] w-[50%] min-w-max">
     {(() => {
       switch (status) {
-        case "booked":
+        case "reserved":
           return (
             <>
               <div className="w-[12px] h-[12px] bg-[#31A24C] rounded-full"></div>

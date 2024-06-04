@@ -7,9 +7,7 @@ const LoginInput = ({
   placeholder = "no placeholder",
   type = "text",
   required = false,
-  onChange = () => {
-    console.log("function not found")
-  },
+  onChange = () => {},
 }) => {
   const [inputValue, setInputValue] = useState("")
   const [inputType, setInputType] = useState(type)

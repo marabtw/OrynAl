@@ -100,6 +100,14 @@ export const formatTimeString = (timeString) => {
   return `${hours}:${minutes}`
 }
 
+export const formatDateString = (dateString) => {
+  const date = new Date(dateString)
+  const year = date.getFullYear().toString().padStart(4, "0")
+  const month = (date.getMonth() + 1).toString().padStart(2, "0")
+  const day = date.getDate().toString().padStart(2, "0")
+  return `${day}.${month}.${year}`
+}
+
 export const generateTimeOptions = () => {
   let times = []
   for (let hour = 0; hour < 24; hour++) {

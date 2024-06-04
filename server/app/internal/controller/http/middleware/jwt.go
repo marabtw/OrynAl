@@ -28,6 +28,24 @@ func NewJWTAuth(jwtKey []byte, service services.IAuthService, logger *zap.Sugare
 	return &JWTAuth{jwtKey: jwtKey, AuthService: service, logger: logger}
 }
 
+func (m *JWTAuth) RoleToCtx(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		jwtToken, err := m.getTokenFromHeader(c.Request())
+		if err != nil {
+			return err
+		}
+
+		contextUserId, _ := m.AuthService.GetJwtUserID(jwtToken)
+		contextUserRole, _ := m.AuthService.GetJwtUserRole(jwtToken)
+		ctx := context.WithValue(c.Request().Context(), model.ContextUserIDKey, contextUserId)
+		ctx = context.WithValue(ctx, model.ContextUserRoleKey, contextUserRole)
+
+		c.SetRequest(c.Request().WithContext(ctx))
+
+		return next(c)
+	}
+}
+
 func (m *JWTAuth) ValidateAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		jwtToken, err := m.getTokenFromHeader(c.Request())

@@ -1,25 +1,48 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import { axios } from "@lib/axios"
 
 import { getRestaurantRequest } from "../api"
-import { useHeaderHeight } from "@hooks"
+import { useHeaderHeight, useLoading, useToast } from "@hooks"
 
 import CreateOrder from "../CreateOrder/CreateOrder"
 import RestaurantDetails from "../CreateOrder/components/RestaurantDetails/RestaurantDetails"
 import LocationInfo from "@components/LocationInfo/LocationInfo"
 
 const CreateOrderPage = () => {
-  const headerHeight = useHeaderHeight()
   const { restaurantId } = useParams()
+  const setLoading = useLoading()
+  const showNotification = useToast()
+  const headerHeight = useHeaderHeight()
+
   const [restaurant, setRestaurant] = useState({})
 
   useEffect(() => {
-    getRestaurantRequest({ restaurantId })
-      .then((res) => {
-        setRestaurant(res.data)
+    const cancelTokenSource = axios.CancelToken.source()
+    setLoading(true)
+
+    getRestaurantRequest({ restaurantId, cancelToken: cancelTokenSource.token })
+      .then(({ data }) => {
+        if (!data) setRestaurant({})
+        else setRestaurant(data)
       })
-      .catch((err) => console.log(err))
-      .finally()
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          showNotification(`Запрос был отменен: ${err}`, "warning")
+        } else {
+          showNotification(
+            `Не удалось загрузить данные ресторана: ${err}`,
+            "error"
+          )
+        }
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+
+    return () => {
+      cancelTokenSource.cancel()
+    }
   }, [restaurantId])
 
   return (
@@ -33,7 +56,9 @@ const CreateOrderPage = () => {
             text={restaurant.address}
             top="85%"
             left={"-65px"}
-            mobileSpacingStyle={"max-xl:fixed max-xl:ml-[60px] max-lg:pl-[20px]"}
+            mobileSpacingStyle={
+              "max-xl:fixed max-xl:ml-[60px] max-lg:pl-[20px]"
+            }
           />
           <RestaurantDetails restaurantData={restaurant} />
         </div>

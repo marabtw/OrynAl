@@ -24,7 +24,8 @@ const CreateOrder = ({ restaurantId }) => {
     foods: [],
     totalSum: 0,
     restaurantId: +restaurantId,
-    status: "completed",
+    status: "reserved",
+    date: "",
   })
 
   useEffect(() => {
@@ -32,47 +33,23 @@ const CreateOrder = ({ restaurantId }) => {
       (acc, item) => acc + item?.itemTotalPrice,
       0
     )
-
     setDataForCreateOrder((prev) => ({
       ...prev,
       totalSum,
     }))
   }, [dataForCreateOrder.foods])
 
+  const setDateAndTimeToCart = (date) => {
+    if (!date) return
+    setDataForCreateOrder((prev) => {
+      return { ...prev, date }
+    })
+  }
+
   const getTableId = (id) => {
     setDataForCreateOrder((prev) => {
       return { ...prev, tableId: id }
     })
-  }
-
-  const createOrder = () => {
-    if (!isOrderValid()) {
-      showNotification("Вы не выбрали", "warning")
-      return
-    }
-
-    setLoading(true)
-
-    const currentDate = new Date()
-    const formattedDate = currentDate.toISOString().split(".")[0] + "Z"
-
-    const formattedDataForCreateOrder = {
-      ...dataForCreateOrder,
-      foods: dataForCreateOrder.foods.map((food) => food.id),
-      date: formattedDate,
-    }
-
-    createByUserOrder(formattedDataForCreateOrder)
-      .then(() => {
-        showNotification("Успешно создан", "success")
-        navigate(`${removeWildcard(ROUTERS.Home)}`)
-      })
-      .catch((err) => {
-        showNotification(err.toString(), "error")
-      })
-      .finally(() => {
-        setLoading(false)
-      })
   }
 
   const getFoodForCart = (food) => {
@@ -97,17 +74,48 @@ const CreateOrder = ({ restaurantId }) => {
     }
   }
 
+  const createOrder = () => {
+    if (!isOrderValid()) {
+      showNotification("Вы не выбрали", "warning")
+      return
+    }
+
+    setLoading(true)
+
+    const formattedDataForCreate = {
+      ...dataForCreateOrder,
+      foods: dataForCreateOrder.foods.map((food) => food.id),
+    }
+
+    createByUserOrder(formattedDataForCreate)
+      .then(() => {
+        showNotification("Успешно создан", "success")
+        navigate(`${removeWildcard(ROUTERS.Home)}`)
+      })
+      .catch((err) => {
+        showNotification(err.toString(), "error")
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
   const isOrderValid = () => {
     return (
-      dataForCreateOrder.restaurantId &&
+      dataForCreateOrder?.restaurantId >= 0 &&
       dataForCreateOrder?.tableId >= 0 &&
-      dataForCreateOrder?.foods.length > 0
+      dataForCreateOrder?.foods.length > 0 &&
+      dataForCreateOrder.date
     )
   }
 
   return (
     <div className="py-[100px] max-xl:py-[25px]">
-      <TableReservation restaurantId={restaurantId} getTableId={getTableId} />
+      <TableReservation
+        restaurantId={restaurantId}
+        getTableId={getTableId}
+        setDateAndTimeToCart={setDateAndTimeToCart}
+      />
       <div className="relative grid grid-cols-[2fr,auto] max-2xl:grid-cols-1 mx-[100px] mt-[200px] max-2xl:mx-[60px] max-lg:mx-[20px] max-lg:mt-[100px]">
         <SelectMenu
           restaurantId={restaurantId}
@@ -131,11 +139,12 @@ const CreateOrder = ({ restaurantId }) => {
         />
       </div>
       <div
-        className="fixed z-[55] 2xl:hidden
+        className="fixed z-[55] max-md:z-[99] 2xl:hidden
 				w-[70px] h-[70px] 
 				bottom-[1%] right-[5%] 
 				p-[15px] 
-				border border-transparent rounded-full cursor-pointer bg-gray-800"
+				border border-transparent rounded-full 
+				cursor-pointer bg-gray-800"
         onClick={() => setIsCartVisible(!isCartVisible)}
       >
         <CartIcon className="w-full h-full text-white" />

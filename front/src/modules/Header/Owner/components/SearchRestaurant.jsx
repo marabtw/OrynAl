@@ -19,10 +19,6 @@ const SearchRestaurant = () => {
   const [options, setOptions] = useState([])
 
   useEffect(() => {
-    console.log(options)
-  }, [options])
-
-  useEffect(() => {
     const cancelTokenSource = axios.CancelToken.source()
 
     if (searchQuery?.length >= 2) {

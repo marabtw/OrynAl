@@ -191,7 +191,7 @@ func (r *RestaurantRepository) GetRestaurantsByOwner(ctx context.Context, ownerI
 	if params.Query != "" {
 		countQuery = countQuery.Where("LOWER(name) LIKE LOWER(?)", "%"+params.Query+"%")
 	}
-	if err := countQuery.Table("restaurants").Count(&totalItems).Error; err != nil {
+	if err := countQuery.Table("restaurants").Where("owner_id = ?", ownerID).Count(&totalItems).Error; err != nil {
 		return nil, err
 	}
 

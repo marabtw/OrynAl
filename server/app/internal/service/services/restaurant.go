@@ -61,7 +61,6 @@ func (s *RestaurantService) GetRestaurants(ctx context.Context, params *model.Pa
 			s.logger.Error(err)
 			return nil, err
 		}
-
 		return s.repository.Restaurant.GetRestaurantsByOwner(ctx, id, params)
 	}
 

@@ -54,7 +54,7 @@ const FoodCard = ({ foodData = {}, getFoodForCart, selectedFoodsId = [] }) => {
               getFoodForCart({
                 id: foodData.id,
                 amount: 1,
-                image: foodData.image ? foodData.image : "",
+                photo: foodData.photo ? foodData.photo : { route: "" },
                 name: foodData.name,
                 price: foodData.price,
                 itemTotalPrice: foodData.price,

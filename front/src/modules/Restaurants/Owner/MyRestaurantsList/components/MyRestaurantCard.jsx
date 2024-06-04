@@ -12,7 +12,7 @@ const getContextMenuItems = (id) => {
   return [
     {
       action: "Удалить",
-      onClick: () => console.log("object"),
+      onClick: () => {},
     },
     {
       action: "Изменить",

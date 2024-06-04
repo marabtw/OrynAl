@@ -54,6 +54,14 @@ func (r *ReviewsRepository) CreateReview(ctx context.Context, review *model.Rest
 	if err := r.DB.WithContext(ctx).Table("restaurant_reviews").Create(review).Error; err != nil {
 		return nil, err
 	}
+
+	var user model.UserResponse
+	if err := r.DB.Table("users").Where("id = ?", review.UserID).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	review.User = user
+
 	return review, nil
 }
 
@@ -69,5 +77,12 @@ func (r *ReviewsRepository) GetReview(ctx context.Context, id uint) (*model.Rest
 	if err := r.DB.WithContext(ctx).Table("restaurant_reviews").First(&review, id).Error; err != nil {
 		return nil, err
 	}
+
+	var user model.UserResponse
+	if err := r.DB.Table("users").Where("id = ?", review.UserID).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	review.User = user
 	return &review, nil
 }

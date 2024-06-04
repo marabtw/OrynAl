@@ -66,6 +66,25 @@ func (h *ReviewsHandler) CreateReview(c echo.Context) error {
 		})
 	}
 
+	restaurantID := c.Param("id")
+	if restaurantID == "" {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Restaurant ID is required",
+		})
+	}
+
+	id, err := strconv.ParseUint(restaurantID, 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.CustomResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid restaurant ID",
+			Data:    err.Error(),
+		})
+	}
+
+	review.RestaurantID = uint(id)
+
 	createdReview, err := h.service.Reviews.CreateReview(c.Request().Context(), &review)
 	if err != nil {
 		h.logger.Error("Failed to create review:", err)

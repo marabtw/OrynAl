@@ -9,6 +9,7 @@ import (
 	"github.com/alibekabdrakhman1/orynal/internal/service/infrastructure"
 	"github.com/alibekabdrakhman1/orynal/pkg/utils"
 	"go.uber.org/zap"
+	"time"
 )
 
 func NewReviewsService(repository *repository.Manager, config *config.Config, logger *zap.SugaredLogger) *ReviewsService {
@@ -43,6 +44,7 @@ func (s *ReviewsService) CreateReview(ctx context.Context, review *model.Restaur
 	}
 
 	review.UserID = id
+	review.Date = time.Now()
 
 	return s.repository.Reviews.CreateReview(ctx, review)
 }

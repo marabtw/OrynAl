@@ -5,7 +5,7 @@ import { ShowIcon, HideIcon } from "../icons/icons"
 const FormInputText = ({
   placeholder = "no placeholder",
   type = "text",
-  onChange = () => console.log("didn't give a function for FormInputText"),
+  onChange = () => {},
 }) => {
   const [inputValue, setInputValue] = useState("")
   const [inputType, setInputType] = useState(type)

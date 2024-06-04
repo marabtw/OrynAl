@@ -70,7 +70,7 @@ func (s *Server) setupOrderRoutes(g *echo.Group) {
 func (s *Server) setupRestaurantRoutes(g *echo.Group) {
 	restaurant := g.Group("/restaurants")
 	restaurant.GET("/statistics", s.handler.Restaurant.GetStatistics)
-	restaurant.GET("", s.handler.Restaurant.GetRestaurants)
+	restaurant.GET("", s.handler.Restaurant.GetRestaurants, s.jwt.RoleToCtx)
 	restaurant.GET("/popular", s.handler.Restaurant.PopularRestaurants)
 	restaurant.GET("/services", s.handler.Restaurant.GetServices)
 	restaurant.GET("/:id", s.handler.Restaurant.GetRestaurantByID)

@@ -50,9 +50,21 @@ func (s *OrderService) Update(ctx context.Context, id uint, order *model.Order) 
 		return nil, err
 	}
 
-	oldOrder, err := s.repository.Order.GetOrder(ctx, userID, id)
+	role, err := utils.GetRoleFromContext(ctx)
 	if err != nil {
 		return nil, err
+	}
+	if role == enums.Owner {
+		return s.repository.Order.UpdateOrder(ctx, order)
+	}
+
+	oldOrder, err := s.repository.Order.GetOrder(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if role == enums.User && oldOrder.UserID != userID {
+		return nil, errors.New("permission denied")
 	}
 
 	switch oldOrder.Status {
@@ -75,15 +87,25 @@ func (s *OrderService) Delete(ctx context.Context, id uint) error {
 		return err
 	}
 
-	_, err = s.repository.Order.GetOrder(ctx, userID, id)
+	role, err := utils.GetRoleFromContext(ctx)
 	if err != nil {
 		return err
+	}
+
+	order, err := s.repository.Order.GetOrder(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if role == enums.User && order.UserID != userID {
+		return errors.New("permission denied")
 	}
 
 	err = s.repository.Order.DeleteOrder(ctx, id)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -93,10 +115,20 @@ func (s *OrderService) GetByID(ctx context.Context, id uint) (*model.OrderRespon
 		return nil, err
 	}
 
-	order, err := s.repository.Order.GetOrder(ctx, userID, id)
+	role, err := utils.GetRoleFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+
+	order, err := s.repository.Order.GetOrder(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if role == enums.User && order.UserID != userID {
+		return nil, errors.New("permission denied")
+	}
+
 	return order, nil
 }
 

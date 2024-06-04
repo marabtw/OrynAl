@@ -1,4 +1,16 @@
-const OrderReceipt = ({ id }) => {
+const OrderReceipt = ({ table, date }) => {
+  const formatLocalDate = (dateString) => {
+    const date = new Date(dateString)
+
+    const day = String(date.getDate()).padStart(2, "0")
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const year = String(date.getFullYear()).slice(-2)
+    const hours = String(date.getHours()).padStart(2, "0")
+    const minutes = String(date.getMinutes()).padStart(2, "0")
+
+    return [`${day}.${month}.${year}`, `${hours}:${minutes}`]
+  }
+
   return (
     <div
       className="w-full max-lg:w-2/3 max-sm:w-full
@@ -23,11 +35,11 @@ const OrderReceipt = ({ id }) => {
           <h4>Время:</h4>
         </div>
         <div className="w-[50%] ">
-          <h4>#101</h4>
-          <h4>Столик #1</h4>
-          <h4>10</h4>
-          <h4>10.01.22</h4>
-          <h4>19:00</h4>
+          <h4>{table?.id}</h4>
+          <h4>{table?.name}</h4>
+          <h4>{table?.capacity}</h4>
+          <h4>{formatLocalDate(date)[0]}</h4>
+          <h4>{formatLocalDate(date)[1]}</h4>
         </div>
       </div>
     </div>

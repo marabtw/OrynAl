@@ -48,5 +48,6 @@ type OrderResponse struct {
 	Table        Table               `gorm:"foreignKey:TableID" json:"table"`
 	UserID       uint                `json:"userId"`
 	User         UserResponse        `gorm:"foreignKey:UserID" json:"user"`
-	OrderFoods   []OrderFoodResponse `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"foods"`
+	OrderFoods   []OrderFoodResponse `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"order_foods"`
+	Foods        []Food              `json:"foods"`
 }

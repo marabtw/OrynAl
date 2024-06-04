@@ -22,12 +22,39 @@ func (r *RestaurantRepository) GetPopularRestaurants(ctx context.Context) (*mode
 
 	err := r.DB.Table("orders").
 		WithContext(ctx).
-		Select("restaurants.id, restaurants.name, restaurants.address, restaurants.description, restaurants.city, restaurants.status, restaurants.phone, restaurants.owner_id, restaurants.mode_from, restaurants.mode_to, restaurants.icon, count(orders.id) as order_count").
+		Select("restaurants.id, restaurants.name, restaurants.address, restaurants.description, restaurants.city, restaurants.status, restaurants.phone, restaurants.owner_id, restaurants.mode_from, restaurants.mode_to, restaurants.icon_id, count(orders.id) as order_count").
 		Joins("JOIN restaurants ON restaurants.id = orders.restaurant_id").
 		Group("restaurants.id").
 		Order("order_count DESC").
 		Limit(10).
 		Find(&restaurants).Error
+
+	for i := 0; i < len(restaurants); i++ {
+		var owner model.UserResponse
+		if err := r.DB.Table("users").Where("id = ?", restaurants[i].OwnerID).First(&owner).Error; err != nil {
+			return nil, err
+		}
+
+		var icon model.Photo
+		if err := r.DB.Table("photos").Where("id = ?", restaurants[i].IconID).First(&icon).Error; err != nil {
+			return nil, err
+		}
+
+		var services []model.Service
+		if err := r.DB.Raw("SELECT services.* FROM services JOIN restaurant_service ON services.id = restaurant_service.service_id WHERE restaurant_service.restaurant_id = ?", restaurants[i].ID).Scan(&services).Error; err != nil {
+			return nil, err
+		}
+
+		var photos []model.Photo
+		if err := r.DB.Raw("SELECT photos.* FROM photos JOIN restaurant_photos ON photos.id = restaurant_photos.photo_id WHERE restaurant_photos.restaurant_id = ?", restaurants[i].ID).Scan(&photos).Error; err != nil {
+			return nil, err
+		}
+
+		restaurants[i].Owner = owner
+		restaurants[i].Services = services
+		restaurants[i].Icon = icon
+		restaurants[i].Photos = photos
+	}
 
 	if err != nil {
 		return nil, err
@@ -240,6 +267,7 @@ func (r *RestaurantRepository) CreateRestaurant(ctx context.Context, restaurant 
 		City:        restaurant.City,
 		Status:      restaurant.Status,
 		OwnerID:     restaurant.OwnerID,
+		Phone:       restaurant.Phone,
 		ModeFrom:    restaurant.ModeFrom,
 		ModeTo:      restaurant.ModeTo,
 		IconID:      restaurant.IconID,

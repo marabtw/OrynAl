@@ -92,22 +92,10 @@ func (r *OrderRepository) UpdateOrder(ctx context.Context, order *model.Order) (
 		return nil, err
 	}
 
-	var orderResponse model.OrderResponse
-
-	if err := r.DB.WithContext(ctx).
-		Table("orders").
-		Preload("Restaurant").
-		Preload("Table").
-		Preload("User").
-		Where("id = ?", order.ID).
-		First(&orderResponse).Error; err != nil {
-		return nil, err
-	}
-
-	return &orderResponse, nil
+	return r.GetOrder(ctx, order.ID)
 }
 
-func (r *OrderRepository) GetOrder(ctx context.Context, userID, id uint) (*model.OrderResponse, error) {
+func (r *OrderRepository) GetOrder(ctx context.Context, id uint) (*model.OrderResponse, error) {
 	var order model.OrderResponse
 
 	if err := r.DB.WithContext(ctx).
@@ -115,10 +103,64 @@ func (r *OrderRepository) GetOrder(ctx context.Context, userID, id uint) (*model
 		Preload("Restaurant").
 		Preload("Table").
 		Preload("User").
-		Where("id = ? AND user_id = ?", id, userID).
+		Where("id = ?", id).
 		First(&order).Error; err != nil {
 		return nil, err
 	}
+
+	var rest model.Restaurant
+	if err := r.DB.WithContext(ctx).Table("restaurants").Where("id = ?", order.RestaurantID).First(&rest).Error; err != nil {
+		return nil, err
+	}
+
+	var icon model.Photo
+	if err := r.DB.Table("photos").Where("id = ?", rest.IconID).First(&icon).Error; err != nil {
+		return nil, err
+	}
+
+	rest.Icon = icon
+
+	var services []model.Service
+	if err := r.DB.Raw("SELECT services.* FROM services JOIN restaurant_service ON services.id = restaurant_service.service_id WHERE restaurant_service.restaurant_id = ?", rest.ID).Scan(&services).Error; err != nil {
+		return nil, err
+	}
+	rest.Services = services
+
+	order.Restaurant = rest
+
+	var table model.Table
+	if err := r.DB.WithContext(ctx).Table("tables").Where("id = ?", order.TableID).First(&table).Error; err != nil {
+		return nil, err
+	}
+	order.Table = table
+
+	var orderFoods []model.OrderFood
+
+	if err := r.DB.WithContext(ctx).
+		Table("order_foods").
+		Where("order_id = ?", order.ID).
+		Find(&orderFoods).Error; err != nil {
+		return nil, err
+	}
+
+	var foods []model.Food
+	for _, orderFood := range orderFoods {
+		var food model.Food
+		if err := r.DB.WithContext(ctx).Table("foods").Where("id = ?", orderFood.FoodID).First(&food).Error; err != nil {
+			return nil, err
+		}
+
+		var photo model.Photo
+		if err := r.DB.Table("photos").Where("id = ?", food.PhotoID).First(&photo).Error; err != nil {
+			return nil, err
+		}
+
+		food.Photo = photo
+
+		foods = append(foods, food)
+	}
+
+	order.Foods = foods
 
 	return &order, nil
 }
@@ -148,6 +190,12 @@ func (r *OrderRepository) GetAllOrders(ctx context.Context, userID uint, params 
 		if err := r.DB.WithContext(ctx).Table("restaurants").Where("id = ?", orders[i].RestaurantID).First(&rest).Error; err != nil {
 			return nil, err
 		}
+		var services []model.Service
+		if err := r.DB.Raw("SELECT services.* FROM services JOIN restaurant_service ON services.id = restaurant_service.service_id WHERE restaurant_service.restaurant_id = ?", rest.ID).Scan(&services).Error; err != nil {
+			return nil, err
+		}
+		rest.Services = services
+
 		orders[i].Restaurant = rest
 
 		var table model.Table
@@ -155,7 +203,6 @@ func (r *OrderRepository) GetAllOrders(ctx context.Context, userID uint, params 
 			return nil, err
 		}
 		orders[i].Table = table
-
 	}
 
 	return &model.ListResponse{
@@ -184,6 +231,26 @@ func (r *OrderRepository) GetRestaurantOrders(ctx context.Context, restaurantID 
 
 	if err := query.Find(&orders).Error; err != nil {
 		return nil, err
+	}
+
+	for i := 0; i < len(orders); i++ {
+		var rest model.Restaurant
+		if err := r.DB.WithContext(ctx).Table("restaurants").Where("id = ?", orders[i].RestaurantID).First(&rest).Error; err != nil {
+			return nil, err
+		}
+		var services []model.Service
+		if err := r.DB.Raw("SELECT services.* FROM services JOIN restaurant_service ON services.id = restaurant_service.service_id WHERE restaurant_service.restaurant_id = ?", rest.ID).Scan(&services).Error; err != nil {
+			return nil, err
+		}
+		rest.Services = services
+
+		orders[i].Restaurant = rest
+
+		var table model.Table
+		if err := r.DB.WithContext(ctx).Table("tables").Where("id = ?", orders[i].TableID).First(&table).Error; err != nil {
+			return nil, err
+		}
+		orders[i].Table = table
 	}
 
 	return &model.ListResponse{

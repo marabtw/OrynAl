@@ -59,7 +59,7 @@ type IOrderRepository interface {
 	CreateOrder(ctx context.Context, order *model.Order) (*model.OrderResponse, error)
 	DeleteOrder(ctx context.Context, id uint) error
 	UpdateOrder(ctx context.Context, order *model.Order) (*model.OrderResponse, error)
-	GetOrder(ctx context.Context, userID uint, id uint) (*model.OrderResponse, error)
+	GetOrder(ctx context.Context, id uint) (*model.OrderResponse, error)
 	GetAllOrders(ctx context.Context, userID uint, params *model.Params) (*model.ListResponse, error)
 	GetRestaurantOrders(ctx context.Context, restaurantID uint, params *model.Params) (*model.ListResponse, error)
 }

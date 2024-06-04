@@ -34,13 +34,15 @@ const OrderDetail = () => {
       <div className="flex gap-[90px] max-xl:flex-col max-xl:gap-[20px]">
         <div className="flex flex-col w-[50%] max-xl:w-full gap-[40px] max-xl:gap-[20px]">
           <div className="w-[80%] h-[3px] mb-[30px] bg-black rounded-full max-lg:mb-0 max-md:mx-auto"></div>
-          <RestaurantBriefInfo data={details.restaurant} />
+          <div className="p-[20px] bg-white rounded-md">
+            <RestaurantBriefInfo data={details.restaurant} />
+          </div>
           <Location text="Алматы, ​проспект Абылай хана, 55" />
           <div className="max-xl:hidden">
             <OrderReceipt table={details.table} date={details.date} />
           </div>
         </div>
-        <div className="max-xl:flex max-xl:justify-between gap-[15px] max-lg:flex-col">
+        <div className="max-xl:flex max-xl:justify-between gap-[15px] max-lg:flex-col ">
           <div className="xl:hidden">
             <OrderReceipt table={details.table} date={details.date} />
           </div>
@@ -48,7 +50,7 @@ const OrderDetail = () => {
         </div>
       </div>
       {user.role === "user" && details.status === "completed" && (
-        <CreateReview restaurantId={details.restaurantId}/>
+        <CreateReview restaurantId={details.restaurantId} />
       )}
     </div>
   )

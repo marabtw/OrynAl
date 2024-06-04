@@ -108,7 +108,7 @@ const CreateOrder = ({ restaurantId }) => {
   return (
     <div className="py-[100px] max-xl:py-[25px]">
       <TableReservation restaurantId={restaurantId} getTableId={getTableId} />
-      <div className="relative flex justify-between gap-[50px] mx-[100px] mt-[200px] max-2xl:mx-[60px] max-lg:mx-[20px]">
+      <div className="relative grid grid-cols-[2fr,auto] max-2xl:grid-cols-1 mx-[100px] mt-[200px] max-2xl:mx-[60px] max-lg:mx-[20px] max-lg:mt-[100px]">
         <SelectMenu
           restaurantId={restaurantId}
           getFoodForCart={getFoodForCart}

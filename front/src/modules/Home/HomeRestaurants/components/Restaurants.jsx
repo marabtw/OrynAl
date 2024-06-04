@@ -34,12 +34,12 @@ const Restaurants = () => {
 
   const [params, setParams] = useState({
     pageIndex: 1,
-    limit: 3,
+    limit: 6,
   })
 
   const [searchParams, setSearchParams] = useState({
     pageIndex: 1,
-    limit: 3,
+    limit: 6,
     q: "",
   })
 
@@ -121,15 +121,17 @@ const Restaurants = () => {
             getCategory={handleCategoryChange}
           />
         </div>
-        <div className="grid grid-cols-3 gap-[24px] max-md:grid-cols-2 ">
-          {restaurants?.length > 0 ? (
-            restaurants.map((restaurant) => (
-              <RestaurantItemCard key={restaurant.id} data={restaurant} />
-            ))
-          ) : (
-            <p className="text-center">Рестораны не найдены</p>
-          )}
-        </div>
+        {restaurants?.length > 0 ? (
+          <div className="grid grid-cols-3 gap-[24px] max-md:grid-cols-2 ">
+            {restaurants.map((restaurant) => (
+              <div className="flex justify-center">
+                <RestaurantItemCard key={restaurant.id} data={restaurant} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center">Рестораны не найдены</p>
+        )}
         <Pagination
           totalPage={isResultBySearch ? searchTotalPage : totalPage}
           getCurrentPage={handlePageChange}

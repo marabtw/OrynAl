@@ -13,7 +13,7 @@ const RestaurantItemCard = ({ data }) => {
   return (
     <div
       className="relative flex flex-col items-center gap-[10px] 
-			min-h-max w-full py-[25px] px-[27px] 
+			min-h-max w-[400px] py-[25px] px-[27px] max-2xl:w-[330px] max-lg:w-[250px] max-sm:w-[180px]
 			font-poppins
 			border-2 border-[#e2e2e2] rounded-md 
 			shadow-[0px_0px_5px_-1px_#e2e2e2]

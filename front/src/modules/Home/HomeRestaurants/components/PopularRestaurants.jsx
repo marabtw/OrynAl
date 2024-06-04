@@ -17,6 +17,10 @@ const PopularRestaurants = () => {
   const [popularRestaurants, setPopularRestaurants] = useState([])
 
   useEffect(() => {
+    console.log(popularRestaurants)
+  }, [popularRestaurants])
+
+  useEffect(() => {
     const cancelTokenSource = axios.CancelToken.source()
 
     fetchData(cancelTokenSource.token)
@@ -37,8 +41,8 @@ const PopularRestaurants = () => {
         setPopularRestaurants([])
         showNotification("Популярные рестораны не найдены", "info")
       } else {
-        if (!isArraysEqualDeep(popularRestaurants, data)) {
-          setPopularRestaurants(data)
+        if (!isArraysEqualDeep(popularRestaurants, data.items)) {
+          setPopularRestaurants(data.items)
         }
       }
     } catch (err) {
@@ -74,14 +78,16 @@ const PopularRestaurants = () => {
         navigation={false}
         className=""
       >
-        {popularRestaurants?.lenght > 0 ? (
+        {popularRestaurants?.length > 0 ? (
           popularRestaurants.map((restaurant) => (
-            <SwiperSlide key={restaurant.id}>
+            <SwiperSlide key={restaurant.id} className="h-full">
               <RestaurantItemCard data={restaurant} />
             </SwiperSlide>
           ))
         ) : (
-          <div className="col-span-3 text-center">Популярные рестораны не найдены</div>
+          <div className="col-span-3 text-center">
+            Популярные рестораны не найдены
+          </div>
         )}
       </Swiper>
     </div>

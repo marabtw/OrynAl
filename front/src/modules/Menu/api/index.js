@@ -74,8 +74,9 @@ export const deleteByOwnerMenuItemRequest = async ({
 
 export const getMenuTypes = () => {
   return [
-    { label: "Фаст-фуд", value: "Фаст-фуд" },
     { label: "Первый", value: "Первый" },
+    { label: "Второй", value: "Второй" },
     { label: "Десерт", value: "Десерт" },
+    { label: "Фаст-фуд", value: "Фаст-фуд" },
   ]
 }

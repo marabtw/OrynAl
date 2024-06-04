@@ -51,7 +51,7 @@ const Authorization = () => {
             className="flex flex-col items-center h-max text-center mt-[20%] mx-[15%] text-white"
           >
             <img src={logo} alt="" className="w-1/2" />
-            <h2 className="text-[50px] leading-[75px] font-[700]">OrynAl</h2>
+            <h2 className="text-[50px] leading-[75px] font-[700]">OrynBar</h2>
             <p className="text-[20px] leading-[30px] font-[30px]">
               Платформа для онлайн-заказа и бронирования столиков в ресторанах
             </p>

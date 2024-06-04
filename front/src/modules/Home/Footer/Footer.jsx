@@ -80,12 +80,12 @@ const Footer = () => {
             alt="logo"
             className="h-full bg-[#4476FB] rounded-full "
           />
-          <h5>OrynAl - 2022</h5>
+          <h5>OrynBar - 2024</h5>
         </div>
         <div className="flex flex-wrap items-center gap-[40px] text-[20px] leading-[24px] text-[#969696] max-md:text-[16px] max-md:leading-[20px] max-md:gap-[10px]">
           <h5>О нас</h5>
           <h5>Контакты</h5>
-          <h5>Стать портнером</h5>
+          <h5>Стать партнером</h5>
           <h5>Мы в социальных сетях</h5>
         </div>
         <label

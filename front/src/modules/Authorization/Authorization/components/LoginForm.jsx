@@ -38,7 +38,7 @@ const Login = ({ changeAuth }) => {
         <AuthorizationFormsInput
           type="email"
           label="Ваша почта"
-          placeholder="@gmail.com"
+          placeholder="orynbar@gmail.com"
           required={true}
           onChange={(value) => setEmail(value)}
         />

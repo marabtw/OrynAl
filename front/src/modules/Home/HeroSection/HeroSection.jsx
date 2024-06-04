@@ -45,7 +45,7 @@ const HeroSection = ({ nextSectionRef }) => {
           className="mt-[20px] text-[#657392] text-[25px] leading-[41px] font-[400] tracking-tight
 				max-2xl:text-[20px] max-2xl:leading-[30px] max-md:leading-[25px]"
         >
-          «Oryn Al» — это платформа для онлайн-заказа и бронирования столиков в
+          «Oryn Bar» — это платформа для онлайн-заказа и бронирования столиков в
           ресторанах, которое позволяет клиентам легко бронировать столики прямо
           через веб-сайт.
         </p>

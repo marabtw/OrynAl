@@ -44,27 +44,27 @@ const Register = ({ changeAuth }) => {
         <div className="grid grid-cols-2 gap-[20px] max-md:grid-cols-1">
           <AuthorizationFormsInput
             label="Имя"
-            placeholder="Адильбек"
+            placeholder="Баке"
             required={true}
             onChange={(value) => setName(value)}
           />
           <AuthorizationFormsInput
             label="Фамилия"
-            placeholder="Абилов"
+            placeholder="Сакеев"
             onChange={(value) => setSurname(value)}
           />
         </div>
         <div className="grid grid-cols-2 gap-[20px] max-md:grid-cols-1">
           <AuthorizationFormsInput
             label="Номер телефона"
-            placeholder="+7 777 77 77"
+            placeholder="+7 (777) 777 77 77"
             required={true}
             onChange={(value) => setPhone(value)}
             type="tel"
           />
           <AuthorizationFormsInput
             label="Почта"
-            placeholder="adilbek.abilov@gmail.com"
+            placeholder="bake.sakeev@gmail.com"
             onChange={(value) => setEmail(value)}
           />
         </div>
@@ -93,9 +93,9 @@ const Register = ({ changeAuth }) => {
           onClick={(e) => handleSignup(e)}
         />
         <h3 className="text-center text-[20px] font-[700] text-[#989898]">
-          Уже зарегистрированы?
+          Уже зарегистрированы? 
           <span
-            className="cursor-pointer text-[#447dfb] hover:underline"
+            className="cursor-pointer text-[#447dfb] hover:underline ml-2"
             onClick={changeAuth}
           >
             Войдите

@@ -51,7 +51,7 @@ const UserHeader = ({ user }) => {
           />
         </Link>
         <h2 className="font-semibold  max-sm:hidden">
-          OrynAl - Сервис онлайн-заказов
+          OrynBar - Сервис онлайн-заказов
         </h2>
       </div>
       <ul className="flex items-center gap-[36px] min-w-min font-[600] font-poppins">
